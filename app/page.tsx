@@ -3,8 +3,9 @@ import Logo from './components/Logo'
 
 export default function Home() {
   return (
-    <main className="bg-white h-screen w-full">
-      <Logo />
+    <main className="bg-black h-screen w-full">
+      <h1 className='text-green-500'>Jai Ganesha</h1>
+      {/* <Logo /> */}
     </main>
   )
 }
