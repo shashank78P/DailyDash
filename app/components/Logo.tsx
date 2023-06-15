@@ -32,7 +32,7 @@ const Logo = () => {
         //         </g></g>
         // </svg>
         <>
-            <svg width="15" height="7" viewBox="0 0 15 7" fill="none" xmlns="http://www.w3.org/2000/svg"
+            <svg width="100" height="50" viewBox="0 0 15 7" fill="none" xmlns="http://www.w3.org/2000/svg"
             //  xmlns: xlink="http://www.w3.org/1999/xlink"
             >
                 <rect width="15" height="7" fill="url(#pattern0)" />
