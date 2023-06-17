@@ -1,10 +1,12 @@
 import Image from 'next/image'
 import Logo from './components/Logo'
+import SideBar from './components/GlobalComponents/sideBar/SideBar'
+import BellIco from './components/assets/BellIco'
 
 export default function Home() {
   return (
-    <main className="bg-black h-screen w-full">
-      <h1 className='text-green-500'>Jai Ganesha</h1>
+    <main className="bg-white h-screen w-full">
+      <SideBar />
     </main>
   )
 }
