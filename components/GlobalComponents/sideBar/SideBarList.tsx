@@ -8,14 +8,11 @@ import NoteIco from '../../assets/NoteIco'
 import DynamicForm from '../../assets/DynamicForm'
 import SettingsIco from '../../assets/SettingsIco'
 import BellIco from '../../assets/BellIco'
-import BurgerMenu from '../../assets/BurgerMenu'
-import ModileSideBarTopSection from './ModileSideBarTopSection'
 import Link from 'next/link'
 import { useDispatch, useSelector } from 'react-redux'
 import HomeIco from '../../assets/HomeIco'
 import { routeAction } from "../../store/slice/router_slice"
-import { useParams, usePathname, useSearchParams } from 'next/navigation'
-import { useRouter } from 'next/router'
+import { usePathname, useSearchParams } from 'next/navigation'
 
 const SideBarList = () => {
     const currentRoute = useSelector((state: any) => state.routeSliceReducer)

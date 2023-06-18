@@ -19,8 +19,10 @@ export default function RootLayout({
     <html lang="en">
       <ReduxProvider>
         <body className={inter.className}>
-          <SideBar />
-          {children}
+          <div className='flex'>
+            <SideBar />
+            {children}
+          </div>
         </body>
       </ReduxProvider>
     </html>

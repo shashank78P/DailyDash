@@ -1,7 +1,5 @@
 import React from 'react'
 import BellIco from '../../assets/BellIco'
-import DafaultUser from "/../../../public/DefaultUser.png"
-import Image from 'next/image'
 
 const ModileSideBarTopSection = () => {
     return (
