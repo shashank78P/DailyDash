@@ -7,7 +7,7 @@ const SideBar = () => {
     const [openNav, setOpenNav] = useState(false);
     return (
         <>
-            <div className='sm:hidden p-2 cursor-pointer'>
+            <div className=' h-[50px] sm:hidden p-2 cursor-pointer absolute'>
                 <BurgerMenu width={30} height={30} actionHandler={() => { setOpenNav(true) }} />
             </div>
             <MobileSideBar

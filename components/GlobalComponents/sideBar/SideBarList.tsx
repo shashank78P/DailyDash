@@ -53,7 +53,7 @@ const SideBarList = () => {
     console.log({ currentRoute, dispatch, routeAction })
     return (
         <>
-            <ul className='w-full min-h-screen sm:w-[50px] md:w-[50px] sm:flex flex-col justify-between items-center sm:h-screen bg-white text-c_black'>
+            <ul className='w-full min-h-screen sm:w-[50px] md:w-[50px] sm:flex flex-col justify-between items-center sm:h-screen text-c_black bg-white'>
                 <li className='mb-2 '>
                     <ul className='w-full flex flex-col justify-around'>
                         <li className={`w-full  p-2 my-2  ${pathname === '/' && "bg-purple-500 text-white rounded-md ease-in"}`}
