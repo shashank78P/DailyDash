@@ -2,6 +2,7 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 import ReduxProvider from './reduxProvider'
 import SideBar from '../components/GlobalComponents/sideBar/SideBar'
+import TabSection from '@/components/GlobalComponents/bottomTab/TabSection'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,9 +20,12 @@ export default function RootLayout({
     <html lang="en">
       <ReduxProvider>
         <body className={inter.className}>
-          <div className='flex'>
+          <div className='flex h-screen w-full'>
             <SideBar />
-            {children}
+            <div className='h-screen w-full border border-red-900 flex flex-col justify-between overflow-scroll'>
+              {children}
+              <TabSection />
+            </div>
           </div>
         </body>
       </ReduxProvider>

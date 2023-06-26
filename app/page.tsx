@@ -1,7 +1,7 @@
 export default function Home() {
   return (
-    <main className="bg-white text-c_black h-screen w-full">
-      {/* <SideBar /> */}
-    </main>
+    <>
+      <div className="h-[500px] w-[500px] bg-red-500">kujhjkjhk</div>
+    </>
   )
 }
