@@ -137,10 +137,14 @@ const SignUp = () => {
                             />
                         </div>
                     </form>
+
+                    {/* or */}
                     <div className='h-8 relative flex items-center justify-center mb-5'>
                         <div className=' h-[.5px] w-full bg-slate-400'></div>
                         <div className=' border border-slate-400 bg-white text-slate-500 p-1 rounded-md absolute'>OR</div>
                     </div>
+
+                    {/* social media lgoin */}
                     <div className='border border-slate-500 mb-5'>
                         Google
                     </div>

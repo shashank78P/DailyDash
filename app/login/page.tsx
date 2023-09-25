@@ -1,4 +1,5 @@
 "use client"
+import Google from '@/components/SocailMedia/Google';
 import api from '@/components/lib/api';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -28,22 +29,23 @@ const Login = () => {
     }
     return (
         <div
-            className='flex justify-center items-center h-[100%] border-red-900 border'
+            className='flex justify-center items-center h-[100%] backgroundeImage'
             onClick={() => {
                 setRefetchQuery(!refetchQuery);
             }}
         >
-            <div className='w-[90%] sm:w-[500px] border border-red-900 p-3 mb-5 rounded-md'>
-                <div className='mb-5 text-purple-700 font-semibold'>Log In</div>
-                <form onSubmit={handleSubmit(onSubmit)} className='mb-5'>
+            <div className='w-[90%] sm:w-[500px] border border-slate-500  p-5 text-white rounded-md backdrop-blur-md'>
+                <div className='mb-5 font-semibold text-xl sm:text-2xl text-center'>Log In</div>
+                <form onSubmit={handleSubmit(onSubmit)} className='mb-5 sm:text-xl'>
                     <div className=''>
                         <div
                             className='flex flex-col mb-3'
                         >
-                            <label>Email:</label>
+                            {/* <label className='text-lg font-semibold'>Email:</label> */}
                             <input
                                 type='email'
-                                className='border border-slate-500 mt-1 full rounded-md px-2 py-1'
+                                placeholder='E-mail'
+                                className='bg-transparent full px-1 py-1 border border-transparent border-y-2  border-b-purple-700 placeholder:text-white'
                                 {...register(
                                     "email",
                                     {
@@ -51,7 +53,7 @@ const Login = () => {
                                     })}
                             />
                             {errors.email && (
-                                <p className="text-xs text-red-500">
+                                <p className="text-sm text-red-500 mt-2">
                                     {errors.email.message}
                                 </p>
                             )}
@@ -59,40 +61,41 @@ const Login = () => {
                         <div
                             className='flex flex-col mb-2'
                         >
-                            <label>Password:</label>
+                            {/* <label className='text-lg text-white font-semibold'>Password:</label> */}
                             <input
                                 type='password'
-                                className='border border-slate-500 mt-1 full rounded-md px-2 py-1'
+                                placeholder='Password'
+                                className='bg-transparent mt-5 full px-1 py-1 border border-transparent border-y-2  border-b-purple-700 placeholder:text-white'
                                 {...register(
                                     "password",
                                     { required: "Password is required" })}
                             />
                             {errors.password && (
-                                <p className="text-xs text-red-500">
+                                <p className="text-sm mt-2 text-red-500">
                                     {errors.password.message}
                                 </p>
                             )}
                         </div>
-                        <div className='text-right text-purple-700 font-medium'>
+                        <div className='text-right text-red-500 font-semibold mt-5'>
                             <Link href="/forget-password">Forget Password</Link>
                         </div>
                         <input
-                            className='w-full border mt-4 full rounded-md px-2 py-1 bg-purple-700 text-white shadow-sm font-bold'
+                            className='w-full mt-5 full rounded-md px-2 py-1 bg-purple-700 font-semibold cursor-pointer'
                             type="submit"
                             value="Log In"
                         />
                     </div>
                 </form>
-                <div className='h-8 relative flex items-center justify-center mb-5'>
+                <div className='h-8 relative flex items-center justify-center my-10'>
                     <div className=' h-[.5px] w-full bg-slate-400'></div>
-                    <div className=' border border-slate-400 bg-white text-slate-500 p-1 rounded-md absolute'>OR</div>
+                    <div className=' border border-slate-400 bg-white text-slate-500 p-1 rounded-md absolute font-medium'>OR</div>
                 </div>
-                <div className='border border-slate-500 mb-5'>
-                    Google
+                <div className=' my-10 flex justify-center items-center'>
+                    <Google />
                 </div>
-                <div className=' text-right'>
+                <div className=' text-right mt-5 sm:text-xl text-gray-300'>
                     Don't have a account
-                    <Link href='/signup' className='text-purple-700 underline-offset font-semibold'> SIGN UP</Link>
+                    <Link href='/signup' className='text-purple-700 underline-offset font-semibold ml-2'> Sign Up</Link>
                 </div>
             </div>
         </div >

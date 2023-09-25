@@ -24,6 +24,10 @@
   --background-end-rgb: 255, 255, 255;
 }
 
+.backgroundeImage {
+  background-image: url("../public/images/Background.png");
+}
+
 .scrollTracker::-webkit-scrollbar {
   display: none;
 }
