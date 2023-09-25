@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import ReduxProvider from './reduxProvider'
 import SideBar from '../components/GlobalComponents/sideBar/SideBar'
 import TabSection from '@/components/GlobalComponents/bottomTab/TabSection'
+import ReactQueryProvider from './reactQueryProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,15 +20,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ReduxProvider>
-        <body className={inter.className}>
-          <div className='flex h-screen w-full'>
-            <SideBar />
-            <div className='h-screen w-full border border-red-900 flex flex-col justify-between overflow-scroll'>
-              {children}
-              <TabSection />
+        <ReactQueryProvider>
+          <body className={inter.className}>
+            <div className='flex w-full'>
+              <SideBar />
+              {/* <div className='flex w-full flex-col'> */}
+              <div className='w-full  h-screen flex flex-col justify-between overflow-scroll '>
+                {children}
+                <TabSection />
+              </div>
+              {/* </div> */}
             </div>
-          </div>
-        </body>
+          </body>
+        </ReactQueryProvider>
       </ReduxProvider>
     </html>
   )

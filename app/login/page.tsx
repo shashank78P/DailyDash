@@ -1,18 +1,38 @@
 "use client"
+import api from '@/components/lib/api';
 import Link from 'next/link';
+import { useState } from 'react';
 import { useForm } from "react-hook-form";
+import { useQuery } from 'react-query';
 
 type LogInType = {
     email: string,
     password: string
 }
 const Login = () => {
+    const [refetchQuery, setRefetchQuery] = useState(true)
+    const query = useQuery(['todos', refetchQuery], () => {
+        console.log("calling")
+        api.get("/log-in-details")
+    },
+        {
+            onSuccess: (data) => {
+                console.log("sucess", data)
+            },
+            onError: (err) => {
+                console.log("sucess", err)
+            }
+        })
     const { register, handleSubmit, formState: { errors }, getValues } = useForm<LogInType>({});
-    const onSubmit = (data: any) => {
-        console.log(data);
+    const onSubmit = async (data: any) => {
     }
     return (
-        <div className='flex justify-center items-center h-[100%] border-red-900 border'>
+        <div
+            className='flex justify-center items-center h-[100%] border-red-900 border'
+            onClick={() => {
+                setRefetchQuery(!refetchQuery);
+            }}
+        >
             <div className='w-[90%] sm:w-[500px] border border-red-900 p-3 mb-5 rounded-md'>
                 <div className='mb-5 text-purple-700 font-semibold'>Log In</div>
                 <form onSubmit={handleSubmit(onSubmit)} className='mb-5'>

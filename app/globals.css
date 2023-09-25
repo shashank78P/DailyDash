@@ -2,8 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+*::-webkit-scrollbar {
+  width: 0;
+}
+
 *:focus {
   outline: 0px;
+}
+
+.childDisplay {
+  visibility: hidden;
+}
+
+.parentHover:hover .childDisplay {
+  visibility: visible;
 }
 
 :root {
@@ -21,4 +33,13 @@
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
+}
+
+.mainFrame {
+  height: calc(100vh - 60px);
+  /* overflow-y: hidden; */
+}
+
+.chatActions {
+  width: calc(100vw - 400px);
 }

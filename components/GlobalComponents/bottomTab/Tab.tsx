@@ -67,13 +67,13 @@ const Tab = (props: { tabData: any, key: number }) => {
 
     return (
         <>
-            <div className='mx-2 w-[120px] h-[50px] p-1 rounded-lg border border-c_black flex justify-between items-center  cursor-default'>
+            <div className='mx-2 sm:w-[150px] p-1 rounded-lg border border-c_black flex justify-between items-center  cursor-default'>
                 <div className='flex justify-start items-center truncate text-ellipsis pl-1'>
                     <span>
                         {/* <HomeIco width={16} height={16} color={''} /> */}
                         {returnicons()}
                     </span>
-                    <span className='text-base ml-1 hidden md:block'>{title}</span>
+                    <span className='text-base ml-1 hidden md:block truncate'>{title}</span>
                 </div>
                 <div
                     className={` p-[1px] rounded-full cursor-pointer hover:bg-gray-200 

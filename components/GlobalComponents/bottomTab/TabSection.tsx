@@ -3,6 +3,7 @@
 import React from 'react'
 import Tab from './Tab'
 import { useDispatch, useSelector } from 'react-redux'
+import SideBar from '../sideBar/SideBar';
 
 const TabSection = () => {
     const { currentRouter } = useSelector((state: any) => state.routeSliceReducer)
@@ -10,7 +11,7 @@ const TabSection = () => {
     // console.log(currentRoute?.currentRouter)
     return (
         <>
-            <div className='flex w-[100% - 70px] h-[50px] overflow-scroll scrollTracker'>
+            <div className='flex w-full h-[50px] overflow-scroll scrollTracker fixed bottom-1 sm:-right-16'>
                 {
                     currentRouter?.map((tabData: any, i: number) => {
                         return (
