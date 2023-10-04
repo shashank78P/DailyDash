@@ -3,20 +3,15 @@ import React from 'react'
 import { GoogleLogin, useGoogleOneTapLogin } from '@react-oauth/google';
 import { useMutation, useQuery } from 'react-query';
 import api from '../lib/api';
+import { data } from 'autoprefixer';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Google = () => {
 
-    const { mutate: googleLogIn, isLoading } = useMutation(async (data: any) => {
-        api.post("/log-in-details/google-log-in-details", data)
-        console.log(data);
-    }, {
-        onSuccess: (res) => {
+    const { userSliceReducer } = useSelector((state: any) => state.routeSliceReducer)
+    const dispatch = useDispatch();
 
-        },
-        onError: (error) => {
-
-        }
-    });
+    const { mutate: googleLogIn, isLoading } = useMutation(async (data: any) => await api.post("/log-in-details/google-log-in-details", data));
     // useGoogleOneTapLogin({
     //     onSuccess: credentialResponse => {
     //         console.log(credentialResponse);
@@ -26,11 +21,17 @@ const Google = () => {
     //     },
 
     // });
+    console.log(dispatch)
+    // console.log(userSliceReducer.email, userSliceReducer.firstName)
     return (
         <GoogleLogin
             onSuccess={credentialResponse => {
                 console.log(credentialResponse);
-                googleLogIn(credentialResponse);
+                googleLogIn(credentialResponse, {
+                    onSuccess: (data) => {
+                        console.log(data);
+                    }
+                });
             }}
             onError={() => {
                 console.log('Login Failed');
