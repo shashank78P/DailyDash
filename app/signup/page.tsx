@@ -1,159 +1,120 @@
 "use client"
+import Google from '@/components/SocailMedia/Google';
+import api from '@/components/lib/api';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useForm } from "react-hook-form";
+import { useMutation } from 'react-query';
+import { toast } from 'react-toastify';
 
 type SignUpType = {
     firstName: string,
     lastName: string,
     email: string,
-    password: string,
-    confirmPassword: string
 }
 
 const SignUp = () => {
-
+    const router = useRouter();
+    const { mutate: sigup, isLoading } = useMutation(async (data: SignUpType) => await api.post("/log-in-details/signin", data));
     const { register, handleSubmit, formState: { errors }, getValues } = useForm<SignUpType>({});
     const onSubmit = (data: any) => {
         console.log(data);
+        sigup(data , {
+            onSuccess({data}){
+                toast.success("Account created!!!")
+                router.replace("/login");
+            },
+            onError(err){
+                toast.error("Not created")
+            }
+        });
     }
 
     return (
         <>
-            <div className='flex justify-center items-center h-[100%] border-red-900 border'>
-                <div className='w-[90%] sm:w-[500px] border border-red-900 p-3 mb-5 rounded-md'>
-                    <div className='mb-5 text-purple-700 font-semibold'>SIGN UP</div>
-                    <form onSubmit={handleSubmit(onSubmit)} className='mb-5'>
-                        <div className=''>
-                            <div
-                                className='flex flex-col mb-3'
-                            >
-                                <label>First Name:</label>
-                                <input
-                                    className='border border-slate-500 mt-1 full rounded-md px-2 py-1'
-                                    placeholder='Jahn Deo'
-                                    {...register(
-                                        "firstName",
-                                        {
-                                            required: "First name is required", minLength: {
-                                                value: 3,
-                                                message: "minimum length of Fist name must be 3"
-                                            }
-                                        })}
-                                />
-                                {errors.firstName && (
-                                    <p className="text-xs text-red-500">
-                                        {errors.firstName.message}
-                                    </p>
-                                )}
-                            </div>
-                            <div
-                                className='flex flex-col mb-3'
-                            >
-                                <label>Last Name:</label>
-                                <input
-                                    className='border border-slate-500 mt-1 full rounded-md px-2 py-1'
-                                    {...register(
-                                        "lastName",
-                                        {
-                                            required: "Last name is required", minLength: {
-                                                value: 1,
-                                                message: "minimum length of last name must be 1"
-                                            }
-                                        })}
-                                />
-                                {errors.lastName && (
-                                    <p className="text-xs text-red-500">
-                                        {errors.lastName.message}
-                                    </p>
-                                )}
-                            </div>
-                            <div
-                                className='flex flex-col mb-3'
-                            >
-                                <label>Email:</label>
-                                <input
-                                    type='email'
-                                    className='border border-slate-500 mt-1 full rounded-md px-2 py-1'
-                                    {...register(
-                                        "email",
-                                        {
-                                            required: "Email is required"
-                                        })}
-                                />
-                                {errors.email && (
-                                    <p className="text-xs text-red-500">
-                                        {errors.email.message}
-                                    </p>
-                                )}
-                            </div>
-                            <div
-                                className='flex flex-col mb-3'
-                            >
-                                <label>Password:</label>
-                                <input
-                                    type='password'
-                                    className='border border-slate-500 mt-1 full rounded-md px-2 py-1'
-                                    {...register(
-                                        "password",
-                                        { required: "Password is required" })}
-                                />
-                                {errors.password && (
-                                    <p className="text-xs text-red-500">
-                                        {errors.password.message}
-                                    </p>
-                                )}
-                            </div>
-                            <div
-                                className='flex flex-col mb-3'
-                            >
-                                <label>Confirm Password:</label>
-                                <input
-                                    type='password'
-                                    className='border border-slate-500 mt-1 full rounded-md px-2 py-1'
-                                    {...register(
-                                        "confirmPassword",
-                                        {
-                                            required: "confirm password is required ", validate: (value) => {
-                                                const enteredPassword = getValues("password")
-                                                return value === enteredPassword
-                                            }
-                                        })}
-                                />
-                                {errors.confirmPassword && (
-                                    <p className="text-xs text-red-500">
-                                        {errors.confirmPassword.message}
-                                    </p>
-                                )}
-                                {errors.confirmPassword?.type === "validate" && (
-                                    <p className="text-xs text-red-500">
-                                        password mismatch
-                                    </p>
-                                )}
-                            </div>
+            <div
+            className='flex justify-center items-center h-[100%] backgroundeImage'
+        >
+            <div className='w-[90%] sm:w-[500px] border border-slate-500  p-5 text-white rounded-md backdrop-blur-md'>
+                <div className='mb-5 font-semibold text-xl sm:text-2xl text-center'>Sign Up</div>
+                <form onSubmit={handleSubmit(onSubmit)} className='mb-5 sm:text-xl'>
+                    <div className=''>
+                    <div
+                            className='flex flex-col mb-2'
+                        >
+                            {/* <label className='text-lg text-white font-semibold'>Password:</label> */}
                             <input
-                                className='w-full border mt-4 full rounded-md px-2 py-1 bg-purple-700 text-white shadow-sm font-bold'
-                                type="submit"
-                                value="Sign Up"
+                                type='text'
+                                placeholder='Enter first name'
+                                className='bg-transparent full px-1 py-1 border border-transparent border-y-2  border-b-purple-700 placeholder:text-white'
+                                {...register(
+                                    "firstName",
+                                    { required: "firstName is required" })}
                             />
+                            {errors.firstName && (
+                                <p className="text-sm mt-2 text-red-500">
+                                    {errors.firstName.message}
+                                </p>
+                            )}
                         </div>
-                    </form>
-
-                    {/* or */}
-                    <div className='h-8 relative flex items-center justify-center mb-5'>
-                        <div className=' h-[.5px] w-full bg-slate-400'></div>
-                        <div className=' border border-slate-400 bg-white text-slate-500 p-1 rounded-md absolute'>OR</div>
+                        <div
+                            className='flex flex-col mb-2'
+                        >
+                            {/* <label className='text-lg text-white font-semibold'>Password:</label> */}
+                            <input
+                                type='text'
+                                placeholder='Enter last name'
+                                className='bg-transparent mt-5 full px-1 py-1 border border-transparent border-y-2  border-b-purple-700 placeholder:text-white'
+                                {...register(
+                                    "lastName",
+                                    { required: "lastName is required" })}
+                            />
+                            {errors.lastName && (
+                                <p className="text-sm mt-2 text-red-500">
+                                    {errors.lastName.message}
+                                </p>
+                            )}
+                        </div>
+                        <div
+                            className='flex flex-col mb-3'
+                        >
+                            {/* <label className='text-lg font-semibold'>Email:</label> */}
+                            <input
+                                type='email'
+                                placeholder='E-mail'
+                                className='bg-transparent mt-5 full px-1 py-1 border border-transparent border-y-2  border-b-purple-700 placeholder:text-white'
+                                {...register(
+                                    "email",
+                                    {
+                                        required: "Email is required"
+                                    })}
+                            />
+                            {errors.email && (
+                                <p className="text-sm text-red-500 mt-2">
+                                    {errors.email.message}
+                                </p>
+                            )}
+                        </div>
+                        <input
+                            className='w-full mt-5 full rounded-md px-2 py-1 bg-purple-700 font-semibold cursor-pointer'
+                            type="submit"
+                            value="Sign Up"
+                        />
                     </div>
-
-                    {/* social media lgoin */}
-                    <div className='border border-slate-500 mb-5'>
-                        Google
-                    </div>
-                    <div className=' text-right'>
-                        Already a user?
-                        <Link href='/login' className='text-purple-700 underline-offset font-semibold'> LOGIN</Link>
-                    </div>
+                </form>
+                <div className='h-8 relative flex items-center justify-center my-10'>
+                    <div className=' h-[.5px] w-full bg-slate-400'></div>
+                    <div className=' border border-slate-400 bg-white text-slate-500 p-1 rounded-md absolute font-medium'>OR</div>
                 </div>
-            </div >
+                <div className=' my-10 flex justify-center items-center'>
+                    <Google />
+                </div>
+                <div className=' text-right mt-5 sm:text-xl text-gray-300'>
+                    Already have an account
+                    <Link href='/login' className='text-purple-700 underline-offset font-semibold ml-2'> Log In</Link>
+                </div>
+            </div>
+        </div >
         </>
     )
 }

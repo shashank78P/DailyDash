@@ -2,37 +2,36 @@
 import Google from '@/components/SocailMedia/Google';
 import api from '@/components/lib/api';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from "react-hook-form";
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
+import { toast } from 'react-toastify';
 
 type LogInType = {
     email: string,
     password: string
 }
 const Login = () => {
-    const [refetchQuery, setRefetchQuery] = useState(true)
-    const query = useQuery(['todos', refetchQuery], () => {
-        console.log("calling")
-        api.get("/log-in-details")
-    },
-        {
-            onSuccess: (data) => {
-                console.log("sucess", data)
-            },
-            onError: (err) => {
-                console.log("sucess", err)
-            }
-        })
+    const router = useRouter();
+    const { mutate: login, isLoading } = useMutation(async (data: any) => await api.post("/log-in-details/login", data));
     const { register, handleSubmit, formState: { errors }, getValues } = useForm<LogInType>({});
     const onSubmit = async (data: any) => {
+        console.log(data);
+        login(data,{
+            onSuccess({data}) {
+                console.log(data);
+                router.replace('/');   
+                toast.success("Login Sucessfull")
+            },
+            onError(err : any) {
+                toast.error(err?.response?.data?.message)
+            },
+        });
     }
     return (
         <div
             className='flex justify-center items-center h-[100%] backgroundeImage'
-            onClick={() => {
-                setRefetchQuery(!refetchQuery);
-            }}
         >
             <div className='w-[90%] sm:w-[500px] border border-slate-500  p-5 text-white rounded-md backdrop-blur-md'>
                 <div className='mb-5 font-semibold text-xl sm:text-2xl text-center'>Log In</div>

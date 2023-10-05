@@ -7,6 +7,8 @@ import TabSection from '@/components/GlobalComponents/bottomTab/TabSection'
 import ReactQueryProvider from './reactQueryProvider'
 import { usePathname } from 'next/navigation';
 import GoogleProvider from './GoogleProvider';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,15 +23,17 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname();
-  const restriction_SideBar__Tab = ["/login"];
+  const restriction_SideBar__Tab = ["/login","/reset-password","/forget-password","/block","/signup"];
   console.log(pathname);
   return (
     <html lang="en">
+      <title>DailyDash</title>
       <GoogleProvider>
         <ReduxProvider>
           <ReactQueryProvider>
             <body className={inter.className}>
               <div className='flex w-full'>
+              <ToastContainer />
                 {!restriction_SideBar__Tab.includes(pathname) && <SideBar />}
                 {/* <div className='flex w-full flex-col'> */}
                 <div className='w-full  h-screen flex flex-col justify-between '>
