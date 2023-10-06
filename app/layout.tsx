@@ -9,6 +9,9 @@ import { usePathname } from 'next/navigation';
 import GoogleProvider from './GoogleProvider';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,8 +26,19 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const restriction_SideBar__Tab = ["/login","/reset-password","/forget-password","/block","/signup"];
   console.log(pathname);
+
+  useEffect(()=> {
+    axios.get("http://localhost:3001/users/authme", { withCredentials: true })
+    .then((data)=>{
+      console.log(data)
+    })
+    .catch(err => {
+      // router.replace("/login")
+    })
+  },[])
   return (
     <html lang="en">
       <title>DailyDash</title>
@@ -38,7 +52,7 @@ export default function RootLayout({
                 {/* <div className='flex w-full flex-col'> */}
                 <div className='w-full  h-screen flex flex-col justify-between '>
                   {children}
-                  {!restriction_SideBar__Tab.includes(pathname) && <TabSection />}
+                  {/* {!restriction_SideBar__Tab.includes(pathname) && <TabSection />} */}
                 </div>
                 {/* </div> */}
               </div>

@@ -1,6 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans&display=swap');
+*{
+  color: #262626;
+  font-family: 'PT Sans', sans-serif;
+}
 
 *::-webkit-scrollbar {
   width: 0;

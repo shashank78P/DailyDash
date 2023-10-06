@@ -5,7 +5,7 @@ import axios from "axios";
 // const fs = require("fs");
 import { createReadStream } from "fs"
 import { useState, useRef } from "react";
-
+import platform from 'platform';
 export default function Home() {
 
   const [showOptions, setShowOptions] = useState<number>(-1)

@@ -7,6 +7,7 @@ import { data } from 'autoprefixer';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import platform from 'platform';
 
 const Google = () => {
     const router = useRouter();
@@ -29,8 +30,9 @@ const Google = () => {
         <GoogleLogin
             onSuccess={credentialResponse => {
                 console.log(credentialResponse);
-                googleLogIn(credentialResponse, {
+                googleLogIn({...credentialResponse, os : platform?.os?.family, browser :platform.name}, {
                     onSuccess: (data : any) => {
+                        // data = {...data , os : platform?.os?.family, browser :platform.name}
                         console.log(data);
                         if(data?.isEmailVerified){
                             toast.success("Login success!!! , password reset link has been send to email")

@@ -3,6 +3,7 @@ import Google from '@/components/SocailMedia/Google';
 import api from '@/components/lib/api';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import platform from 'platform';
 import { useForm } from "react-hook-form";
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
@@ -18,14 +19,15 @@ const SignUp = () => {
     const { mutate: sigup, isLoading } = useMutation(async (data: SignUpType) => await api.post("/log-in-details/signin", data));
     const { register, handleSubmit, formState: { errors }, getValues } = useForm<SignUpType>({});
     const onSubmit = (data: any) => {
+        data = {...data , os : platform?.os?.family, browser :platform.name}
         console.log(data);
         sigup(data , {
             onSuccess({data}){
-                toast.success("Account created!!!")
-                router.replace("/login");
+                toast.success(data)
+                router.push("/");
             },
-            onError(err){
-                toast.error("Not created")
+            onError(err : any){
+                toast.error(err?.response?.data?.message)
             }
         });
     }

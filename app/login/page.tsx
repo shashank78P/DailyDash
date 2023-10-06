@@ -3,6 +3,7 @@ import Google from '@/components/SocailMedia/Google';
 import api from '@/components/lib/api';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import platform from 'platform';
 import { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from 'react-query';
@@ -18,13 +19,14 @@ const Login = () => {
     const { register, handleSubmit, formState: { errors }, getValues } = useForm<LogInType>({});
     const onSubmit = async (data: any) => {
         console.log(data);
-        login(data,{
-            onSuccess({data}) {
+        data = {...data , os : platform?.os?.family, browser :platform.name}
+        login(data, {
+            onSuccess({ data }) {
                 console.log(data);
-                router.replace('/');   
+                router.replace('/');
                 toast.success("Login Sucessfull")
             },
-            onError(err : any) {
+            onError(err: any) {
                 toast.error(err?.response?.data?.message)
             },
         });
