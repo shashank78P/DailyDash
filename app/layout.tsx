@@ -52,7 +52,7 @@ export default function RootLayout({
                 {/* <div className='flex w-full flex-col'> */}
                 <div className='w-full  h-screen flex flex-col justify-between '>
                   {children}
-                  {/* {!restriction_SideBar__Tab.includes(pathname) && <TabSection />} */}
+                  {!restriction_SideBar__Tab.includes(pathname) && <TabSection />}
                 </div>
                 {/* </div> */}
               </div>

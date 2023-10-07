@@ -34,33 +34,6 @@ export default function Home() {
       title: "Nowkari",
     },
   ]
-
-  async function uploadFile() {
-    try {
-      const files = inptRef.current?.files;
-
-      console.log(files);
-      if (!files) {
-        console.log("Please select a file to upload.");
-        return;
-      }
-
-      // Read the file as a stream
-      for (let i = 0; i < files.length; i++) {
-        let formData = new FormData;
-        formData.append("file", files[i]);
-        console.log(formData);
-
-        axios.post("http://localhost:3001/file-system/", formData).then((res) => console.log(res)).catch(err => console.log(err))
-      }
-
-      // console.log("File uploaded successfully:");
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
-  }
-
-
   return (
     <>
       <div className="w-full h-screen flex overflow-hidden">
@@ -141,13 +114,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <input type="file" id="fileInput" multiple={true} ref={inptRef} />
-          <button onClick={() => {
-            uploadFile();
-          }}>Upload File</button>
-
-          {/*<img src="https://drive.google.com/uc?id=16YT9LNItuZ8SLUXRIemJIG25h9BdiSdh&export=download" alt="dfsdfsdf" /> */}
-
         </div>
       </div>
     </>

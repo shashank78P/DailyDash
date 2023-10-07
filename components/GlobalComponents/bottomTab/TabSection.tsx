@@ -11,7 +11,7 @@ const TabSection = () => {
     // console.log(currentRoute?.currentRouter)
     return (
         <>
-            <div className='flex w-full h-[50px] overflow-scroll scrollTracker fixed bottom-1 sm:-right-16'>
+            <div className='flex justify-start items-center w-full h-[50px] bg-transparent overflow-scroll scrollTracker'>
                 {
                     currentRouter?.map((tabData: any, i: number) => {
                         return (

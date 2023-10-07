@@ -137,19 +137,19 @@ const ChatUserList = () => {
                 {
                     onLineUser.map((ele, i) => {
                         return (
-                            <ul className='w-full flex justify-start items-center p-2 hover:bg-purple-100 hover:border-l-4 hover:border-l-purple-500 border-b-slate-100 border-b-2'>
+                            <ul className='w-full h-full flex justify-start items-center p-2 hover:bg-purple-100 border-b-slate-100 border-b-2'>
                                 <li >
-                                    <img src={ele.url} alt="" className='w-[60px] h-[60px] min-w-[60px] border rounded-full bg-slate-100 object-fit aspect-square' />
+                                    <img src={ele.url} alt="" className='w-[50px] h-[50px] min-w-[50px] border rounded-full bg-slate-100 object-fit aspect-square' />
                                 </li>
                                 <li className='w-full h-16 flex justify-between items-start ml-2'>
                                     <ul className='w-full flex flex-col justify-evenly h-16'>
                                         <li className='flex justify-between items-start'>
-                                            <span className='text-lg font-semibold'>{ele?.name}</span>
-                                            <span className='text-base font-normal text-slate-600'>{ele?.time}</span>
+                                            <span className='text-lg font-medium'>{ele?.name}</span>
+                                            <span className='text-xs font-light text-slate-600'>{ele?.time}</span>
                                         </li>
                                         <li className='flex justify-between items-start truncate'>
-                                            <span className='truncate w-48 text-base font-normal text-slate-600'>{ele?.isSenderI == 1 && 'you: '}{ele?.message}</span>
-                                            {ele?.unReadMesagesCount !== 0 && <span className='text-lg font-semibold text-purple-500'>{ele?.unReadMesagesCount > 100 ? "100+" : ele?.unReadMesagesCount}</span>}
+                                            <span className='truncate w-48 text-sm font-normal text-slate-600'>{ele?.isSenderI == 1 && 'you: '}{ele?.message}</span>
+                                            {ele?.unReadMesagesCount !== 0 && <span className='text-base font-semibold text-purple-500'>{ele?.unReadMesagesCount > 100 ? "100+" : ele?.unReadMesagesCount}</span>}
                                         </li>
                                     </ul>
                                 </li>

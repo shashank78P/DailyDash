@@ -1,29 +1,43 @@
+"use-client"
 import BookMark from '@/components/assets/BookMark'
 import CallIco from '@/components/assets/CallIco'
 import UserIco from '@/components/assets/UserIco'
 import UsersGroup from '@/components/assets/UsersGroupIco'
-import React from 'react'
+import { Badge, Typography } from '@mui/material'
+import "@emotion/react"
+import React, { useState } from 'react'
+import { red } from '@mui/material/colors'
 
-const ChatOptions = () => {
+const ChatOptions = ({ setSelectedTab ,selectedTab} : {setSelectedTab : any , selectedTab : string}) => {
+
     return (
         <ul className='w-full flex justify-between items-center'>
-            <li className='p-2 flex justify-center flex-grow items-center'>
-                <UserIco width={30} height={30} />
-                <div className='text-[16px]  font-semibold'>
-                    100+
-                </div>
+            <li className={`p-2 flex justify-center flex-grow items-center ${selectedTab == "chat" && "border-0 border-b-2 border-purple-700"} cursor-pointer`}
+                onClick={() => {
+                    setSelectedTab("chat")
+                }}
+                >
+                <Badge badgeContent={<Typography style={{ color: "#7e22ce", fontWeight: "900", marginLeft: "5px" }}>4</Typography>} >
+                    <UserIco width={20} height={20} />
+                </Badge>
             </li>
-            <li className='p-2 flex justify-center flex-grow items-center'>
-                <UsersGroup width={30} height={30} />
-                <div className='text-[16px]  font-semibold'>
-                    100+
-                </div>
+            <li className={`p-2 flex justify-center flex-grow items-center ${selectedTab == "group_chat" && "border-0 border-b-2 border-purple-700"} cursor-pointer`}
+                onClick={() => {
+                    setSelectedTab("group_chat")
+                }}
+            >
+                <Badge badgeContent={<Typography style={{ color: "#7e22ce", fontWeight: "900", marginLeft: "5px" }}>4</Typography>} >
+                    <UsersGroup width={20} height={20} />
+                </Badge>
             </li>
-            <li className='p-2 flex justify-center flex-grow items-center '>
-                <CallIco width={30} height={30} />
-                <div className='text-[16px]  font-semibold'>
-                    100+
-                </div>
+            <li className={`p-2 flex justify-center flex-grow items-center ${selectedTab == "call" && "border-0 border-b-2 border-purple-700 cursor-pointer"}`}
+                onClick={() => {
+                    setSelectedTab("call")
+                }}
+            >
+                <Badge badgeContent={<Typography style={{ color: "#7e22ce", fontWeight: "900", marginLeft: "5px" }}>4</Typography>} >
+                    <CallIco width={20} height={20} />
+                </Badge>
             </li>
         </ul>
     )

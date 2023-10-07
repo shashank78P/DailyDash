@@ -53,7 +53,7 @@ const SideBarList = () => {
     console.log({ currentRoute, dispatch, routeAction })
     return (
         <>
-            <ul className='w-full min-h-screen sm:w-[50px] md:w-[50px] sm:flex flex-col justify-between items-center sm:h-screen text-c_black bg-white'>
+            <ul className='min-h-screen w-[50px] md:w-[50px] flex flex-col justify-between items-center text-c_black bg-white'>
                 <li className='mb-2 '>
                     <ul className='w-full flex flex-col justify-around'>
                         <li className={`w-full  p-2 my-2  ${pathname === '/' && "bg-purple-500 text-white rounded-md ease-in"}`}
@@ -63,7 +63,7 @@ const SideBarList = () => {
                         >
                             <Link href={'/'} className='flex items-center'>
                                 <HomeIco width={25} height={25} color={pathname === '/' ? "white" : "#202124"} />
-                                <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Home</span>
+                                {/* <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Home</span> */}
                             </Link>
                         </li>
                         <li className={`p-2 my-2 flex items-center  ${pathname === '/project-management' && "bg-purple-500 text-white rounded-md ease-in"}`}
@@ -73,7 +73,7 @@ const SideBarList = () => {
                         >
                             <Link href={'/project-management'} className='flex items-center'>
                                 <ProjectManagement width={25} height={25} color={pathname === '/project-management' ? "white" : "#202124"} />
-                                <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Project Management</span>
+                                {/* <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Project Management</span> */}
                             </Link>
                         </li>
                         <li className={`p-2 my-2 flex items-center  ${pathname === '/chat' && "bg-purple-500 text-white rounded-md ease-in"}`}
@@ -83,7 +83,7 @@ const SideBarList = () => {
                         >
                             <Link href={'/chat'} className='flex items-center'>
                                 <ChatIco width={25} height={25} color={pathname === '/chat' ? "white" : "#202124"} />
-                                <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Chat</span>
+                                {/* <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Chat</span> */}
                             </Link>
                         </li>
                         <li className={`p-2 my-2 flex items-center  ${pathname === '/bookmark' && "bg-purple-500 text-white rounded-md ease-in"}`}
@@ -93,7 +93,7 @@ const SideBarList = () => {
                         >
                             <Link href={'/bookmark'} className='flex items-center'>
                                 <BookMark width={25} height={25} color={pathname === '/bookmark' ? "white" : "#202124"} />
-                                <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>BookMark</span>
+                                {/* <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>BookMark</span> */}
                             </Link>
                         </li>
                         <li className={`p-2 my-2 flex items-center  ${pathname === '/calendar' && "bg-purple-500 text-white rounded-md ease-in"}`}
@@ -103,7 +103,7 @@ const SideBarList = () => {
                         >
                             <Link href={'/calendar'} className='flex items-center'>
                                 <CalendarIco width={25} height={25} color={pathname === '/calendar' ? "white" : "#202124"} />
-                                <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Calendar</span>
+                                {/* <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Calendar</span> */}
                             </Link>
                         </li>
                         <li className={`p-2 my-2 flex items-center  ${pathname === '/note' && "bg-purple-500 text-white rounded-md ease-in"}`}
@@ -113,7 +113,7 @@ const SideBarList = () => {
                         >
                             <Link href={'/note'} className='flex items-center'>
                                 <NoteIco width={25} height={25} color={pathname === '/note' ? "white" : "#202124"} />
-                                <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Note</span>
+                                {/* <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Note</span> */}
                             </Link>
                         </li>
                         <li className={`p-2 my-2 flex items-center  ${pathname === '/dynamic-form' && "bg-purple-500 text-white rounded-md ease-in"}`}
@@ -123,24 +123,13 @@ const SideBarList = () => {
                         >
                             <Link href={'/dynamic-form'} className='flex items-center'>
                                 <DynamicForm width={25} height={25} color={pathname === '/dynamic-form' ? "white" : "#202124"} />
-                                <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Dynamic Form</span>
-                            </Link>
-                        </li>
-                        <li className={`flex p-2 my-2 sm:hidden items-center  ${pathname === '/settings' && "bg-purple-500 text-white rounded-md ease-in"}`}
-                            onClick={() => {
-                                ChangeRouter("settings")
-                            }}
-                        >
-                            <Link href={'/settings'} className='flex items-center'>
-                                <SettingsIco width={25} height={25} color={pathname === '/settings' ? "white" : "#202124"} />
-                                <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Settings</span>
+                                {/* <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Dynamic Form</span> */}
                             </Link>
                         </li>
                     </ul>
                 </li >
-                <li className='my-2 hidden sm:block'>
+                <li className='my-2 '>
                     <ul className=' flex flex-col justify-around items-center'>
-                        <li></li>
                         <li
                             className={`p-2 my-2 flex items-center  ${pathname === '/notification' && "bg-purple-500 text-white rounded-md ease-in"}`}
                         >

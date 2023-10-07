@@ -3,7 +3,8 @@
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=PT+Sans&display=swap');
 *{
-  color: #262626;
+  color: #202124;
+  /* color: #262626; */
   font-family: 'PT Sans', sans-serif;
 }
 
@@ -45,7 +46,8 @@
 }
 
 .mainFrame {
-  height: calc(100vh - 60px);
+  /* height: calc(100vh - 60px); */
+  height: calc(100vh);
   /* overflow-y: hidden; */
 }
 

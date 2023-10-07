@@ -1,7 +1,9 @@
 "use client"
 import ChatLeftTopNav from '@/components/Chat/LeftPart/ChatLeftTopNav'
 import ChatOptions from '@/components/Chat/LeftPart/ChatOptions'
-import ChatUserList from '@/components/Chat/LeftPart/ChatUserList'
+import CallList from '@/components/Chat/LeftPart/options/callsOptions/CallList'
+import ChatGroupList from '@/components/Chat/LeftPart/options/ChatGroupList'
+import ChatUserList from '@/components/Chat/LeftPart/options/ChatUserList'
 import ChatActions from '@/components/Chat/RightPart/ChatActions'
 import ChatMessage from '@/components/Chat/RightPart/ChatMessage'
 import ChatTopNav from '@/components/Chat/RightPart/ChatTopNav'
@@ -14,6 +16,7 @@ const socket = io("http://localhost:3001/polls");
 const index = () => {
     const [messages, setMessages] = useState<Array<string>>([]);
     const [newMessages, setNewMessage] = useState("");
+    const [selectedTab , setSelectedTab] = useState<string>("chat");
 
 
     useEffect(() => {
@@ -59,24 +62,29 @@ const index = () => {
     }
     return (
         <>
-            <div className='flex justify-start items-start'>
-                <div className='mainFrame min-w-[340px] overflow-y-scroll w-full lg:w-1/4 border'>
-                    <div className='h-1/6  flex flex-col justify-evenly items-center'>
+            <div className=' w-[100vw - 50px] overflow-hidden h-screen flex justify-start items-start  grid-cols-2'>
+                <div className='h-full w-[400px] '>
+                    <div className=' h-[120px] flex flex-col justify-evenly items-center'>
                         <ChatLeftTopNav />
-                        {/* <OnLineNow /> */}
-                        <ChatOptions />
+                        <ChatOptions setSelectedTab={setSelectedTab} selectedTab={selectedTab}/>
                     </div>
-                    <div className='h-5/6 overflow-y-scroll'>
-                        <ChatUserList />
+                    <div className='h-[50%] overflow-y-scroll' style={{"height" : "calc( 100% - 120px )"}}>
+                        { selectedTab == "chat" && <ChatUserList />}
+                        { selectedTab == "group_chat" && <ChatGroupList />}
+                        { selectedTab == "call" && <CallList />}
                     </div>
                 </div>
-                <div className='mainFrame hidden sm:flex chatActions   lg:w-3/4 border flex-col justify-between items-start '>
+                <div className='h-[100%] w-full bg-slate-600'></div>
+                {/* <div className='min-w-[340px] overflow-y-scroll w-full lg:w-1/4 border'>
+                    
+                </div> */}
+                {/* <div className='max-h-screen hidden sm:flex chatActions   lg:w-3/4 border flex-col justify-between items-start '>
                     <ChatTopNav />
                     <div className='grow'>
                         <ChatMessage />
                     </div>
                     <ChatActions sendMessage={sendMessage} setNewMessage={setNewMessage} />
-                </div>
+                </div> */}
             </div>
         </>
     )

@@ -20,25 +20,25 @@ const Tab = (props: { tabData: any, key: number }) => {
     }
     function returnicons() {
         if (title === "Home") {
-            return <HomeIco width={16} height={16} color={''} />
+            return <HomeIco width={20} height={20} color={''} />
         }
         if (title === "Project Management") {
-            return <ProjectManagement width={16} height={16} color={''} />
+            return <ProjectManagement width={20} height={20} color={''} />
         }
         if (title === "Chat") {
-            return <ChatIco width={16} height={16} color={''} />
+            return <ChatIco width={20} height={20} color={''} />
         }
         if (title === "Bookmark") {
-            return <BookMark width={16} height={16} color={''} />
+            return <BookMark width={20} height={20} color={''} />
         }
         if (title === "Note") {
-            return <NoteIco width={16} height={16} color={''} />
+            return <NoteIco width={20} height={20} color={''} />
         }
         if (title === "Calendar") {
-            return <CalendarIco width={16} height={16} color={''} />
+            return <CalendarIco width={20} height={20} color={''} />
         }
         if (title === "Dynamic Form") {
-            return <DynamicForm width={16} height={16} color={''} />
+            return <DynamicForm width={20} height={20} color={''} />
         }
     }
     useEffect(() => {
@@ -67,23 +67,19 @@ const Tab = (props: { tabData: any, key: number }) => {
 
     return (
         <>
-            <div className='mx-2 sm:w-[150px] p-1 rounded-lg border border-c_black flex justify-between items-center  cursor-default'>
+            <div className='h-[90%] rounded-lg mx-1 border border-c_black flex justify-between items-center  cursor-default'>
                 <div className='flex justify-start items-center truncate text-ellipsis pl-1'>
                     <span>
-                        {/* <HomeIco width={16} height={16} color={''} /> */}
                         {returnicons()}
                     </span>
-                    <span className='text-base ml-1 hidden md:block truncate'>{title}</span>
                 </div>
                 <div
-                    className={` p-[1px] rounded-full cursor-pointer hover:bg-gray-200 
+                    className={`rounded-full cursor-pointer hover:bg-gray-200 mx-2
                     `}
                 >
-                    {/*${tabData?.isActive} ? "sm:block " : "hidden"*/}
-                    <CrossIco width={27} height={27} />
+                    <CrossIco width={20} height={20} />
                 </div>
-                {/* <BookMark width={18} height={18} color={''} /> */}
-                {/* BookMark */}
+                
             </div>
         </>
     )
