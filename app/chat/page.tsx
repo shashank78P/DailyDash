@@ -74,17 +74,17 @@ const index = () => {
                         { selectedTab == "call" && <CallList />}
                     </div>
                 </div>
-                <div className='h-[100%] w-full bg-slate-600'></div>
+                {/* <div className='h-[100%] w-full bg-slate-600'></div> */}
                 {/* <div className='min-w-[340px] overflow-y-scroll w-full lg:w-1/4 border'>
                     
                 </div> */}
-                {/* <div className='max-h-screen hidden sm:flex chatActions   lg:w-3/4 border flex-col justify-between items-start '>
+                <div className='h-[100%] hidden sm:flex chatActions   lg:w-3/4 border flex-col justify-between items-start '>
                     <ChatTopNav />
                     <div className='grow'>
                         <ChatMessage />
                     </div>
                     <ChatActions sendMessage={sendMessage} setNewMessage={setNewMessage} />
-                </div> */}
+                </div>
             </div>
         </>
     )

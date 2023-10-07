@@ -5,22 +5,27 @@ import React from 'react'
 
 const ChatActions = ({ sendMessage, setNewMessage }: { sendMessage: any, setNewMessage: any }) => {
     return (
-        <ul className='w-full flex justify-between items-center p-2'>
-            <li className='m-2 cursor-pointer'>
-                <AttachIco width={30} height={30} />
+        <ul className='w-full flex justify-between items-center'>
+            <li className='mx-2 cursor-pointer'>
+                <AttachIco width={25} height={25} />
             </li>
             <li className='grow'>
-                <input
-                    type='text'
+                <textarea
                     placeholder='Type here to message...'
-                    className='w-full border p-2 text-lg rounded-md '
+                    style={
+                        {
+                            "height" : "60px",
+                            "resize" : "none"
+                        }
+                    }
+                    className='w-full border p-2 text-base rounded-md '
                     onChange={(e) => {
                         setNewMessage(e?.target?.value);
                     }}
                 />
             </li>
             <li className='m-2 cursor-pointer'>
-                <VoiceMikeIco width={30} height={30} />
+                <VoiceMikeIco width={25} height={25} />
             </li>
             <li
                 className='m-2 cursor-pointer'
@@ -28,7 +33,7 @@ const ChatActions = ({ sendMessage, setNewMessage }: { sendMessage: any, setNewM
                     sendMessage()
                 }}
             >
-                <Send width={30} height={30} />
+                <Send width={25} height={25} color='#7e22ce'/>
             </li>
         </ul>
     )

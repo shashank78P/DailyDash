@@ -6,7 +6,6 @@ import UsersGroup from '@/components/assets/UsersGroupIco'
 import { Badge, Typography } from '@mui/material'
 import "@emotion/react"
 import React, { useState } from 'react'
-import { red } from '@mui/material/colors'
 
 const ChatOptions = ({ setSelectedTab ,selectedTab} : {setSelectedTab : any , selectedTab : string}) => {
 

@@ -1,7 +1,10 @@
-import React from 'react'
+"use-client"
+import React, { useEffect, useState } from 'react'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 const ChatUserList = () => {
-    const onLineUser = [
+
+    let onLineUser = [
         {
             name: "Lisha",
             message: "hii..",
@@ -131,32 +134,56 @@ const ChatUserList = () => {
             url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUs73Mz3FqhV8uy2F5TGw_jGvFdzGirConJA&usqp=CAU"
         },
     ]
+    const [online, setOnline] = useState<any>(onLineUser);
+    const [height, setHeight] = useState<number>(window.innerHeight - 160);
+
+    useEffect(()=>{
+        setHeight(window.innerHeight - 160)
+    },[])
+
+    function fun() {
+        // setOnline()
+        // setTimeout(() => {
+        //     setOnline([...online, ...onLineUser.slice(0, 10)]);
+        //     console.log(online)
+        // }, 1500);
+    }
     return (
         <>
-            <div className='overflow-y-scroll'>
-                {
-                    onLineUser.map((ele, i) => {
-                        return (
-                            <ul className='w-full h-full flex justify-start items-center p-2 hover:bg-purple-100 border-b-slate-100 border-b-2'>
-                                <li >
-                                    <img src={ele.url} alt="" className='w-[50px] h-[50px] min-w-[50px] border rounded-full bg-slate-100 object-fit aspect-square' />
-                                </li>
-                                <li className='w-full h-16 flex justify-between items-start ml-2'>
-                                    <ul className='w-full flex flex-col justify-evenly h-16'>
-                                        <li className='flex justify-between items-start'>
-                                            <span className='text-lg font-medium'>{ele?.name}</span>
-                                            <span className='text-xs font-light text-slate-600'>{ele?.time}</span>
-                                        </li>
-                                        <li className='flex justify-between items-start truncate'>
-                                            <span className='truncate w-48 text-sm font-normal text-slate-600'>{ele?.isSenderI == 1 && 'you: '}{ele?.message}</span>
-                                            {ele?.unReadMesagesCount !== 0 && <span className='text-base font-semibold text-purple-500'>{ele?.unReadMesagesCount > 100 ? "100+" : ele?.unReadMesagesCount}</span>}
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        )
-                    })
-                }
+            <div className={`overflow-y-scroll mb-5`} id="id"  style={{ "height": `${height}px` }}>
+                <InfiniteScroll
+                    dataLength={online.length}
+                    next={() => {
+                        fun()
+                    }}
+                    hasMore={true}
+                    loader={<h4>Loading...</h4>}
+                    scrollableTarget="id"
+                >
+                    {
+                        online.map((ele: any, i: number) => {
+                            return (
+                                <ul className='w-full h-full flex justify-start items-center p-2 hover:bg-purple-100 border-b-slate-100 border-b-2'>
+                                    <li >
+                                        <img src={ele.url} alt="" className='w-[50px] h-[50px] min-w-[50px] border rounded-full bg-slate-100 object-fit aspect-square' />
+                                    </li>
+                                    <li className='w-full h-16 flex justify-between items-start ml-2'>
+                                        <ul className='w-full flex flex-col justify-evenly h-16'>
+                                            <li className='flex justify-between items-start'>
+                                                <span className='text-lg font-medium'>{ele?.name}</span>
+                                                <span className='text-xs font-light text-slate-600'>{ele?.time}</span>
+                                            </li>
+                                            <li className='flex justify-between items-start truncate'>
+                                                <span className='truncate w-48 text-sm font-normal text-slate-600'>{ele?.isSenderI == 1 && 'you: '}{ele?.message}</span>
+                                                {ele?.unReadMesagesCount !== 0 && <span className='text-base font-semibold text-purple-500'>{ele?.unReadMesagesCount > 100 ? "100+" : ele?.unReadMesagesCount}</span>}
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            )
+                        })
+                    }
+                </InfiniteScroll>
             </div></>
     )
 }
