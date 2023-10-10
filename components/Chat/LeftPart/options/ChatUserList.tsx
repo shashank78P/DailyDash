@@ -1,13 +1,25 @@
 "use-client"
+import PlusIco from '@/components/assets/PlusIco'
+import api from '@/components/lib/api'
 import React, { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { useQuery } from "react-query"
+import { useSelector } from 'react-redux'
+import { ChatUserListDto } from '../../type'
 
-const ChatUserList = () => {
 
+const ChatUserList = ({ selectedChat, setSelectedChat }: ChatUserListDto) => {
+    const {data, error, isLoading} = useQuery(['userList'], ()=>{
+        return api.get("/chats/getAllInitiatedChatUserList")
+    });
+
+    const userSelector = useSelector((state : any) => state?.userSliceReducer);
+
+    console.log(data)
     let onLineUser = [
         {
             name: "Lisha",
-            message: "hii..",
+            message: "1",
             isSenderI: 1,
             time: "12:30 AM",
             unReadMesagesCount: 100,
@@ -15,7 +27,23 @@ const ChatUserList = () => {
         },
         {
             name: "Arjun",
-            message: "Lets go tomorrow",
+            message: "2",
+            isSenderI: 0,
+            time: "11:27 AM",
+            unReadMesagesCount: 200,
+            url: "https://preview.keenthemes.com/metronic-v4/theme/assets/pages/media/profile/profile_user.jpg"
+        },
+        {
+            name: "Arjun",
+            message: "3",
+            isSenderI: 0,
+            time: "11:27 AM",
+            unReadMesagesCount: 200,
+            url: "https://preview.keenthemes.com/metronic-v4/theme/assets/pages/media/profile/profile_user.jpg"
+        },
+        {
+            name: "Arjun",
+            message: "4",
             isSenderI: 0,
             time: "11:27 AM",
             unReadMesagesCount: 200,
@@ -23,158 +51,116 @@ const ChatUserList = () => {
         },
         {
             name: "Ajay",
-            message: "hii.., call me now",
+            message: "5",
             isSenderI: 1,
             time: "Yesturday",
             unReadMesagesCount: 0,
             url: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D&w=1000&q=80"
         },
         {
-            name: "Anu",
-            message: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+            name: "Ajay",
+            message: "6",
             isSenderI: 1,
             time: "Yesturday",
             unReadMesagesCount: 0,
-            url: "https://images.pexels.com/photos/712513/pexels-photo-712513.jpeg?cs=srgb&dl=pexels-andrea-piacquadio-712513.jpg&fm=jpg"
+            url: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D&w=1000&q=80"
         },
         {
-            name: "Shrujan",
-            message: "send me a ppt",
-            isSenderI: 0,
+            name: "Ajay",
+            message: "7",
+            isSenderI: 1,
             time: "Yesturday",
             unReadMesagesCount: 0,
-            url: "https://htmlstream.com/preview/unify-v2.6/assets/img-temp/400x450/img5.jpg"
+            url: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D&w=1000&q=80"
         },
         {
-            name: "Faraj",
-            message: "Time a leave??",
-            isSenderI: 0,
-            time: "30-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://i.imgur.com/JFHjdNr.jpg"
-        },
-        {
-            name: "Prajwal",
-            message: "Ok",
-            isSenderI: 0,
-            time: "29-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://www.bnl.gov/today/body_pics/2017/06/stephanhruszkewycz-hr.jpg"
-        },
-        {
-            name: "Prashanth",
-            message: "See u soon",
-            isSenderI: 0,
-            time: "21-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://eq-cap.com/wp-content/uploads/2022/08/59A3501-cropped.jpg"
-        },
-        {
-            name: "Siri",
-            message: "Get me a pen , tomorrow",
+            name: "Ajay",
+            message: "8",
             isSenderI: 1,
-            time: "21-07-2023",
+            time: "Yesturday",
             unReadMesagesCount: 0,
-            url: "https://media.istockphoto.com/id/1453851162/photo/portrait-of-beautiful-woman-with-blue-t-shirt-and-green-background-long-brown-hair-exterior.webp?b=1&s=170667a&w=0&k=20&c=huFDNScenntgxXkPNp5aDjr-KnUE_XqhE7OcHDvljXo="
+            url: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D&w=1000&q=80"
         },
         {
-            name: "Kushi",
-            message: "hii",
-            isSenderI: 0,
-            time: "20-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80"
-        },
-        {
-            name: "Surja",
-            message: "How are u",
+            name: "Ajay",
+            message: "9",
             isSenderI: 1,
-            time: "15-07-2023",
+            time: "Yesturday",
             unReadMesagesCount: 0,
-            url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUs73Mz3FqhV8uy2F5TGw_jGvFdzGirConJA&usqp=CAU"
-        },
-        {
-            name: "Prajwal",
-            message: "Ok",
-            isSenderI: 0,
-            time: "29-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://www.bnl.gov/today/body_pics/2017/06/stephanhruszkewycz-hr.jpg"
-        },
-        {
-            name: "Prashanth",
-            message: "See u soon",
-            isSenderI: 0,
-            time: "21-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://eq-cap.com/wp-content/uploads/2022/08/59A3501-cropped.jpg"
-        },
-        {
-            name: "Siri",
-            message: "Get me a pen , tomorrow",
-            isSenderI: 1,
-            time: "21-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://media.istockphoto.com/id/1453851162/photo/portrait-of-beautiful-woman-with-blue-t-shirt-and-green-background-long-brown-hair-exterior.webp?b=1&s=170667a&w=0&k=20&c=huFDNScenntgxXkPNp5aDjr-KnUE_XqhE7OcHDvljXo="
-        },
-        {
-            name: "Kushi",
-            message: "hii",
-            isSenderI: 0,
-            time: "20-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80"
-        },
-        {
-            name: "Surja",
-            message: "How are u",
-            isSenderI: 1,
-            time: "15-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUs73Mz3FqhV8uy2F5TGw_jGvFdzGirConJA&usqp=CAU"
+            url: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D&w=1000&q=80"
         },
     ]
-    const [online, setOnline] = useState<any>(onLineUser);
-    const [height, setHeight] = useState<number>(window.innerHeight - 160);
 
-    useEffect(()=>{
-        setHeight(window.innerHeight - 160)
-    },[])
+    
+    const [online, setOnline] = useState<any>(onLineUser);
+    const [height, setHeight] = useState<number>();
+
+    useEffect(() => {
+        setHeight(window.outerHeight - 160)
+        addEventListener("resize", () => {
+            setHeight(window.outerHeight - 160)
+            console.log("resize" + window.outerHeight)
+        })
+    }, [])
 
     function fun() {
         // setOnline()
-        // setTimeout(() => {
-        //     setOnline([...online, ...onLineUser.slice(0, 10)]);
-        //     console.log(online)
-        // }, 1500);
+        setTimeout(() => {
+            setOnline([
+                {
+                    name: "Arjun",
+                    message: "4",
+                    isSenderI: 0,
+                    time: "11:27 AM",
+                    unReadMesagesCount: 2000,
+                    url: "https://preview.keenthemes.com/metronic-v4/theme/assets/pages/media/profile/profile_user.jpg"
+                },
+                ...online, 
+            ]);
+            console.log(online)
+        }, 1500);
     }
+
+
     return (
         <>
-            <div className={`overflow-y-scroll mb-5`} id="id"  style={{ "height": `${height}px` }}>
+            <div className={`overflow-y-scroll mb-5 relative `} id="id" style={{ "height": `${height}px` }}>
                 <InfiniteScroll
                     dataLength={online.length}
                     next={() => {
-                        fun()
+                        // fun()
                     }}
                     hasMore={true}
                     loader={<h4>Loading...</h4>}
                     scrollableTarget="id"
+                    // inverse={true}
+
                 >
                     {
-                        online.map((ele: any, i: number) => {
+                        Array.isArray(data?.data) && data?.data?.map((ele: any, i: number) => {
                             return (
-                                <ul className='w-full h-full flex justify-start items-center p-2 hover:bg-purple-100 border-b-slate-100 border-b-2'>
+                                <ul
+                                    onClick={() => {
+                                        setSelectedChat({
+                                            oponentId:ele?.oponentId,
+                                            oponentPic : ele?.oponentPic,
+                                            oponentName : ele?.oponentName,
+                                            belongsTo : ele?.belongsTo
+                                        })
+                                    }}
+                                    className='w-full h-full flex justify-start items-center p-2 hover:bg-slate-100 border-b-slate-100 border-b-2'
+                                >
                                     <li >
-                                        <img src={ele.url} alt="" className='w-[50px] h-[50px] min-w-[50px] border rounded-full bg-slate-100 object-fit aspect-square' />
+                                        <img src={ele?.oponentPic || "images/DefaultUser2.png"} alt="" className='w-[50px] h-[50px] min-w-[50px] border rounded-full bg-slate-100 object-fit aspect-square' />
                                     </li>
                                     <li className='w-full h-16 flex justify-between items-start ml-2'>
                                         <ul className='w-full flex flex-col justify-evenly h-16'>
                                             <li className='flex justify-between items-start'>
-                                                <span className='text-lg font-medium'>{ele?.name}</span>
-                                                <span className='text-xs font-light text-slate-600'>{ele?.time}</span>
+                                                <span className='text-lg font-medium'>{ele?.oponentName}</span>
+                                                <span className='text-xs font-light text-slate-600'>{ele?.sendAt}</span>
                                             </li>
                                             <li className='flex justify-between items-start truncate'>
-                                                <span className='truncate w-48 text-sm font-normal text-slate-600'>{ele?.isSenderI == 1 && 'you: '}{ele?.message}</span>
+                                                <span className='truncate w-48 text-sm font-normal text-slate-600'>{ele?.messageSentBy == userSelector?.userId && 'you: '}{ele?.message}</span>
                                                 {ele?.unReadMesagesCount !== 0 && <span className='text-base font-semibold text-purple-500'>{ele?.unReadMesagesCount > 100 ? "100+" : ele?.unReadMesagesCount}</span>}
                                             </li>
                                         </ul>

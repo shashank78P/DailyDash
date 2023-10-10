@@ -1,9 +1,17 @@
 import AttachIco from '@/components/assets/AttachIco'
 import Send from '@/components/assets/Send'
 import VoiceMikeIco from '@/components/assets/VoiceMikeIco'
-import React from 'react'
+import React, { useState } from 'react'
+import { ChatActionsDto } from '../type'
+import { useSelector } from 'react-redux'
 
-const ChatActions = ({ sendMessage, setNewMessage }: { sendMessage: any, setNewMessage: any }) => {
+const ChatActions = ({ selectedChat , socket} : ChatActionsDto) => {
+    const [ message , setMessage ] =  useState<string>("");
+    const userSelector = useSelector((state : any) => state?.userSliceReducer);
+    function sendMessage() {
+        socket.emit("sendMessage", {message , belongsTo : selectedChat?.belongsTo , to : selectedChat?.oponentId , userId : userSelector?.userId});
+        setMessage("");
+    }
     return (
         <ul className='w-full flex justify-between items-center'>
             <li className='mx-2 cursor-pointer'>
@@ -18,9 +26,10 @@ const ChatActions = ({ sendMessage, setNewMessage }: { sendMessage: any, setNewM
                             "resize" : "none"
                         }
                     }
-                    className='w-full border p-2 text-base rounded-md '
+                    className='min-w-[200px] md:w-full border p-2 text-base rounded-md '
+                    value={message}
                     onChange={(e) => {
-                        setNewMessage(e?.target?.value);
+                        setMessage(e?.target?.value);
                     }}
                 />
             </li>

@@ -52,5 +52,5 @@
 }
 
 .chatActions {
-  width: calc(100vw - 400px);
+  /* width: calc(100vw - 400px); */
 }

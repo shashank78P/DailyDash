@@ -28,6 +28,8 @@ const userSlice = createSlice({
             state.firstName = action?.payload?.firstName
             state.lastName = action?.payload?.lastName
             state.login = action?.payload?.login
+            state.userId = action?.payload?.userId
+            state.logInId = action?.payload?.logInId
         }
     }
 }

@@ -3,4 +3,6 @@ export type userType = {
     lastName?: String
     email?: String
     login?: String
+    userId?: String
+    logInId?: String
 }
