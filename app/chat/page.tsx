@@ -10,9 +10,14 @@ import ChatUserList from '@/components/Chat/LeftPart/options/ChatUserList'
 import ChatActions from '@/components/Chat/RightPart/ChatActions'
 import ChatMessage from '@/components/Chat/RightPart/ChatMessage'
 import ChatTopNav from '@/components/Chat/RightPart/ChatTopNav'
+import Profile from '@/components/Chat/RightPart/profile'
 import { selecteChatDto } from '@/components/Chat/type'
 import { SocketContext } from '@/components/context/SocketContext'
+import api from '@/components/lib/api'
 import React, { useContext, useEffect, useState } from 'react';
+import { useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 import io from "socket.io-client";
 
 // /polls
@@ -20,76 +25,102 @@ import io from "socket.io-client";
 // const socket = io("http://localhost:3001/polls",{ auth : { userId : "123" } });
 
 const index = () => {
+    const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const socket: any = useContext(SocketContext);
     const [messages, setMessages] = useState<Array<string>>([]);
-    const [newMessages, setNewMessage] = useState("");
     const [selectedTab, setSelectedTab] = useState<string>("chat");
     const [ThreeDotIsOpen, setThreeDotIsOpen] = useState<boolean>(false);
     const [ThreeDotActionResult, setThreeDotActionResult] = useState<String>("");
-    
+    const [isViewProfile, setIsViewProfile] = useState(false)
+
+    const [unReadMsg, setUnReadMsg] = useState({
+        INDIVIDUAL: 0,
+        GROUP: 0
+    })
+
     // chat
-    
-    const [selectedChat, setSelectedChat] = useState<selecteChatDto>({ oponentId: "", oponentPic: "", oponentName: "", belongsTo: "" });
-    
-    
-    
-    useEffect(() => {
-        
-        // getInitialMessages();
-    }, []);
-    socket?.on("hello", (msg : any) => {
-        console.log(msg);
+    const [selectedChat, setSelectedChat] = useState<selecteChatDto>({ opponentId: "", opponentPic: "", opponentName: "", belongsTo: "", type: "" });
+
+
+
+    socket?.on("hello", (msg: any) => {
+        console.log(msg)
     });
-    socket?.on("receiveMessage", (msg : any) => {
-        receiveMessage(msg);
+    socket?.on(`${userSelector?.userId}ChatNotification`, (msg: any) => {
+        refetchUnReadMessages()
     });
-
-    console.log("socket.auth")
-    console.log(socket)
-
-    // return () => {
-    //     socket.disconnect();
-    // };
-
     socket?.on('connect', () => {
         console.log("connected = " + socket.id);
         console.log()
     })
 
-    function getInitialMessages() {
-        fetch("http://localhost:3000/messages")
-            .then((res) => res.json())
-            .then((data) => {
-                setMessages(data);
-            });
-    }
+    useEffect(() => {
+        refetchUnReadMessages()
+    }, [userSelector?.belongsTo]);
 
-    function receiveMessage(msg: string) {
-        console.log("receive messages called");
-        console.log(messages);
-        const newMessages = [...messages, msg];
-        console.log(newMessages);
-        setMessages(newMessages);
-    }
+    const { data, isLoading, refetch: refetchUnReadMessages } = useQuery(["getUnReadMessagesCount"], () => {
+        return api.get(`/chats/getUnReadMessagesCount`)
+    },
+        {
+            onSuccess({ data }: any) {
+                console.log(data)
+                if (data?.length == 0) {
+                    setUnReadMsg(
+                        {
+                            INDIVIDUAL: 0,
+                            GROUP: 0
+                        }
+                    )
+                    return;
+                }
+                data?.map((ele: { _id: string, count: number }) => {
+                    const temp: any = {};
+                    if (ele?._id == "INDIVIDUAL") {
+                        temp['INDIVIDUAL'] = ele?.count;
+                    } else {
+                        temp['GROUP'] = ele?.count;
+                    }
+                    console.log(temp)
+                    setUnReadMsg({ ...unReadMsg, ...temp })
+                }
+                )
+            },
+            onError(err: any) {
+                toast.error(err);
+            },
+            refetchOnWindowFocus: false,
+            refetchOnMount: false,
+        }
+    )
 
     return (
         <>
-            <div className=' w-[100vw - 50px] overflow-x-scroll md:overflow-hidden h-screen flex justify-start items-start  grid-cols-2'>
-                <NewGroup setThreeDotActionResult={setThreeDotActionResult} ThreeDotActionResult={ThreeDotActionResult} />
-                <NewContact
+            <div className='min-w-[800px] w-[100vw - 50px] overflow-x-scroll md:overflow-hidden h-screen flex justify-start items-start  grid-cols-2'>
+                {ThreeDotActionResult == "CreateGroup" && <NewGroup
+                    setThreeDotActionResult={setThreeDotActionResult}
+                    ThreeDotActionResult={ThreeDotActionResult}
+                />}
+                {ThreeDotActionResult == "AddUser" && <NewContact
                     setThreeDotActionResult={setThreeDotActionResult}
                     ThreeDotActionResult={ThreeDotActionResult}
                     setSelectedChat={setSelectedChat}
-                />
-                <ThreeDotAction open={ThreeDotIsOpen} setOpen={setThreeDotIsOpen} setThreeDotActionResult={setThreeDotActionResult} />
+                />}
+                {ThreeDotIsOpen && <ThreeDotAction open={ThreeDotIsOpen} setOpen={setThreeDotIsOpen} setThreeDotActionResult={setThreeDotActionResult} />}
                 <div className='h-full w-[300px] md:w-[400px] '>
                     <div className=' h-[120px] flex flex-col justify-evenly items-center'>
-                        <ChatLeftTopNav open={ThreeDotIsOpen} setOpen={setThreeDotIsOpen} />
-                        <ChatOptions setSelectedTab={setSelectedTab} selectedTab={selectedTab} />
+                        <ChatLeftTopNav
+                            open={ThreeDotIsOpen}
+                            setOpen={setThreeDotIsOpen}
+                        />
+                        <ChatOptions
+                            setSelectedTab={setSelectedTab}
+                            selectedTab={selectedTab}
+                            unReadMsg={unReadMsg}
+                        />
                     </div>
                     <div className='h-[50%] overflow-y-scroll' style={{ "height": "calc( 100% - 120px )" }}>
                         {selectedTab == "chat" && <ChatUserList selectedChat={selectedChat} setSelectedChat={setSelectedChat} />}
-                        {selectedTab == "group_chat" && <ChatGroupList />}
+                        {selectedTab == "group_chat" && <ChatGroupList selectedChat={selectedChat} setSelectedChat={setSelectedChat} />}
                         {selectedTab == "call" && <CallList />}
                     </div>
                 </div>
@@ -97,23 +128,34 @@ const index = () => {
                 {/* <div className='min-w-[340px] overflow-y-scroll w-full lg:w-1/4 border'>
                     
                 </div> */}
-                <div className={`h-[100%] flex chatActions w-full border flex-col justify-between items-start ${selectedChat?.oponentId == "" && " backgroundeImage "}`}>
-                    {selectedChat.oponentId != "" &&
-                        <>
+                <div className={`h-[100%] flex chatActions w-full min-w-[400px] border flex-col justify-between items-start 
+                    ${selectedChat?.opponentId == "" && " backgroundeImage "}
+                `}>
+                    {selectedChat.opponentId != "" &&
+                        (!isViewProfile) && <>
                             <ChatTopNav
                                 selectedChat={selectedChat}
+                                setIsViewProfile={setIsViewProfile}
                             />
                             <div className='grow w-full max-h-full overflow-y-scroll'>
                                 <ChatMessage
                                     selectedChat={selectedChat}
                                     socket={socket}
+                                    refetch={refetchUnReadMessages}
+                                    isViewProfile= {isViewProfile}
                                 />
                             </div>
                             <ChatActions
                                 selectedChat={selectedChat}
                                 socket={socket}
                             />
-                        </>}
+                        </>
+                    }
+                    {
+                        selectedChat.opponentId != "" && isViewProfile && <>
+                        <Profile setIsViewProfile={setIsViewProfile}/>
+                        </>
+                    }
                 </div>
             </div>
         </>

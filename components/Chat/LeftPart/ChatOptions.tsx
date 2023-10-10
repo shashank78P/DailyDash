@@ -6,17 +6,22 @@ import UsersGroup from '@/components/assets/UsersGroupIco'
 import { Badge, Typography } from '@mui/material'
 import "@emotion/react"
 import React, { useState } from 'react'
+import { useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
+import api from '@/components/lib/api'
+import { toast } from 'react-toastify'
 
-const ChatOptions = ({ setSelectedTab ,selectedTab} : {setSelectedTab : any , selectedTab : string}) => {
-
+const ChatOptions = ({ setSelectedTab, selectedTab, unReadMsg }: { setSelectedTab: any, selectedTab: string, unReadMsg: any }) => {
+    const userSelector = useSelector((state: any) => state?.userSliceReducer);
+    
     return (
         <ul className='w-full flex justify-between items-center'>
             <li className={`p-2 flex justify-center flex-grow items-center ${selectedTab == "chat" && "border-0 border-b-2 border-purple-700"} cursor-pointer`}
                 onClick={() => {
                     setSelectedTab("chat")
                 }}
-                >
-                <Badge badgeContent={<Typography style={{ color: "#7e22ce", fontWeight: "900", marginLeft: "5px" }}>4</Typography>} >
+            >
+                <Badge badgeContent={<Typography style={{ color: `${unReadMsg?.INDIVIDUAL == 0 ?  "white" : "#7e22ce"}`, fontWeight: "900", marginLeft: "5px" }}>{ unReadMsg?.INDIVIDUAL }</Typography>} >
                     <UserIco width={20} height={20} />
                 </Badge>
             </li>
@@ -25,7 +30,7 @@ const ChatOptions = ({ setSelectedTab ,selectedTab} : {setSelectedTab : any , se
                     setSelectedTab("group_chat")
                 }}
             >
-                <Badge badgeContent={<Typography style={{ color: "#7e22ce", fontWeight: "900", marginLeft: "5px" }}>4</Typography>} >
+                <Badge badgeContent={<Typography style={{ color: `${unReadMsg?.GROUP == 0 ?  "white" : "#7e22ce"}`, fontWeight: "900", marginLeft: "5px" }}>{ unReadMsg?.GROUP }</Typography>} >
                     <UsersGroup width={20} height={20} />
                 </Badge>
             </li>

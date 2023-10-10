@@ -1,8 +1,9 @@
 export type selecteChatDto = {
-    oponentId: String,
-    oponentName: String,
-    oponentPic: string
-    belongsTo: string
+    opponentId: String,
+    opponentPic: string,
+    opponentName: String,
+    belongsTo: string,
+    type: string,
 }
 
 export type ChatUserListDto = {
@@ -12,7 +13,8 @@ export type ChatUserListDto = {
 
 export type ChatMessageDto = {
     selectedChat: selecteChatDto,
-    socket :any
+    socket :any,
+    refetch : any
 }
 
 

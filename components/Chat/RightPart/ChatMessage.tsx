@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { toast } from 'react-toastify'
 import { Circles, Oval, InfinitySpin, ThreeDots } from "react-loader-spinner"
-const ChatMessage = ({ selectedChat, socket }: ChatMessageDto) => {
+const ChatMessage = ({ selectedChat, socket ,refetch : refetchChatsNotification}: ChatMessageDto) => {
     const [limit, setLimit] = useState(50)
     const [skip, setSkip] = useState(0)
     const [messages, setMessages] = useState<Array<any>>([]);
@@ -14,10 +14,17 @@ const ChatMessage = ({ selectedChat, socket }: ChatMessageDto) => {
     const [previousBelongsTo, setPreviousBelongsTo] = useState<string | null>(null);
 
     const { refetch: reSetReadMesssages } = useQuery(["readMessages"], () => {
-        return api.get(`/chats/setReadmessages?belongsTo=${selectedChat?.belongsTo}`)
-    })
+        return api.get(`/chats/setReadmessages?belongsTo=${selectedChat?.belongsTo}&type=${selectedChat?.type}`,
+        )
+    },
+    {
+        onSuccess(){
+            refetchChatsNotification()
+        },
+    }
+    )
 
-    const { data, isLoading, refetch } = useQuery(["chat", skip, selectedChat], () => {
+    const { data, isLoading, refetch : refetchChat } = useQuery(["chat", skip, selectedChat ], () => {
         return api.get(`/chats/getAllchat?belongsTo=${selectedChat?.belongsTo}&limit=${limit}&skip=${skip}`)
     },
         {
@@ -30,7 +37,7 @@ const ChatMessage = ({ selectedChat, socket }: ChatMessageDto) => {
                 toast.error(err);
             },
             refetchOnWindowFocus: false,
-            refetchOnMount: false,
+            refetchOnMount: true,
         }
     )
 
@@ -43,10 +50,12 @@ const ChatMessage = ({ selectedChat, socket }: ChatMessageDto) => {
         if (selectedChat?.belongsTo) {
             socket?.on(selectedChat?.belongsTo, (msg: any) => {
                 console.log(msg);
-                setSocketMsg([...socketMsg, msg]);
+                console.log(socketMsg);
+                setSocketMsg((prevMsg) => [msg,...prevMsg]);
                 reSetReadMesssages()
             });
         }
+        refetchChatsNotification()
 
         setPreviousBelongsTo(selectedChat?.belongsTo);
 
@@ -56,7 +65,7 @@ const ChatMessage = ({ selectedChat, socket }: ChatMessageDto) => {
             setMessages([]);
             setSkip(0)
             setSocketMsg([])
-            refetch()
+            refetchChat()
         }
     }, [selectedChat?.belongsTo])
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
@@ -68,30 +77,17 @@ const ChatMessage = ({ selectedChat, socket }: ChatMessageDto) => {
         }
     }
 
-    const getTime = (hour: number, minute: number) => {
-        let date = 2360;
-        let temp: any = Number(hour + "" + minute) - 630
-        if (temp < 0) {
-            temp = date + temp
-        }
-        else if (temp == 0) {
-            temp = 100
-        }
-        temp = temp.toString();
-        let min: number = temp.slice(temp.length - 2)
-        let hrs: number = temp.slice(0, temp.length - 2)
-        if (min == 60) {
-            temp = hrs + 1 + ":00"
-        } else {
-            temp = hrs + ":" + min
-        }
-        return temp;
+    console.log(socketMsg)
+
+    const getTime = (createdAt : string) => {
+        let date = new Date(createdAt)
+        return `${date?.getHours()}:${date?.getMinutes()}`
     }
 
     return (
         <div className=' w-[100%] h-[100%] flex flex-col-reverse overflow-y-scroll p-2 px-4' id="chat">
             <InfiniteScroll
-                dataLength={messages.length}
+                dataLength={messages.length || 10}
                 next={() => {
                     getPreviousChat()
                 }}
@@ -109,7 +105,7 @@ const ChatMessage = ({ selectedChat, socket }: ChatMessageDto) => {
                                     <li>
                                         <div id={i.toString()}>{ele?.message}</div>
                                     </li>
-                                    <li className='text-end text-xs my-1 text-slate-600 '>{getTime(ele?.createdAt?.slice(11, 13), ele?.createdAt?.slice(14, 16))}</li>
+                                    <li className='text-end text-xs my-1 text-slate-600 '>{getTime(ele?.createdAt)}</li>
                                 </ul>
                             </div>
                         )
@@ -128,7 +124,7 @@ const ChatMessage = ({ selectedChat, socket }: ChatMessageDto) => {
                                                         <li>
                                                             <div id={j.toString()}>{chat?.message}</div>
                                                         </li>
-                                                        <li className='text-end text-xs my-1 text-slate-600 '>{getTime(chat?.hours, chat?.minute)}</li>
+                                                        <li className='text-end text-xs my-1 text-slate-600 '>{getTime(chat?.createdAt)}</li>
                                                     </ul>
                                                 </div>
                                             </>

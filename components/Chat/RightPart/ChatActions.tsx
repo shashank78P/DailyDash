@@ -9,9 +9,16 @@ const ChatActions = ({ selectedChat , socket} : ChatActionsDto) => {
     const [ message , setMessage ] =  useState<string>("");
     const userSelector = useSelector((state : any) => state?.userSliceReducer);
     function sendMessage() {
-        socket.emit("sendMessage", {message , belongsTo : selectedChat?.belongsTo , to : selectedChat?.oponentId , userId : userSelector?.userId});
+        if(selectedChat?.type == "INDIVIDUAL"){
+            socket.emit("INDIVIDUAL", {message , belongsTo : selectedChat?.belongsTo , to : selectedChat?.opponentId , userId : userSelector?.userId});
+        }
+        else if(selectedChat?.type == "GROUP"){
+            socket.emit("GROUP", {message , belongsTo : selectedChat?.belongsTo , to : selectedChat?.opponentId , userId : userSelector?.userId});
+        }
         setMessage("");
     }
+
+    console.log(selectedChat)
     return (
         <ul className='w-full flex justify-between items-center'>
             <li className='mx-2 cursor-pointer'>

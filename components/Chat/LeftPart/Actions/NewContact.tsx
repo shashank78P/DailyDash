@@ -51,7 +51,7 @@ const NewContact = ({ setThreeDotActionResult, ThreeDotActionResult, setSelected
                         onClick={() => {
                             getUser({ email }, {
                                 onSuccess({ data }) {
-                                    setSelectedChat(data?._id)
+                                    // setSelectedChat(data?._id)
                                     setThreeDotActionResult("")
                                 },
                                 onError(err: any) {

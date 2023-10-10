@@ -1,171 +1,69 @@
-import React, { useState } from 'react'
+import api from '@/components/lib/api';
+import React, { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { Oval } from 'react-loader-spinner'
+import { useQuery } from 'react-query';
+import { useSelector } from 'react-redux';
+import { ChatUserListDto } from '../../type';
 
-const ChatGroupList = () => {
-    const onLineUser = [
-        {
-            name: "Kushi",
-            message: "hii",
-            isSenderI: 0,
-            time: "20-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80"
-        },
-        {
-            name: "Kushi",
-            message: "hii",
-            isSenderI: 0,
-            time: "20-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80"
-        },
-        {
-            name: "Kushi",
-            message: "hii",
-            isSenderI: 0,
-            time: "20-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80"
-        },
-        {
-            name: "Kushi",
-            message: "hii",
-            isSenderI: 0,
-            time: "20-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80"
-        },
-        {
-            name: "Kushi",
-            message: "hii",
-            isSenderI: 0,
-            time: "20-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80"
-        },
-        {
-            name: "Kushi",
-            message: "hii",
-            isSenderI: 0,
-            time: "20-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80"
-        },
-        {
-            name: "Kushi",
-            message: "hii",
-            isSenderI: 0,
-            time: "20-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80"
-        },
-        {
-            name: "Kushi",
-            message: "hii",
-            isSenderI: 0,
-            time: "20-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80"
-        },
-        {
-            name: "Surja",
-            message: "How are u",
-            isSenderI: 1,
-            time: "15-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUs73Mz3FqhV8uy2F5TGw_jGvFdzGirConJA&usqp=CAU"
-        },
-        {
-            name: "Surja",
-            message: "How are u",
-            isSenderI: 1,
-            time: "15-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUs73Mz3FqhV8uy2F5TGw_jGvFdzGirConJA&usqp=CAU"
-        },
-        {
-            name: "Surja",
-            message: "How are u",
-            isSenderI: 1,
-            time: "15-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUs73Mz3FqhV8uy2F5TGw_jGvFdzGirConJA&usqp=CAU"
-        },
-        {
-            name: "Surja",
-            message: "How are u",
-            isSenderI: 1,
-            time: "15-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUs73Mz3FqhV8uy2F5TGw_jGvFdzGirConJA&usqp=CAU"
-        },
-        {
-            name: "Surja",
-            message: "How are u",
-            isSenderI: 1,
-            time: "15-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUs73Mz3FqhV8uy2F5TGw_jGvFdzGirConJA&usqp=CAU"
-        },
-        {
-            name: "Surja",
-            message: "How are u",
-            isSenderI: 1,
-            time: "15-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUs73Mz3FqhV8uy2F5TGw_jGvFdzGirConJA&usqp=CAU"
-        },
-        {
-            name: "Surja",
-            message: "How are u",
-            isSenderI: 1,
-            time: "15-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUs73Mz3FqhV8uy2F5TGw_jGvFdzGirConJA&usqp=CAU"
-        },
-        {
-            name: "Surja",
-            message: "How are u",
-            isSenderI: 1,
-            time: "15-07-2023",
-            unReadMesagesCount: 0,
-            url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUs73Mz3FqhV8uy2F5TGw_jGvFdzGirConJA&usqp=CAU"
-        },
-    ]
-    const [t, setT] = useState(onLineUser)
+const ChatGroupList = ({ selectedChat, setSelectedChat }: ChatUserListDto) => {
+    const limit = 50;
+    const [skip, setSkip] = useState(0)
+    const { data, error, isLoading } = useQuery(['groupList'], () => {
+        return api.get("/chats/getAllInitiatedChatGroupList")
+    });
 
-    function fun() {
-        setT([...t, ...onLineUser])
-    }
+    const userSelector = useSelector((state: any) => state?.userSliceReducer);
+
+    const [height, setHeight] = useState<number>();
+
+
+    useEffect(() => {
+        setHeight(window.outerHeight - 160)
+        addEventListener("resize", () => {
+            setHeight(window.outerHeight - 160)
+            // console.log("resize" + window.outerHeight)
+        })
+    }, [])
     return (
         <>
-            <div className='overflow-y-scroll'>
+            <div className='overflow-y-scroll' style={{ "height": `${height}px` }}>
                 <InfiniteScroll
-                    dataLength={onLineUser.length}
+                    dataLength={10}
                     next={() => {
-                        fun()
+
                     }}
                     hasMore={true}
-                    loader={<h4>Loading...</h4>}
+                    loader={<div className='m-2'><Oval height={20} width={20} color='#7e22ce' /></div>}
                     scrollableTarget="id"
-                    inverse={true}
+                    // inverse={true}
                 >
                     {
-
-                        onLineUser.map((ele, i) => {
+                        Array.isArray(data?.data) && data?.data?.map((ele: any, i: number) => {
                             return (
-                                <ul className='w-full h-full flex justify-start items-center p-2 hover:bg-slate-100 border-b-slate-100 border-b-2'>
+                                <ul
+                                    onClick={() => {
+                                        setSelectedChat({
+                                            opponentId: ele?.belongsTo,
+                                            opponentPic: ele?.groupProfilePic,
+                                            opponentName: ele?.groupName,
+                                            belongsTo: ele?.belongsTo,
+                                            type :"GROUP"
+                                        })
+                                    }}
+                                    className='w-full h-full flex justify-start items-center p-2 hover:bg-slate-100 border-b-slate-100 border-b-2'
+                                >
                                     <li >
-                                        <img src={ele.url} alt="" className='w-[50px] h-[50px] min-w-[50px] border rounded-full bg-slate-100 object-fit aspect-square' />
+                                        <img src={ele?.groupProfilePic || "images/DefaultUser2.png"} alt="" className='w-[50px] h-[50px] min-w-[50px] border rounded-full bg-slate-100 object-fit aspect-square' />
                                     </li>
                                     <li className='w-full h-16 flex justify-between items-start ml-2'>
                                         <ul className='w-full flex flex-col justify-evenly h-16'>
                                             <li className='flex justify-between items-start'>
-                                                <span className='text-lg font-medium'>{ele?.name}</span>
-                                                <span className='text-xs font-light text-slate-600'>{ele?.time}</span>
+                                                <span className='text-lg font-medium'>{ele?.groupName}</span>
+                                                <span className='text-xs font-light text-slate-600'>{ele?.sendAt}</span>
                                             </li>
                                             <li className='flex justify-between items-start truncate'>
-                                                <span className='truncate w-48 text-sm font-normal text-slate-600'>{ele?.isSenderI == 1 && 'you: '}{ele?.message}</span>
+                                                <span className='truncate w-48 text-sm font-normal text-slate-600'>{ele?.messageSentBy == userSelector?.userId && 'you: '}{ele?.message}</span>
                                                 {ele?.unReadMesagesCount !== 0 && <span className='text-base font-semibold text-purple-500'>{ele?.unReadMesagesCount > 100 ? "100+" : ele?.unReadMesagesCount}</span>}
                                             </li>
                                         </ul>
