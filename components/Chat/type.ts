@@ -9,12 +9,15 @@ export type selecteChatDto = {
 export type ChatUserListDto = {
     selectedChat: selecteChatDto,
     setSelectedChat: any
+    refetchList : any
+    refetchUnReadMessages? : any
 }
 
 export type ChatMessageDto = {
     selectedChat: selecteChatDto,
     socket :any,
     refetch : any
+    setRefetchList: any
 }
 
 

@@ -1,20 +1,31 @@
 "use-client"
 import PlusIco from '@/components/assets/PlusIco'
 import api from '@/components/lib/api'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useQuery } from "react-query"
 import { useSelector } from 'react-redux'
 import { ChatUserListDto } from '../../type'
 import { Oval } from 'react-loader-spinner'
+import { FormateDate1 } from '@/components/GlobalComponents/FormateDate1'
+import { SocketContext } from '@/components/context/SocketContext'
 
 
-const ChatUserList = ({ selectedChat, setSelectedChat }: ChatUserListDto) => {
-    const {data, error, isLoading} = useQuery(['userList'], ()=>{
+const ChatUserList = ({ selectedChat, setSelectedChat ,refetchList}: ChatUserListDto) => {
+
+    const userSelector = useSelector((state: any) => state?.userSliceReducer);
+    const socket: any = useContext(SocketContext);
+    const {data, error, isLoading , refetch : refetchUSerList} = useQuery(['userList',refetchList], ()=>{
         return api.get("/chats/getAllInitiatedChatUserList")
+    },
+    {
+     refetchOnMount : true   
     });
 
-    const userSelector = useSelector((state : any) => state?.userSliceReducer);
+    socket?.on(`${userSelector?.userId}ChatNotification`, (msg: any) => {
+        refetchUSerList()
+    });
+
 
     const [height, setHeight] = useState<number>();
 
@@ -62,11 +73,11 @@ const ChatUserList = ({ selectedChat, setSelectedChat }: ChatUserListDto) => {
                                         <ul className='w-full flex flex-col justify-evenly h-16'>
                                             <li className='flex justify-between items-start'>
                                                 <span className='text-lg font-medium'>{ele?.opponentName}</span>
-                                                <span className='text-xs font-light text-slate-600'>{ele?.sendAt}</span>
+                                                <span className='text-xs font-light text-slate-600'>{FormateDate1(ele?.messageCreatedAt)}</span>
                                             </li>
                                             <li className='flex justify-between items-start truncate'>
                                                 <span className='truncate w-48 text-sm font-normal text-slate-600'>{ele?.messageSentBy == userSelector?.userId && 'you: '}{ele?.message}</span>
-                                                {ele?.unReadMesagesCount !== 0 && <span className='text-base font-semibold text-purple-500'>{ele?.unReadMesagesCount > 100 ? "100+" : ele?.unReadMesagesCount}</span>}
+                                                {ele?.unReadMessageCount !== 0 && <div className='text-base font-semibold text-white px-2 rounded-full bg-purple-500'>{ele?.unReadMessageCount > 100 ? "100+" : ele?.unReadMessageCount}</div>}
                                             </li>
                                         </ul>
                                     </li>

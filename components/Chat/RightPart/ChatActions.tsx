@@ -18,7 +18,6 @@ const ChatActions = ({ selectedChat , socket} : ChatActionsDto) => {
         setMessage("");
     }
 
-    console.log(selectedChat)
     return (
         <ul className='w-full flex justify-between items-center'>
             <li className='mx-2 cursor-pointer'>
