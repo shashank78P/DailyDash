@@ -12,7 +12,13 @@ const VideoPreview = ({ stream }: { stream: MediaStream | null }) => {
     if (!stream) {
         return null;
     }
-    return <video ref={videoRef} width={500} height={500} autoPlay controls />;
+    return (
+        <>
+            <div className="w-[250px] h-[250px] absolute bottom-5 right-5 border rounded-full overflow-hidden  ">
+                <video ref={videoRef} className="w-[250px] h-[250px] rounded-full overflow-hidden object-center" autoPlay />;
+            </div>
+        </>
+    )
 };
 
 export default VideoPreview

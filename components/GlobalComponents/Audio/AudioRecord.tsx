@@ -1,36 +1,37 @@
-import CrossIco from '@/components/assets/CrossIco'
-import PauseIco from '@/components/assets/PauseIco'
-import PlayIco from '@/components/assets/PlayIco'
-import ResetIco from '@/components/assets/ResetIco'
-import SaveIco from '@/components/assets/SaveIco'
-import Send from '@/components/assets/Send'
-import VoiceMikeIco from '@/components/assets/VoiceMikeIco'
-import api from '@/components/lib/api'
-import apiFromData from '@/components/lib/apiFormData'
-import { Dialog, DialogContent, DialogTitle, DialogActions } from '@mui/material'
-import React, { useEffect, useRef, useState } from 'react'
-import { ReactMediaRecorder } from 'react-media-recorder'
-import { useMutation } from 'react-query'
+import CrossIco from '@/components/assets/CrossIco';
+import PauseIco from '@/components/assets/PauseIco';
+import PlayIco from '@/components/assets/PlayIco';
+import ResetIco from '@/components/assets/ResetIco';
+import SaveIco from '@/components/assets/SaveIco';
+import Send from '@/components/assets/Send';
+import VoiceMikeIco from '@/components/assets/VoiceMikeIco';
+import api from '@/components/lib/api';
+import apiFromData from '@/components/lib/apiFormData';
+import { Dialog, DialogContent, DialogTitle } from '@mui/material';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import { ReactMediaRecorder } from 'react-media-recorder';
+import { useMutation } from 'react-query';
 
-// const AudioAnalyse = ({ previewAudioStream }: any) => {
-//     useEffect(() => {
-//         console.log(previewAudioStream)
-//     }, [previewAudioStream])
-//     return (
-//         <>
-//             sdasd
-//         </>
-//     )
-// }
+const Analyze = ({ previewAudioStream }: any) => {
+    useEffect(() => {
+        console.log(previewAudioStream)
 
-const VideoTemp = () => {
-    const [isOpen, setIsOpen] = useState(false);
+    }, [previewAudioStream])
+
+    return (<>
+        <h1>Analyse</h1>
+    </>)
+}
+
+const AudioRecord = () => {
+    const [isOpen, setIsOpen] = useState(true);
     const [isPlay, setIsPlay] = useState(false);
     const [isStarted, setIsStarted] = useState(false);
-    const [mediaUrl, setMediaUrl] = useState<any>("");
+    const [mediaUrl, setMediaUrl] = useState<any[]>([]);
 
     const { mutate: postAudio } = useMutation((data: any) => {
-        return api.post("/chats", data)
+        return api.post("/file-system/upload-blob-data", data)
     },
         {
             onSuccess() {
@@ -42,6 +43,7 @@ const VideoTemp = () => {
             }
         }
     )
+    console.log(mediaUrl)
 
     return (
         <>
@@ -51,7 +53,7 @@ const VideoTemp = () => {
                     return (
                         <>
                             <Dialog open={isOpen} >
-                                <div className='relative min-w-[200px]'>
+                                <div className='relative min-w-[250px]'>
                                     <span className='absolute top-2 right-2 mb-2 cursor-pointer'
                                         onClick={() => {
                                             setIsOpen(false)
@@ -101,15 +103,13 @@ const VideoTemp = () => {
                                                 </div>}
                                                 <div className=' flex flex-col items-center justify-center'>
                                                     <span className='m-2 cursor-pointer border bg-purple-700 p-2 rounded-full'
-                                                        onClick={() => {
+                                                        onClick={async () => {
                                                             setIsStarted(false)
                                                             setIsPlay(false)
                                                             stopRecording()
-                                                            // AudioAnalyse(previewAudioStream)
-                                                            setMediaUrl(mediaBlobUrl)
-                                                            // let x: any = document.getElementById("audio1")
-                                                            // x["src"] = mediaBlobUrl
-                                                            // console.log(mediaBlobUrl)
+                                                            if(mediaBlobUrl){
+                                                                setMediaUrl([...mediaUrl, mediaBlobUrl])
+                                                            }
                                                         }}
                                                     >
                                                         <SaveIco width={20} height={20} color='white' />
@@ -122,31 +122,41 @@ const VideoTemp = () => {
                                                             setIsStarted(false)
                                                             setIsPlay(false)
                                                             clearBlobUrl()
-                                                            setMediaUrl("")
+                                                            setMediaUrl([])
                                                         }}
                                                     >
                                                         <ResetIco width={20} height={20} color='white' />
                                                     </span>
-                                                    <span className='text-xs text-slate-600'>Reset</span>
+                                                    <span className='text-xs text-slate-600'>Reset all</span>
                                                 </div>
                                             </li>
                                         </ul>
-                                        {/* <AudioAnalyse previewAudioStream={preview
-                                            AudioStream} /> */}
-                                        {/* src="http://commondatastorage.googleapis.com/codeskulptor-demos/riceracer_assets/music/race2.ogg" */}
-                                        <audio
-                                            className='my-2'
-                                            src={mediaUrl}
-                                            controls
-                                            id="audio1"
-                                        ></audio>
+                                        {
+                                            Array.isArray(mediaUrl) && mediaUrl?.map((url, i) => {
+                                                return (
+                                                    <audio
+                                                        className='my-2'
+                                                        src={url}
+                                                        controls
+                                                        id="audio1"
+                                                    ></audio>
+                                                )
+                                            })
+                                        }
                                     </DialogContent>
                                     <div className='w-full flex mr-2 items-center justify-end'>
                                         <span className='m-2 cursor-pointer border bg-purple-700 p-2 rounded-full'
-                                            onClick={() => {
+                                            onClick={async () => {
                                                 setIsStarted(false)
                                                 setIsPlay(false)
-                                                postAudio(mediaBlobUrl)
+                                                await Promise.all(
+                                                    mediaUrl?.map((url, i) => {
+                                                        axios.get(url).then(res => {
+                                                            console.log(res?.data)
+                                                            const reader = new FileReader()
+                                                            postAudio({ 'file': JSON.stringify(res?.data) })
+                                                        })
+                                                    }))
                                             }}
                                         >
                                             <Send width={20} height={20} color='white' />
@@ -163,6 +173,7 @@ const VideoTemp = () => {
                             >
                                 <VoiceMikeIco width={30} height={30} />
                             </span>
+                            < Analyze previewAudioStream={previewAudioStream} />
                         </>
                     )
                 }} />
@@ -175,5 +186,4 @@ const VideoTemp = () => {
         </>
     )
 }
-
-export default VideoTemp
+export default AudioRecord

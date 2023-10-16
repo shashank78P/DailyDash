@@ -6,6 +6,8 @@ import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone'
 import VideoTemp from './VideoTemp';
+import AudioRecord from '@/components/GlobalComponents/Audio/AudioRecord';
+import VideoRecord from '@/components/GlobalComponents/Video/VideoRecord';
 
 
 
@@ -65,7 +67,8 @@ const ImagePostForm = () => {
 
     return (
         <>
-        <VideoTemp />
+        {/* <VideoRecord /> */}
+        <AudioRecord />
             {/* <ReactMediaRecorder
                 video
                 render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
