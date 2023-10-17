@@ -9,13 +9,16 @@ import ChatSettings from './ChatSettings'
 import SettingsIco from '@/components/assets/SettingsIco'
 import MoreDetailed from './MoreDetailed'
 import LeftAngularArrow from '@/components/assets/LeftAngularArrow'
+import AddUser from './Profile/AddUser'
 
 const profile = ({ setIsViewProfile, selectedChat ,setRefetchList }: any) => {
     const [role, setRole] = useState("MEMBER")
+    const [options, setOptions] = useState("")
 
     return (
         <>
             <div className='py-2 w-full overflow-x-scroll'>
+                {options === "Add Members" && <AddUser setOptions={setOptions} selectedChat={selectedChat}/>}
                 <div
                     className='w-[40px] h-[40px] rounded-full ml-2 cursor-pointer'
                     onClick={() => {
@@ -36,10 +39,14 @@ const profile = ({ setIsViewProfile, selectedChat ,setRefetchList }: any) => {
                         <VideoICameraIco height={30} width={30} color='#7e22ce' />
                         <span className='pt-2 text-purple-700'>Video call</span>
                     </li>
-                    <li className='p-4 flex items-center justify-center flex-col cursor-pointer'>
+                    { selectedChat?.type == "GROUP" && role != "MEMBER" && <li className='p-4 flex items-center justify-center flex-col cursor-pointer'
+                        onClick={()=>{
+                            setOptions("Add Members")
+                        }}
+                    >
                         <UserPlusIco height={30} width={30} color='#7e22ce' />
                         <span className='pt-2 text-purple-700'>Add members</span>
-                    </li>
+                    </li>}
                     <li className='p-4 flex items-center justify-center flex-col cursor-pointer'>
                         <SearchIco height={30} width={30} color='#7e22ce' />
                         <span className='pt-2 text-purple-700'>Search</span>

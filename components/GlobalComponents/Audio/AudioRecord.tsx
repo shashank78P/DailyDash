@@ -1,4 +1,5 @@
 import CrossIco from '@/components/assets/CrossIco';
+import DeleteIco from '@/components/assets/DeleteIco';
 import PauseIco from '@/components/assets/PauseIco';
 import PlayIco from '@/components/assets/PlayIco';
 import ResetIco from '@/components/assets/ResetIco';
@@ -10,46 +11,49 @@ import apiFromData from '@/components/lib/apiFormData';
 import { Dialog, DialogContent, DialogTitle } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import { Oval } from 'react-loader-spinner';
 import { ReactMediaRecorder } from 'react-media-recorder';
 import { useMutation } from 'react-query';
+import { toast } from 'react-toastify';
 
-const Analyze = ({ previewAudioStream }: any) => {
-    useEffect(() => {
-        console.log(previewAudioStream)
-
-    }, [previewAudioStream])
-
-    return (<>
-        <h1>Analyse</h1>
-    </>)
+type AudioRecordDto = {
+    isOpen: boolean,
+    setIsOpen: any,
+    sendFile: any
 }
 
-const AudioRecord = () => {
-    const [isOpen, setIsOpen] = useState(true);
+const AudioRecord = ({ isOpen, setIsOpen, sendFile}: AudioRecordDto) => {
     const [isPlay, setIsPlay] = useState(false);
     const [isStarted, setIsStarted] = useState(false);
     const [mediaUrl, setMediaUrl] = useState<any[]>([]);
 
-    const { mutate: postAudio } = useMutation((data: any) => {
-        return api.post("/file-system/upload-blob-data", data)
+    const { mutate: postAudio , isLoading} = useMutation((data: any) => {
+        return api.post("/file-system/upload-Audio-base64-data", data)
     },
         {
-            onSuccess() {
-
+            onSuccess({ data }) {
+                sendFile(data?.[0]?._id , "AUDIO")
+                setIsOpen(false)
+                setMediaUrl([])
+                toast.success("Uploaded Successfully")
             },
 
             onError() {
-
+                toast.error("Upload failed")
             }
         }
     )
-    console.log(mediaUrl)
 
     return (
         <>
             <div>
 
                 <ReactMediaRecorder audio render={({ clearBlobUrl, error, mediaBlobUrl, pauseRecording, resumeRecording, startRecording, status, stopRecording, previewAudioStream }) => {
+                    useEffect(() => {
+                        if (mediaBlobUrl) {
+                            setMediaUrl([...mediaUrl, mediaBlobUrl])
+                        }
+                    }, [mediaBlobUrl])
                     return (
                         <>
                             <Dialog open={isOpen} >
@@ -68,7 +72,12 @@ const AudioRecord = () => {
                                         </div> */}
                                         {
                                             ["recording", "stopping", "stopped", "paused"].includes(status) &&
-                                            <div className='my-2 text-purple-700 text-sm text-center'>
+                                            <div className='my-2 text-purple-700 text-sm text-center flex items-center justify-center'>
+
+                                                {status === "recording" && <div className='w-4 h-4  rounded-full mr-2 p-[1px] border-2 border-red-500 flex items-center justify-center'>
+                                                    <div className='bg-red-500 w-2 h-2 rounded-full'>
+                                                    </div>
+                                                </div>}
                                                 {status}
                                             </div>
                                         }
@@ -107,9 +116,6 @@ const AudioRecord = () => {
                                                             setIsStarted(false)
                                                             setIsPlay(false)
                                                             stopRecording()
-                                                            if(mediaBlobUrl){
-                                                                setMediaUrl([...mediaUrl, mediaBlobUrl])
-                                                            }
                                                         }}
                                                     >
                                                         <SaveIco width={20} height={20} color='white' />
@@ -131,57 +137,60 @@ const AudioRecord = () => {
                                                 </div>
                                             </li>
                                         </ul>
+
                                         {
                                             Array.isArray(mediaUrl) && mediaUrl?.map((url, i) => {
                                                 return (
-                                                    <audio
-                                                        className='my-2'
-                                                        src={url}
-                                                        controls
-                                                        id="audio1"
-                                                    ></audio>
+                                                    <div className=' flex items-center justify-center'>
+                                                        <audio
+                                                            className='my-2'
+                                                            src={url}
+                                                            controls
+                                                            id="audio1"
+                                                        ></audio>
+                                                        <div className='ml-2 cursor-pointer'
+                                                            onClick={()=>{
+                                                                setMediaUrl( mediaUrl.filter((ele,j) => j!=i))
+                                                            }}
+                                                        >
+                                                            <DeleteIco height={20} width={20}/>
+                                                        </div>
+                                                    </div>
                                                 )
                                             })
                                         }
                                     </DialogContent>
                                     <div className='w-full flex mr-2 items-center justify-end'>
+                                        {!isLoading ? 
                                         <span className='m-2 cursor-pointer border bg-purple-700 p-2 rounded-full'
                                             onClick={async () => {
                                                 setIsStarted(false)
                                                 setIsPlay(false)
                                                 await Promise.all(
-                                                    mediaUrl?.map((url, i) => {
-                                                        axios.get(url).then(res => {
-                                                            console.log(res?.data)
-                                                            const reader = new FileReader()
-                                                            postAudio({ 'file': JSON.stringify(res?.data) })
-                                                        })
+                                                    mediaUrl?.map(async (url, i) => {
+                                                        const response = await fetch(url);
+                                                        const blob = await response.blob();
+                                                        let reader = new FileReader()
+                                                        reader.onload = () => {
+                                                            postAudio({ 'file': reader.result })
+                                                        }
+                                                        // @ts-ignore
+                                                        reader.readAsDataURL(blob)
                                                     }))
                                             }}
                                         >
                                             <Send width={20} height={20} color='white' />
+                                        </span> : 
+                                        <span className='m-2 p-2'>
+                                            <Oval color='#7e22ce' height={30} secondaryColor='#7e22ce'/>
                                         </span>
+                                        }
                                     </div>
                                 </div>
                             </Dialog >
-
-                            <span className='border p-2'
-                                onClick={() => {
-                                    // startRecording()
-                                    setIsOpen(!isOpen)
-                                }}
-                            >
-                                <VoiceMikeIco width={30} height={30} />
-                            </span>
-                            < Analyze previewAudioStream={previewAudioStream} />
                         </>
                     )
                 }} />
-                <input type="file" name="" id=""
-                    onChange={(e: any) => {
-                        console.log(e?.target?.value)
-                    }}
-                />
             </div>
         </>
     )

@@ -14,9 +14,11 @@ const VideoPreview = ({ stream }: { stream: MediaStream | null }) => {
     }
     return (
         <>
-            <div className="w-[250px] h-[250px] absolute bottom-5 right-5 border rounded-full overflow-hidden  ">
-                <video ref={videoRef} className="w-[250px] h-[250px] rounded-full overflow-hidden object-center" autoPlay />;
-            </div>
+            {/* <div className="w-[250px] h-[250px] absolute bottom-5 right-5 border rounded-full overflow-hidden  "> */}
+            <video ref={videoRef}
+                 className="w-[400px] h-[250px] my-2 mx-auto" 
+                autoPlay />
+            {/* </div> */}
         </>
     )
 };

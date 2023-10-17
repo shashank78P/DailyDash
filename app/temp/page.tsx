@@ -9,9 +9,8 @@ import VideoTemp from './VideoTemp';
 import AudioRecord from '@/components/GlobalComponents/Audio/AudioRecord';
 import VideoRecord from '@/components/GlobalComponents/Video/VideoRecord';
 
-
-
 const ImagePostForm = () => {
+    const [fileId, setFileID] = useState([])
 
     function readFile(file: any) {
         const reader = new FileReader();
@@ -64,12 +63,18 @@ const ImagePostForm = () => {
     border-2 border-dashed border-gray-400 p-4 m-4 text-center
     ${isDragReject ? 'bg-red-200 border-red-500' : isDragActive ? 'bg-green-200 border-green-500' : 'bg-gray-100 border-gray-400'
         }`;
+    console.log(fileId)
 
     return (
         <>
-        {/* <VideoRecord /> */}
-        <AudioRecord />
-            {/* <ReactMediaRecorder
+            <div>
+                {/* <VideoRecord /> */}
+                {/* <div className='w-[200px]'>
+                    <FileIcons acceptedFiles={'audio/wav'} />
+                </div> */}
+                <audio src='https://drive.google.com/uc?id=1EHMGCwR6S_nhFTV7W7vY37ixHSBOqb4r&export=download' controls />
+                <VideoRecord setFileID={setFileID}/> 
+                {/* <ReactMediaRecorder
                 video
                 render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
                     <div>
@@ -80,8 +85,8 @@ const ImagePostForm = () => {
                     </div>
                 )}
             /> */}
-            
-            {/* <section>
+
+                {/* <section>
                 <div {...getRootProps({
                     className: `{ ${dropzoneClasses} w-full h-52 border border-2 flex justify-center items-center}}`
                 })}>
@@ -96,7 +101,7 @@ const ImagePostForm = () => {
                 <ul>{...files}</ul>
                 {/* <FileIcons acceptedFiles={acceptedFiles} /> */}
 
-            {/* {isDragAccept && <p>Drop it like it's hot!</p>}
+                {/* {isDragAccept && <p>Drop it like it's hot!</p>}
                 {isDragReject && <p>File type not supported!</p>}
                 {!isDragActive && <p>Drag files here or click to browse</p>}
                 <h1>{isDragReject && 'border-red-500' || isDragAccept && 'border-green-500' || isDragActive && 'bg-green-500' || isFileDialogActive && 'border-yellow-500'}</h1>
@@ -110,6 +115,7 @@ const ImagePostForm = () => {
                 }
                 <Doc_viewer />
             </section> */}
+            </div>
         </>
     );
 };

@@ -12,7 +12,7 @@ type ThreeDotActionResultDto = {
 }
 
 const NewGroup = ({ setThreeDotActionResult, ThreeDotActionResult }: ThreeDotActionResultDto) => {
-    const limit = 50
+    const limit = 500
     const defaultUserPic = "images/DefaultUser2.png"
     const [skip, setSkip] = useState<number>(0)
     const [search, setSearch] = useState<string>("")
@@ -153,7 +153,7 @@ const NewGroup = ({ setThreeDotActionResult, ThreeDotActionResult }: ThreeDotAct
                                 createGroup({groupName : newGroupName , users : checked})
                             }
                         }}
-                    >Find</button>
+                    >Create</button>
                 </DialogActions>
             </Dialog>
         </>
