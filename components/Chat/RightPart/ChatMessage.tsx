@@ -109,7 +109,7 @@ const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, 
                                 {
                                     ele?.event?.type ?
                                         <>
-                                            <div className='w-full p-1 bg-purple-100 text-center text-slate-500 rounded-md my-2'>
+                                            <div className='w-full p-1 bg-purple-100 text-center text-slate-600 rounded-md my-2 text-sm'>
                                                 {/* {userSelector?.userId !== ele?.from ? `~${ele?.sender}: ` : "~you: "} */}
                                                 {ele?.event?.message}
                                             </div>
@@ -145,8 +145,8 @@ const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, 
                                                 {
                                                     chat?.event?.type ?
                                                         <>
-                                                            <div className='w-full p-1 bg-purple-100 text-center text-slate-500 rounded-md my-2'>
-                                                                {userSelector?.userId !== chat?.from ? `~${chat?.sender}: ` : "~you: "}
+                                                            <div className='w-full p-1 bg-purple-100 text-center text-slate-600 text-sm rounded-md my-2'>
+                                                                {/* {userSelector?.userId !== chat?.from ? `~${chat?.sender}: ` : "~you: "} */}
                                                                 {chat?.event?.message}
                                                             </div>
                                                         </>

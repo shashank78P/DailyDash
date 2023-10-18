@@ -11,10 +11,14 @@ import api from '@/components/lib/api'
 import { useMutation } from 'react-query'
 import { toast } from 'react-toastify'
 import apiFromData from '@/components/lib/apiFormData'
+import SmilyFace from '@/components/assets/SmilyFace'
+import Picker from '@emoji-mart/react'
+import data from '@emoji-mart/data'
 
 const ChatActions = ({ selectedChat, socket }: ChatActionsDto) => {
     const [message, setMessage] = useState<string>("");
     const [isOpen, setIsOpen] = useState(false);
+    const [isEmojiOpen, setIsEmojiOpen] = useState(false);
     const [isVideoOpen, setIsVideoOpen] = useState(false);
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
 
@@ -96,7 +100,7 @@ const ChatActions = ({ selectedChat, socket }: ChatActionsDto) => {
                 >
                     <CameraIco width={25} height={25} />
                 </li>
-                <li className='grow'>
+                <li className='grow flex items-center relative'>
                     <textarea
                         placeholder='Type here to message...'
                         style={
@@ -111,6 +115,21 @@ const ChatActions = ({ selectedChat, socket }: ChatActionsDto) => {
                             setMessage(e?.target?.value);
                         }}
                     />
+                    <span className='cursor-pointer relative ml-2'
+                        onClick={() => {
+                            setIsEmojiOpen(!isEmojiOpen)
+                        }}
+                    >
+                        <SmilyFace height={25} width={25} />
+                    </span>
+                    {isEmojiOpen && <div className='absolute right-0 bottom-[60px] z-50'>
+                        <Picker
+                            onEmojiSelect={(e: any) => {
+                                console.log(e?.native)
+                                setMessage(message + e?.native)
+                            }}
+                        />
+                    </div>}
                 </li>
                 <li
                     className='m-2 cursor-pointer'

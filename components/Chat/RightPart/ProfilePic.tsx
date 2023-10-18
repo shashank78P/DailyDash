@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TextField } from '@mui/material'
 import CrossIco from '@/components/assets/CrossIco'
 import PencileIco from '@/components/assets/PencileIco'
@@ -21,8 +21,16 @@ const ProfilePic = ({ setRole, role, selectedChat ,setRefetchList }: any) => {
     const [isEditDescription, setIsEditDescription] = useState<boolean>(false);
     const [isEditName, setIsEditName] = useState<boolean>(false);
     const [isEmojiOpen, setIsEmojiOpen] = useState<boolean>(false);
-    const [about, setAbout] = useState<string>("fjhdhfjh")
+    const [about, setAbout] = useState<string>("")
     const [Name, setName] = useState<string>("")
+
+    useEffect(()=>{
+        setIsEditDescription(false)
+        setIsEditName(false)
+        setIsEmojiOpen(false)
+        setAbout("")
+        setName("")
+    },[selectedChat?.belongsTo])
     const { data, isLoading, refetch } = useQuery(["profile", selectedChat?.belongsTo], () => {
         return api.get(`chats/getProfileDetails?belongsTo=${selectedChat?.belongsTo}&type=${selectedChat?.type}`)
     }

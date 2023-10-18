@@ -32,14 +32,13 @@ const SearchUserToAdd = ({ setOptions, selectedChat }: any) => {
     return api.post("/chats/AddUserToGroup", data)
   }, {
     onSuccess({ data }) {
-      socket.emit("GROUP", { event: { type: "JOIN", message: `${ userList.toString() } is added by ` }, messageType: "TEXT", belongsTo: selectedChat?.belongsTo, to: selectedChat?.opponentId, userId: userSelector?.userId });
+      socket.emit("GROUP", { event: { type: "JOIN", message: `${ userList.toString() } is added by ${data?.name}` }, messageType: "TEXT", belongsTo: selectedChat?.belongsTo, to: selectedChat?.opponentId, userId: userSelector?.userId });
       setOptions("")
     },
     onError(err) {
       toast.error("Not added sucessfully")
     }
-  }
-  )
+  })
   const [checked, setChecked] = React.useState<string[]>([]);
 
   const handleToggle = (value: string, name: string) => () => {

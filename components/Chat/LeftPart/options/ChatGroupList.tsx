@@ -7,6 +7,9 @@ import { useSelector } from 'react-redux';
 import { ChatUserListDto } from '../../type';
 import { FormateDate1 } from '@/components/GlobalComponents/FormateDate1';
 import { SocketContext } from '@/components/context/SocketContext';
+import VideoICameraIco from '@/components/assets/VideoICameraIco';
+import VoiceMikeIco from '@/components/assets/VoiceMikeIco';
+import NoteIco from '@/components/assets/NoteIco';
 
 const ChatGroupList = ({ selectedChat, setSelectedChat ,refetchList ,refetchUnReadMessages}: ChatUserListDto) => {
     const limit = 50;
@@ -19,6 +22,31 @@ const ChatGroupList = ({ selectedChat, setSelectedChat ,refetchList ,refetchUnRe
         refetchOnMount : true
     }
     );
+
+    function getFileTypeMessage(fileType : string){
+        if(fileType){
+            const file = fileType.split("/")[0]
+
+            if(file.toLowerCase() === "audio"){
+                return <>
+                    <VoiceMikeIco height={15} width={15}/> 
+                    <span className='ml-0.5'>{file}</span>
+                </>
+            }
+            else if(file.toLowerCase() === "video"){
+                return <>
+                    <VideoICameraIco height={15} width={15}/> 
+                    <span className='ml-0.5'>{file}</span>
+                </>
+            }
+            else{
+                return <>
+                    <NoteIco height={15} width={15} color={''}/> 
+                    <span className='ml-2'>{file}</span>
+                </>
+            }
+        }
+    }
 
     useEffect(() => {
         if (data?.data && Array.isArray(data?.data)) {
@@ -80,7 +108,7 @@ const ChatGroupList = ({ selectedChat, setSelectedChat ,refetchList ,refetchUnRe
                                                 <span className='text-xs font-light text-slate-600'>{FormateDate1(ele?.createdAt)}</span>
                                             </li>
                                             <li className='flex justify-between items-start truncate'>
-                                                <span className='truncate w-48 text-sm font-normal text-slate-600'>{ele?.from == userSelector?.userId && 'you: '}{ele?.message}</span>
+                                                <span className='truncate w-48 text-sm font-normal text-slate-600 flex items-center'>{ele?.from == userSelector?.userId && 'you: '}{ele?.message || ele?.eventMessage || getFileTypeMessage(ele?.fileType)}</span>
                                                 {ele?.unReadMessageCount !== 0 && <span className='text-base font-semibold text-purple-500'>{ele?.unReadMessageCount > 100 ? "100+" : ele?.unReadMessageCount}</span>}
                                             </li>
                                         </ul>

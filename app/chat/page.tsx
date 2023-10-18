@@ -7,6 +7,7 @@ import ChatOptions from '@/components/Chat/LeftPart/ChatOptions'
 import CallList from '@/components/Chat/LeftPart/options/callsOptions/CallList'
 import ChatGroupList from '@/components/Chat/LeftPart/options/ChatGroupList'
 import ChatUserList from '@/components/Chat/LeftPart/options/ChatUserList'
+import QueryObject from '@/components/Chat/QueryObject'
 import ChatActions from '@/components/Chat/RightPart/ChatActions'
 import ChatMessage from '@/components/Chat/RightPart/ChatMessage'
 import ChatTopNav from '@/components/Chat/RightPart/ChatTopNav'
@@ -27,12 +28,11 @@ import io from "socket.io-client";
 const index = () => {
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const socket: any = useContext(SocketContext);
-    const [messages, setMessages] = useState<Array<string>>([]);
     const [selectedTab, setSelectedTab] = useState<string>("chat");
     const [ThreeDotIsOpen, setThreeDotIsOpen] = useState<boolean>(false);
     const [ThreeDotActionResult, setThreeDotActionResult] = useState<String>("");
-    const [isViewProfile, setIsViewProfile] = useState(false)
-    const [refetchList, setRefetchList] = useState(false)
+    const [isViewProfile, setIsViewProfile] = useState<Boolean>(false)
+    const [refetchList, setRefetchList] = useState<Boolean>(false)
 
     const [unReadMsg, setUnReadMsg] = useState({
         chat: 0,
@@ -59,9 +59,6 @@ const index = () => {
             refetchOnMount: false,
         }
     )
-    socket?.on("hello", (msg: any) => {
-        console.log(msg)
-    });
     socket?.on(`${userSelector?.userId}ChatNotification`, (msg: any) => {
         refetchUnReadMessages()
     });
@@ -74,6 +71,20 @@ const index = () => {
         refetchUnReadMessages()
     }, [selectedChat?.belongsTo, refetchList]);
 
+    // QueryObject(
+    //     {
+    //         selectedTab,
+    //         setSelectedTab,
+    //         ThreeDotIsOpen,
+    //         setThreeDotIsOpen,
+    //         ThreeDotActionResult,
+    //         setThreeDotActionResult,
+    //         isViewProfile,
+    //         setIsViewProfile,
+    //         refetchList,
+    //         setRefetchList,
+    //     }
+    // )
 
     return (
         <>
@@ -139,6 +150,7 @@ const index = () => {
                             <Profile
                                 setIsViewProfile={setIsViewProfile}
                                 selectedChat={selectedChat}
+                                setSelectedChat={setSelectedChat}
                                 setRefetchList={setRefetchList}
                             />
                         </>

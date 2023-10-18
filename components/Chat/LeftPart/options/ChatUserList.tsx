@@ -25,10 +25,7 @@ const ChatUserList = ({ selectedChat, setSelectedChat ,refetchList}: ChatUserLis
     socket?.on(`${userSelector?.userId}ChatNotification`, (msg: any) => {
         refetchUSerList()
     });
-
-
     const [height, setHeight] = useState<number>();
-
     useEffect(() => {
         setHeight(window.outerHeight - 160)
         addEventListener("resize", () => {
@@ -76,7 +73,7 @@ const ChatUserList = ({ selectedChat, setSelectedChat ,refetchList}: ChatUserLis
                                                 <span className='text-xs font-light text-slate-600'>{FormateDate1(ele?.messageCreatedAt)}</span>
                                             </li>
                                             <li className='flex justify-between items-start truncate'>
-                                                <span className='truncate w-48 text-sm font-normal text-slate-600'>{ele?.messageSentBy == userSelector?.userId && 'you: '}{ele?.message}</span>
+                                                <span className='truncate w-48 text-sm font-normal text-slate-600'>{ele?.messageSentBy == userSelector?.userId && 'you: '}{ele?.message || ele?.eventMessage}</span>
                                                 {ele?.unReadMessageCount !== 0 && <div className='text-base font-semibold text-white px-2 rounded-full bg-purple-500'>{ele?.unReadMessageCount > 100 ? "100+" : ele?.unReadMessageCount}</div>}
                                             </li>
                                         </ul>
