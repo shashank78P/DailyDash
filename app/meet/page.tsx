@@ -83,16 +83,16 @@ const page = () => {
         }
     }
 
-    useCallback(()=>{
-        if(myVideo.current){
+    useCallback(() => {
+        if (myVideo.current) {
             myVideo.current.srcObject = stream
         }
-    },[stream,myVideo.current])
-    useCallback(()=>{
-        if(opponent.current){
+    }, [stream, myVideo.current])
+    useCallback(() => {
+        if (opponent.current) {
             opponent.current.srcObject = remoteStream
         }
-    },[remoteStream , opponent.current])
+    }, [remoteStream, opponent.current])
 
     useEffect(() => {
         if (socket && myPeer) {
@@ -119,16 +119,36 @@ const page = () => {
             <button onClick={() => {
                 makeCall()
             }}>Make call</button>
-            <h1>My video</h1>
-            <video
-                className="w-[400px] h-[250px] my-2 mx-auto"
-                autoPlay muted ref={myVideo}
-            />
-            <h1>Opponent video</h1>
-            <video
-                className="w-[400px] h-[250px] my-2 mx-auto"
-                autoPlay muted ref={opponent}
-            />
+
+            {/* <ReactMediaRecorder
+                video
+                // screen
+                render={({ previewStream, status, startRecording, stopRecording, mediaBlobUrl, resumeRecording, pauseRecording, clearBlobUrl, muteAudio, unMuteAudio, isAudioMuted }) => {
+                    return (
+                        <>
+                            <MyCard
+                                stream={previewStream}
+                                setRemoteStream={setRemoteStream}
+                                joined={joined}
+                                setStream={setStream}
+                                opponent={opponent}
+                                myVideo={myVideo}
+                            />
+                        </>)
+                }}
+            >
+            
+        </ReactMediaRecorder> */}
+        <h1>My video</h1>
+        <video
+            className="w-[400px] h-[250px] my-2 mx-auto"
+            autoPlay muted ref={myVideo}
+        />
+        <h1>Opponent video</h1>
+        <video
+            className="w-[400px] h-[250px] my-2 mx-auto"
+            autoPlay muted ref={opponent}
+        />
         </div>
     )
 }
