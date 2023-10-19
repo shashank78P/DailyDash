@@ -22,7 +22,7 @@ const profile = ({ setIsViewProfile, selectedChat, setRefetchList ,setSelectedCh
     const [role, setRole] = useState("MEMBER")
     const [options, setOptions] = useState("")
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
-    const socket: any = useContext(SocketContext);
+    const {socket}: any = useContext(SocketContext);
 
     const { mutate: leaveGroup, isLoading: isLeaveGroupLoading } = useMutation(async (data: any) => {
         return api.delete(`/chats/leaveGroup?belongsTo=${data?.belongsTo}`)

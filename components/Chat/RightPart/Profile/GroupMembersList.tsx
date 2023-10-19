@@ -25,7 +25,7 @@ type GroupMembersListDto = {
 const GroupMembersList = ({ selectedChat, role ,options }: GroupMembersListDto) => {
     const [skip, setSkip] = useState(0)
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
-    const socket: any = useContext(SocketContext);
+    const {socket}: any = useContext(SocketContext);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [index, setIndex] = useState<number>(-1);
     ;

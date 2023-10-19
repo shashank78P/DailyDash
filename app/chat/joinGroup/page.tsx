@@ -12,7 +12,7 @@ import { SocketContext } from '@/components/context/SocketContext';
 const page = () => {
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const router = useRouter();
-    const socket: any = useContext(SocketContext);
+    const {socket}: any = useContext(SocketContext);
     const defaultUserPic = "/public/images/DefaultUser2.png"
     const params = useSearchParams();
     const { data, isLoading } = useQuery("joinGroup", () => {

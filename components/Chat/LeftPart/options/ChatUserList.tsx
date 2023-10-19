@@ -14,7 +14,7 @@ import { SocketContext } from '@/components/context/SocketContext'
 const ChatUserList = ({ selectedChat, setSelectedChat ,refetchList}: ChatUserListDto) => {
 
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
-    const socket: any = useContext(SocketContext);
+    const {socket}: any = useContext(SocketContext);
     const {data, error, isLoading , refetch : refetchUSerList} = useQuery(['userList',refetchList], ()=>{
         return api.get("/chats/getAllInitiatedChatUserList")
     },

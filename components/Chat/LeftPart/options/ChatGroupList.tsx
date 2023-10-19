@@ -14,7 +14,7 @@ import NoteIco from '@/components/assets/NoteIco';
 const ChatGroupList = ({ selectedChat, setSelectedChat ,refetchList ,refetchUnReadMessages}: ChatUserListDto) => {
     const limit = 50;
     const [skip, setSkip] = useState(0)
-    const socket: any = useContext(SocketContext);
+    const {socket}: any = useContext(SocketContext);
     const { data, error, isLoading , refetch } = useQuery(['groupList',refetchList,selectedChat?.belongsTo], () => {
         return api.get("/chats/getAllInitiatedChatGroupList")
     },

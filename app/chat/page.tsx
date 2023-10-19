@@ -27,7 +27,7 @@ import io from "socket.io-client";
 
 const index = () => {
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
-    const socket: any = useContext(SocketContext);
+    const {socket}: any = useContext(SocketContext);
     const [selectedTab, setSelectedTab] = useState<string>("chat");
     const [ThreeDotIsOpen, setThreeDotIsOpen] = useState<boolean>(false);
     const [ThreeDotActionResult, setThreeDotActionResult] = useState<String>("");
