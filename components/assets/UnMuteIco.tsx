@@ -2,15 +2,27 @@ import React from 'react'
 
 const UnMuteIco = (props: { width: number, height: number, color?: string }) => {
     return (
-        <svg
-            width={props?.width}
-            height={props?.height}
-            viewBox="0 0 1024 1024"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <path fill={props?.color ? props?.color : "#202124"} d="m412.16 592.128-45.44 45.44A191.232 191.232 0 0 1 320 512V256a192 192 0 1 1 384 0v44.352l-64 64V256a128 128 0 1 0-256 0v256c0 30.336 10.56 58.24 28.16 80.128zm51.968 38.592A128 128 0 0 0 640 512v-57.152l64-64V512a192 192 0 0 1-287.68 166.528l47.808-47.808zM314.88 779.968l46.144-46.08A222.976 222.976 0 0 0 480 768h64a224 224 0 0 0 224-224v-32a32 32 0 1 1 64 0v32a288 288 0 0 1-288 288v64h64a32 32 0 1 1 0 64H416a32 32 0 1 1 0-64h64v-64c-61.44 0-118.4-19.2-165.12-52.032zM266.752 737.6A286.976 286.976 0 0 1 192 544v-32a32 32 0 0 1 64 0v32c0 56.832 21.184 108.8 56.064 148.288L266.752 737.6z" />
-            <path fill={props?.color ? props?.color : "#202124"} d="M150.72 859.072a32 32 0 0 1-45.44-45.056l704-708.544a32 32 0 0 1 45.44 45.056l-704 708.544z" />
-        </svg>
+        <>
+            <svg
+                width={props?.width}
+                height={props?.height}
+                viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_431_584)">
+                    <path d="M1 1L23 23" stroke={props?.color ? props?.color : "#202124"} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M9 9.00009V12.0001C9.00052 12.5931 9.17675 13.1726 9.50643 13.6654C9.83611 14.1583 10.3045 14.5424 10.8523 14.7692C11.4002 14.9961 12.0029 15.0555 12.5845 14.94C13.1661 14.8244 13.7005 14.5391 14.12 14.1201M15 9.34009V4.00009C15.0007 3.25612 14.725 2.53841 14.2264 1.98629C13.7277 1.43417 13.0417 1.08703 12.3015 1.01227C11.5613 0.937497 10.8197 1.14043 10.2207 1.58168C9.62172 2.02293 9.20805 2.671 9.06 3.40009" stroke={props?.color ? props?.color : "#202124"} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M17.0002 16.95C16.024 17.9464 14.7723 18.6285 13.4058 18.9086C12.0393 19.1887 10.6202 19.0542 9.33068 18.5223C8.04115 17.9903 6.93995 17.0853 6.16836 15.9232C5.39677 14.761 4.98998 13.3949 5.00019 12V10M19.0002 10V12C18.9998 12.4124 18.963 12.824 18.8902 13.23" stroke={props?.color ? props?.color : "#202124"} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M12 19V23" stroke={props?.color ? props?.color : "#202124"} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M8 23H16" stroke={props?.color ? props?.color : "#202124"} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </g>
+                <defs>
+                    <clipPath id="clip0_431_584">
+                        <rect width={props?.width}
+                            height={props?.height}
+                            fill="white" />
+                    </clipPath>
+                </defs>
+            </svg>
+        </>
     )
 }
 

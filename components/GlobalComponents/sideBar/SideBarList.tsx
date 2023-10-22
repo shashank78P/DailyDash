@@ -33,7 +33,6 @@ const SideBarList = () => {
         let query = "?"
         // @ts-ignore
         for (const [key, value] of params?.entries()) {
-            console.log(`${key}, ${value}&`);
             query = query + `${key}=${value}&`
         }
         dispatch(routeAction?.changeRouter({
@@ -47,10 +46,7 @@ const SideBarList = () => {
     useEffect(() => {
         ChangeRouter(pathname)
     }, [])
-    console.log("router", pathname)
 
-    console.log(currentRoute)
-    console.log({ currentRoute, dispatch, routeAction })
     return (
         <>
             <ul className='min-h-screen w-[50px] md:w-[50px] flex flex-col justify-between items-center text-c_black bg-white'>

@@ -12,13 +12,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
 import AuthMe from './AuthMe';
 import SocketProvider from '@/components/context/SocketProvider';
+import DndProvider from './DndProvider';
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata = {
-  title: 'Daily Dash',
-  description: 'next app',
-}
+// export const metadata = {
+//   title: 'Daily Dash',
+//   description: 'next app',
+// }
 
 export default function RootLayout({
   children,
@@ -37,21 +38,23 @@ export default function RootLayout({
       <ReduxProvider>
         <SocketProvider>
           <GoogleProvider>
-            <ReactQueryProvider>
-              <AuthMe />
-              <body className={inter.className}>
-                <div className='flex w-full'>
-                  <ToastContainer />
-                  {!restriction_SideBar__Tab.includes(pathname) && <SideBar />}
-                  {/* <div className='flex w-full flex-col'> */}
-                  <div className='w-full  h-screen flex flex-col justify-between '>
-                    {children}
-                    {!restriction_SideBar__Tab.includes(pathname) && <TabSection />}
+            <DndProvider>
+              <ReactQueryProvider>
+                <AuthMe />
+                <body className={inter.className}>
+                  <div className='flex w-full'>
+                    <ToastContainer />
+                    {!restriction_SideBar__Tab.includes(pathname) && <SideBar />}
+                    {/* <div className='flex w-full flex-col'> */}
+                    <div className='w-full  h-screen flex flex-col justify-between '>
+                      {children}
+                      {!restriction_SideBar__Tab.includes(pathname) && <TabSection />}
+                    </div>
+                    {/* </div> */}
                   </div>
-                  {/* </div> */}
-                </div>
-              </body>
-            </ReactQueryProvider>
+                </body>
+              </ReactQueryProvider>
+            </DndProvider>
           </GoogleProvider>
         </SocketProvider>
       </ReduxProvider>

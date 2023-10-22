@@ -32,7 +32,6 @@ const routeSlice = createSlice({
             // checking for duplicate route + query
             // adding unique one into state
             let duplicateState = state?.currentRouter;
-            console.log(duplicateState?.[0]?.route)
             let isExist;
             let existIndex: number = 0;
             let currentRouteIndex = 0;
@@ -49,9 +48,7 @@ const routeSlice = createSlice({
                     break;
                 }
             }
-            console.log({ existIndex, currentRouteIndex })
             if (isExist) {
-                console.log(state?.currentRouter)
                 swapIsActiveState(state?.currentRouter?.[currentRouteIndex], state?.currentRouter?.[existIndex])
                 return
             }
