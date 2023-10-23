@@ -20,9 +20,9 @@ const Room = () => {
     let dispatch = useDispatch();
     const ref = useRef<HTMLVideoElement>(null)
     const oppo = useRef<HTMLVideoElement>(null)
-    const {opponentStream, setOpponentStream, isJoinMeetPage, setIsJoinMeetPage, MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(streamContext)
+    const { opponentStream, setOpponentStream, isJoinMeetPage, setIsJoinMeetPage, MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(streamContext)
 
-    console.log({opponentStream})
+    console.log({ opponentStream })
     useEffect(() => {
         setMeetingId(param?.get("id"))
         console.log("mounted  =============")
@@ -30,13 +30,28 @@ const Room = () => {
     useEffect(() => {
         console.log("called to set stream to oppo video tag")
         console.log(opponentStream)
-        if (oppo.current && opponentStream?.active) {
-            console.log("setting stream to oppo video tag")
-            console.log(opponentStream)
-            console.log(opponentStream?.getTracks())
-            oppo.current.srcObject = opponentStream
+        if (oppo.current) {
+            let keys = Object?.keys(opponentStream)
+            const opponentStreamContainer = document.getElementById("opponentStream")
+            const div = (document.createElement("div"))
+            keys.forEach(key => {
+                const h1Element = document.createElement("h1")
+                const videoElement = document.createElement("video")
+                videoElement.setAttribute("height", "100px")
+                videoElement.setAttribute("height", "100px")
+                videoElement.setAttribute("autoPlay", "true")
+                videoElement.setAttribute("controls", "true")
+                console.log("setting stream to oppo video tag")
+                console.log(opponentStream[key])
+                h1Element.innerText = key
+                console.log(opponentStream[key]?.getTracks())
+                videoElement.srcObject = opponentStream[key]
+                div?.appendChild(h1Element)
+                div?.appendChild(videoElement)
+            });
+            opponentStreamContainer?.replaceChildren(div)
         }
-    }, [opponentStream])
+    }, [Object.keys(opponentStream)])
 
     useEffect(() => {
         if (ref.current && myStream?.active) {
@@ -51,36 +66,28 @@ const Room = () => {
         //     setMyStream(stream)
         const call = myPeer.call(joinedUserId, myStream);
         call.on("stream", function (remoteStream: MediaStream) {
-            setOpponentStream(remoteStream)
+            const temp: any = {}
+            console.log("setting remote stream of  " + joinedUserId);
+            temp[joinedUserId] = remoteStream;
+            setOpponentStream((prev: any) => {
+                return (
+                    {
+                        ...temp,
+                        ...prev
+                    }
+                )
+            })
             console.log("recieved stream from ")
             console.log(remoteStream)
         })
-        // })
     }
 
-    const handelWithOutStreamCall = (joinedUserId: string) => {
-        const call = myPeer.call(joinedUserId, new MediaStream());
-        call.on("stream", function (remoteStream: MediaStream) {
-            setOpponentStream(remoteStream)
-            console.log("recieved stream from new")
-            console.log(remoteStream)
-        })
-    }
 
     const handelCall = (joinedUserId: string) => {
         console.log("handel  call")
-        // if (myStream && myPeer) {
         console.log("calling " + joinedUserId);
         console.log(audio, video)
-        if ((audio || video) && myStream) {
-            console.log("calling handelStreamCall");
-            handelStreamCall(joinedUserId)
-        } 
-        // else {
-        //     console.log("calling handelWithOutStreamCall");
-        //     handelWithOutStreamCall(joinedUserId)
-        // }
-        // }
+        handelStreamCall(joinedUserId)
     }
 
     const handelJoin = (joinedUserId: string) => {
@@ -91,15 +98,18 @@ const Room = () => {
         }
     }
 
+    const handelCallAllParticipants = (data: any) => {
+        Promise.all(data?.participants?.map((participant: any, i: number) => {
+            handelCall(participant?.participantId)
+        }))
+    }
+
     const notificationHandler = (data: any) => {
         console.log("handel notify", data)
         console.log(data?.type === "establish-connect")
-
         if (data?.type === "establish-connect") {
             setIsJoinMeetPage(false)
-            Promise.all(data?.participants?.map((participant: any, i: number) => {
-                handelCall(participant?.participantId)
-            }))
+            handelCallAllParticipants(data)
         }
     }
 
@@ -113,18 +123,22 @@ const Room = () => {
         if (socket && myPeer) {
             myPeer.on("call", function (call: any) {
                 console.log("recieved call")
-                console.log({audio, video,call})
+                console.log({ audio, video, call })
                 console.log(call?.peer)
+                var peerId = call.peer
                 call.on('stream', function (remoteStream: MediaStream) {
                     console.log("opponent stream");
-                    setOpponentStream(remoteStream)
+                    // setOpponentStream(remoteStream)
+                    const temp: any = {}
+                    temp[peerId] = remoteStream;
+                    setOpponentStream({ ...opponentStream, ...temp })
                 });
-                if(myStream?.active){
-                    console.log("answering active stream")
-                    console.log(myStream)
-                    call.answer(myStream)
-                }
-                console.log(audio , video , myStream)
+                console.log("answering active stream")
+                console.log(myStream)
+                call.answer(myStream)
+                // if (myStream?.active) {
+                // }
+                console.log(audio, video, myStream)
                 // if ((audio || video)) {
                 //     console.log("answering call mystream")
                 // } 
@@ -144,16 +158,16 @@ const Room = () => {
         if (socket && myPeer?._id && userSelector.userId && meetingId) {
             // socket.emit("joined-meeting", { userId: userSelector.userId, meetingId })
         }
-    }, [socket, myPeer?._id, userSelector.userId, meetingId , myStream])
+    }, [socket, myPeer?._id, userSelector.userId, meetingId, myStream])
 
     useEffect(() => {
         if (socket && myPeer?._id && userSelector.userId && meetingId) {
             socket.on(`${meetingId}-notify`, notificationHandler)
             socket.on(`${userSelector?.userId}-meet-join-notification`, notificationHandler)
-            
+
             return () => {
                 socket.off(`${meetingId}-notify`, notificationHandler)
-                socket.off(`${userSelector?.userId}-meet-join-notification`, notificationHandler)            
+                socket.off(`${userSelector?.userId}-meet-join-notification`, notificationHandler)
             }
         }
     }, [socket, myPeer?._id, userSelector.userId, meetingId, meetingSelector.audio, video])
@@ -173,8 +187,19 @@ const Room = () => {
                 <div>
                     <video width={200} height={150} ref={ref} autoPlay controls />
                     <video width={200} height={150} ref={oppo} autoPlay controls />
-                    <div className='opponentStream' >
-                    <h1>Opponent stream</h1>
+                    <div id='opponentStream' >
+                        <h1>Opponent stream</h1>
+                    </div>
+                    <div>
+                        {
+                            Object.entries(opponentStream).map((ele: any, i: number) => {
+                                return (
+                                    <>
+                                        <video src={ele[1]} width={200} height={200} autoPlay controls id={ele[0]} />
+                                    </>
+                                )
+                            })
+                        }
                     </div>
                     <button
                         onClick={() => {
