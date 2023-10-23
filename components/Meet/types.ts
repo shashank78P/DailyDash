@@ -8,4 +8,6 @@ export interface streamContextDto {
     setVideo: any,
     setAudio: any,
     setMyStream: any,
+    opponentStream : MediaStream,
+    setOpponentStream:any,
 }

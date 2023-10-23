@@ -13,7 +13,6 @@ import JoinMeetingRequest from './JoinMeetingRequest';
 
 const Room = () => {
     const [meetingId, setMeetingId] = useState<String | null>(null)
-    const [opponentStream, setOpponentStream] = useState<MediaStream | null>(null)
     const { socket, myPeer }: any = useContext(SocketContext);
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const meetingSelector = useSelector((state: any) => state?.meetingSliceReducer);
@@ -21,14 +20,17 @@ const Room = () => {
     let dispatch = useDispatch();
     const ref = useRef<HTMLVideoElement>(null)
     const oppo = useRef<HTMLVideoElement>(null)
-    const { isJoinMeetPage, setIsJoinMeetPage, MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(streamContext)
+    const {opponentStream, setOpponentStream, isJoinMeetPage, setIsJoinMeetPage, MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(streamContext)
 
+    console.log({opponentStream})
     useEffect(() => {
         setMeetingId(param?.get("id"))
         console.log("mounted  =============")
     }, [])
     useEffect(() => {
-        if (oppo.current && opponentStream) {
+        console.log("called to set stream to oppo video tag")
+        console.log(opponentStream)
+        if (oppo.current && opponentStream?.active) {
             console.log("setting stream to oppo video tag")
             console.log(opponentStream)
             console.log(opponentStream?.getTracks())
@@ -37,7 +39,7 @@ const Room = () => {
     }, [opponentStream])
 
     useEffect(() => {
-        if (ref.current && myStream) {
+        if (ref.current && myStream?.active) {
             console.log("setting stream to video tag")
             ref.current.srcObject = myStream
         }
@@ -45,7 +47,7 @@ const Room = () => {
 
     const handelStreamCall = (joinedUserId: string) => {
         // var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-        // getUserMedia({ video: meetingSelector?.video, audio: meetingSelector?.audio }, function (stream: MediaStream) {
+        // getUserMedia({ video: video, audio: audio }, function (stream: MediaStream) {
         //     setMyStream(stream)
         const call = myPeer.call(joinedUserId, myStream);
         call.on("stream", function (remoteStream: MediaStream) {
@@ -67,10 +69,10 @@ const Room = () => {
 
     const handelCall = (joinedUserId: string) => {
         console.log("handel  call")
-        // if (meetingSelector?.myStream && myPeer) {
+        // if (myStream && myPeer) {
         console.log("calling " + joinedUserId);
-        console.log(meetingSelector?.audio, meetingSelector?.video)
-        if ((meetingSelector?.audio || meetingSelector?.video) && myStream) {
+        console.log(audio, video)
+        if ((audio || video) && myStream) {
             console.log("calling handelStreamCall");
             handelStreamCall(joinedUserId)
         } 
@@ -84,7 +86,7 @@ const Room = () => {
     const handelJoin = (joinedUserId: string) => {
         console.log("handel  join")
         console.log(meetingSelector)
-        if (meetingSelector?.video || meetingSelector?.audio) {
+        if (video || audio) {
             handelCall(joinedUserId)
         }
     }
@@ -103,22 +105,27 @@ const Room = () => {
 
     console.log({ isJoinMeetPage, myStream })
     const startMedia = () => {
-        dispatch(meetingAction.setAudio(true))
-        dispatch(meetingAction.setVideo(true))
+        setAudio(true)
+        setVideo(true)
     }
 
     useEffect(() => {
         if (socket && myPeer) {
             myPeer.on("call", function (call: any) {
-                console.log("recieved call "+call)
-                console.log(meetingSelector?.audio, meetingSelector?.video)
+                console.log("recieved call")
+                console.log({audio, video,call})
+                console.log(call?.peer)
                 call.on('stream', function (remoteStream: MediaStream) {
                     console.log("opponent stream");
                     setOpponentStream(remoteStream)
                 });
-                call.answer(myStream)
-                console.log(meetingSelector?.audio , meetingSelector?.video , myStream)
-                // if ((meetingSelector?.audio || meetingSelector?.video)) {
+                if(myStream?.active){
+                    console.log("answering active stream")
+                    console.log(myStream)
+                    call.answer(myStream)
+                }
+                console.log(audio , video , myStream)
+                // if ((audio || video)) {
                 //     console.log("answering call mystream")
                 // } 
                 // else {
@@ -130,7 +137,7 @@ const Room = () => {
                 // })
             })
         }
-    }, [socket, myPeer, userSelector?.userId, meetingSelector?.audio, meetingSelector?.video, myStream])
+    }, [socket, myPeer, userSelector?.userId, audio, video, myStream])
 
 
     useEffect(() => {
@@ -149,7 +156,7 @@ const Room = () => {
                 socket.off(`${userSelector?.userId}-meet-join-notification`, notificationHandler)            
             }
         }
-    }, [socket, myPeer?._id, userSelector.userId, meetingId, meetingSelector.audio, meetingSelector?.video])
+    }, [socket, myPeer?._id, userSelector.userId, meetingId, meetingSelector.audio, video])
 
     const handleJoinMeet = async () => {
         if (meetingId) {
@@ -166,6 +173,9 @@ const Room = () => {
                 <div>
                     <video width={200} height={150} ref={ref} autoPlay controls />
                     <video width={200} height={150} ref={oppo} autoPlay controls />
+                    <div className='opponentStream' >
+                    <h1>Opponent stream</h1>
+                    </div>
                     <button
                         onClick={() => {
                             startMedia()

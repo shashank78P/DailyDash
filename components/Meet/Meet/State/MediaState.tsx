@@ -13,6 +13,8 @@ interface mediaDto {
 const MedaiState = ({ children }: Props) => {
     streamContext = createContext({});
     const [myStream, setMyStream] = useState<MediaStream | null>(new MediaStream());
+    // const [opponentStream, setOpponentStream] = useState<MediaStream | null>(new MediaStream());
+    const [opponentStream, setOpponentStream] = useState<any>({});
     const [video, setVideo] = useState(false)
     const [audio, setAudio] = useState(false)
     const [isJoinMeetPage, setIsJoinMeetPage] = useState(true)
@@ -57,7 +59,8 @@ const MedaiState = ({ children }: Props) => {
                 setVideo,
                 audio,
                 video,
-                isJoinMeetPage, setIsJoinMeetPage
+                isJoinMeetPage, setIsJoinMeetPage,
+                opponentStream, setOpponentStream
             }}>
                 {
                     children

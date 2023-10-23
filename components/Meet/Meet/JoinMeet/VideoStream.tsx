@@ -19,7 +19,7 @@ const VideoStreamer = () => {
 
     useEffect(() => {
         console.log(" setting stream to video tag")
-        if (videoRef?.current && myStream) {
+        if (videoRef?.current && myStream?.active) {
             videoRef.current.srcObject = myStream
         }
     }, [myStream])
@@ -29,15 +29,15 @@ const VideoStreamer = () => {
         if (Array.isArray(tracks)) {
             tracks.forEach((track: any) => {
                 console.log(track)
-                if (track?.kind == "video" && meetingSelector?.video == false) {
+                if (track?.kind == "video" && video == false) {
                     track.stop();
                 }
-                if (track?.kind == "audio" && meetingSelector?.audio == false) {
+                if (track?.kind == "audio" && audio == false) {
                     track.stop();
                 }
             });
         }
-    }, [meetingSelector?.audio , meetingSelector.video])
+    }, [audio , meetingSelector.video])
 
     const MediaController = (isVideoOn: boolean, isAudioOn: boolean) => {
         mediaAction(isVideoOn, isAudioOn).then((stream) => {
@@ -55,44 +55,44 @@ const VideoStreamer = () => {
                 <video ref={videoRef} className='min-w-[200px] min-h-[250px] bg-slate-400' autoPlay controls />
             </li>
             <li className='flex justify-center items-center'>
-                {meetingSelector?.video &&
+                {video &&
                     <div className='m-2 border border-slate-500 cursor-pointer rounded-full p-2'
                         onClick={() => {
                             console.log("tying to off video ")
-                            dispatch(meetingAction?.setVideo(false))
-                            if (meetingSelector?.audio) {
-                                MediaController(false, meetingSelector?.audio)
+                            setVideo(false)
+                            if (audio) {
+                                MediaController(false, audio)
                             }
                         }}
                     >
                         <VideoICameraIco height={30} width={30} />
                     </div>
                 }
-                {!meetingSelector?.video &&
+                {!video &&
                     <div className='m-2 border border-slate-500 cursor-pointer rounded-full p-2'
                         onClick={() => {
                             console.log("tying to on video ")
-                            dispatch(meetingAction?.setVideo(true))
-                            MediaController(true, meetingSelector?.audio)
+                            setVideo(true)
+                            MediaController(true, audio)
                         }}
                     >
                         <VideoSlashIco height={30} width={30} />
                     </div>
                 }
-                {!meetingSelector?.audio && <div className='m-2 border border-slate-500 cursor-pointer rounded-full p-2'
+                {!audio && <div className='m-2 border border-slate-500 cursor-pointer rounded-full p-2'
                     onClick={() => {
-                        dispatch(meetingAction?.setAudio(true))
-                        MediaController(meetingSelector?.video, true)
+                        setAudio(true)
+                        MediaController(video, true)
                     }}
                 >
                     <UnMuteIco height={25} width={25} />
                 </div>}
-                {meetingSelector?.audio &&
+                {audio &&
                     <div className='m-2 border border-slate-500 cursor-pointer rounded-full p-2'
                         onClick={() => {
-                            dispatch(meetingAction?.setAudio(false))
-                            if (meetingSelector?.video) {
-                                MediaController(meetingSelector?.video, false)
+                            setAudio(false)
+                            if (video) {
+                                MediaController(video, false)
                             }
                         }}
                     >
