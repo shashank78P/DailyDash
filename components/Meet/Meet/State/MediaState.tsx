@@ -15,29 +15,11 @@ const MedaiState = ({ children }: Props) => {
     const [myStream, setMyStream] = useState<MediaStream | null>(new MediaStream());
     const [video, setVideo] = useState(false)
     const [audio, setAudio] = useState(false)
+    const [isJoinMeetPage, setIsJoinMeetPage] = useState(true)
 
     useEffect(() => {
-        // console.log()
-        // if (audio == false) {
-        //     const tracks = myStream?.getTracks();
-        //     if (Array.isArray(tracks)) {
-        //         tracks.forEach((track: any) => {
-        //             if (track?.kind == "audio") {
-        //                 track.stop();
-        //             }
-        //         });
-        //     }
-        // }
-        if (video == false) {
-            const tracks = myStream?.getTracks();
-            if (Array.isArray(tracks)) {
-                tracks.forEach((track: any) => {
-                    console.log(track)
-                    if (track?.kind == "video") {
-                        track.stop();
-                    }
-                });
-            }
+        if (video == false || audio == false) {
+            
         }
         console.log(myStream)
     }, [video, audio])
@@ -64,18 +46,18 @@ const MedaiState = ({ children }: Props) => {
             console.error(err?.message)
         }
     }, [navigator])
-    // console.log(myStream?.getAudioTracks())
-    // console.log(myStream?.getVideoTracks())
 
     return (
         <>
             <streamContext.Provider value={{
                 myStream,
+                setMyStream,
                 MediaActions,
                 setAudio,
                 setVideo,
                 audio,
-                video
+                video,
+                isJoinMeetPage, setIsJoinMeetPage
             }}>
                 {
                     children

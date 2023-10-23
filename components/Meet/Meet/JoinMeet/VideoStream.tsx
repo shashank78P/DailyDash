@@ -14,33 +14,40 @@ const VideoStreamer = () => {
     const meetingSelector = useSelector((state: any) => state?.meetingSliceReducer);
     const dispatch = useDispatch()
 
-    // const { MediaActions, myStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(streamContext)
+    const { MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(streamContext)
     const videoRef = useRef<HTMLVideoElement>()
 
     useEffect(() => {
         console.log(" setting stream to video tag")
-        console.log(meetingSelector?.myStream)
-        if (videoRef?.current && meetingSelector?.myStream) {
-            videoRef.current.srcObject = meetingSelector?.myStream
+        if (videoRef?.current && myStream) {
+            videoRef.current.srcObject = myStream
         }
-    }, [meetingSelector?.myStream])
+    }, [myStream])
 
-    const MediaController = (isVideoOn : boolean, isAudioOn : boolean)=>{
+    useEffect(() => {
+        const tracks = myStream?.getTracks();
+        if (Array.isArray(tracks)) {
+            tracks.forEach((track: any) => {
+                console.log(track)
+                if (track?.kind == "video" && meetingSelector?.video == false) {
+                    track.stop();
+                }
+                if (track?.kind == "audio" && meetingSelector?.audio == false) {
+                    track.stop();
+                }
+            });
+        }
+    }, [meetingSelector?.audio , meetingSelector.video])
+
+    const MediaController = (isVideoOn: boolean, isAudioOn: boolean) => {
         mediaAction(isVideoOn, isAudioOn).then((stream) => {
             console.log(stream);
-            // @ts-ignore
-            dispatch(meetingAction?.setMyStream(stream));
+            setMyStream(stream)
         })
             .catch((err) => {
                 console.error("Error accessing media devices: ", err);
             });
     }
-
-    
-
-    // useEffect(() => {
-    //     MediaActions({ isAudioOn: audio, isVideoOn: video });
-    // }, [video, audio, MediaActions]);
 
     return (
         <>
@@ -53,8 +60,8 @@ const VideoStreamer = () => {
                         onClick={() => {
                             console.log("tying to off video ")
                             dispatch(meetingAction?.setVideo(false))
-                            if(meetingSelector?.audio){
-                                MediaController(false , meetingSelector?.audio)
+                            if (meetingSelector?.audio) {
+                                MediaController(false, meetingSelector?.audio)
                             }
                         }}
                     >
@@ -66,7 +73,7 @@ const VideoStreamer = () => {
                         onClick={() => {
                             console.log("tying to on video ")
                             dispatch(meetingAction?.setVideo(true))
-                            MediaController(true , meetingSelector?.audio)
+                            MediaController(true, meetingSelector?.audio)
                         }}
                     >
                         <VideoSlashIco height={30} width={30} />
@@ -75,7 +82,7 @@ const VideoStreamer = () => {
                 {!meetingSelector?.audio && <div className='m-2 border border-slate-500 cursor-pointer rounded-full p-2'
                     onClick={() => {
                         dispatch(meetingAction?.setAudio(true))
-                        MediaController(meetingSelector?.video , true)
+                        MediaController(meetingSelector?.video, true)
                     }}
                 >
                     <UnMuteIco height={25} width={25} />
@@ -84,8 +91,8 @@ const VideoStreamer = () => {
                     <div className='m-2 border border-slate-500 cursor-pointer rounded-full p-2'
                         onClick={() => {
                             dispatch(meetingAction?.setAudio(false))
-                            if(meetingSelector?.video){
-                                MediaController(meetingSelector?.video , false)
+                            if (meetingSelector?.video) {
+                                MediaController(meetingSelector?.video, false)
                             }
                         }}
                     >

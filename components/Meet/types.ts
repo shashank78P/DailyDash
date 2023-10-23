@@ -3,6 +3,9 @@ export interface streamContextDto {
     MediaActions: any,
     video: boolean,
     audio: boolean,
+    isJoinMeetPage : boolean, 
+    setIsJoinMeetPage : any,
     setVideo: any,
     setAudio: any,
+    setMyStream: any,
 }
