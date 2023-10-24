@@ -1,7 +1,7 @@
 "use client"
 import JoinMeetingRequest from '@/components/Meet/Meet/Room/JoinMeetingRequest';
 import Room from '@/components/Meet/Meet/Room/Room'
-import MedaiState, { streamContext } from '@/components/Meet/Meet/State/MediaState';
+import MedaiState from '@/components/Meet/Meet/State/MediaState';
 
 const page = () => {
   
