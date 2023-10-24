@@ -10,4 +10,8 @@ export interface streamContextDto {
     setMyStream: any,
     opponentStream : any,
     setOpponentStream:any,
+    participantsDetails : Array<any>,
+    setParticipantsDetails : any,
+    opponentNonMediaStreamStream : Array<string>,
+    setOpponentNonMediaStreamStream : any
 }

@@ -1,20 +1,20 @@
 "use client"
-import { streamContext } from '@/components/Meet/Meet/State/MediaState'
+import MediaContext from '@/components/Meet/Meet/State/MediaContext'
 import UnMuteIco from '@/components/assets/UnMuteIco'
 import VideoICameraIco from '@/components/assets/VideoICameraIco'
 import VideoSlashIco from '@/components/assets/VideoSlashIco'
 import VoiceMikeIco from '@/components/assets/VoiceMikeIco'
 import { useState, useContext, useRef, useEffect, memo } from 'react'
-import { streamContextDto } from '../../types'
 import { useDispatch, useSelector } from 'react-redux'
 import { meetingAction } from '@/components/store/slice/meetingSlice';
 import { mediaAction } from '../../type'
+import { streamContextDto } from '../../types'
 
 const VideoStreamer = () => {
     const meetingSelector = useSelector((state: any) => state?.meetingSliceReducer);
     const dispatch = useDispatch()
 
-    const { MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(streamContext)
+    const { MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(MediaContext)
     const videoRef = useRef<HTMLVideoElement>()
 
     useEffect(() => {

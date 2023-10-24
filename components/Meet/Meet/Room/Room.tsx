@@ -1,14 +1,19 @@
-import { streamContext } from '@/components/Meet/Meet/State/MediaState';
+import MediaContext from '@/components/Meet/Meet/State/MediaContext'
 import api from '@/components/lib/api';
 import { useQuery } from 'react-query';
 import { toast } from 'react-toastify';
-import { streamContextDto } from '@/components/Meet/types';
 import { SocketContext } from '@/components/context/SocketContext';
 import { meetingAction } from '@/components/store/slice/meetingSlice';
 import { useSearchParams } from 'next/navigation';
 import { memo, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import JoinMeetingRequest from './JoinMeetingRequest';
+import { createCustomStream, mediaAction } from '../../type';
+import UnMuteIco from '@/components/assets/UnMuteIco';
+import VideoSlashIco from '@/components/assets/VideoSlashIco';
+import VoiceMikeIco from '@/components/assets/VoiceMikeIco';
+import VideoICameraIco from '@/components/assets/VideoICameraIco';
+import { streamContextDto } from '../../types';
 
 
 const Room = () => {
@@ -20,38 +25,62 @@ const Room = () => {
     let dispatch = useDispatch();
     const ref = useRef<HTMLVideoElement>(null)
     const oppo = useRef<HTMLVideoElement>(null)
-    const { opponentStream, setOpponentStream, isJoinMeetPage, setIsJoinMeetPage, MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(streamContext)
+    const { opponentNonMediaStreamStream, setOpponentNonMediaStreamStream, participantsDetails, setParticipantsDetails, opponentStream, setOpponentStream, isJoinMeetPage, setIsJoinMeetPage, MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(MediaContext)
 
-    console.log({ opponentStream })
+    const { data, isLoading, refetch: refetchAllActivePArticipants } = useQuery(["join-meet", meetingId], () => {
+        return api.get(`/meet/get-all-active-participants?meetingId=${meetingId}`)
+    },
+        {
+            onSuccess({ data }) {
+                console.log(data)
+                setParticipantsDetails(data)
+            },
+            onError(err: any) {
+                toast?.error(err?.response?.data?.message)
+            },
+            enabled: Boolean(meetingId && (!isJoinMeetPage)),
+            keepPreviousData: true,
+            refetchOnMount: false,
+            refetchOnWindowFocus: false
+        }
+    )
+
+    console.log(opponentStream)
     useEffect(() => {
         setMeetingId(param?.get("id"))
+        console.log(opponentStream)
         console.log("mounted  =============")
     }, [])
     useEffect(() => {
-        console.log("called to set stream to oppo video tag")
-        console.log(opponentStream)
-        if (oppo.current) {
+        if (opponentStream) {
+            console.log("called to set stream to oppo video tag")
+            console.log(opponentStream)
             let keys = Object?.keys(opponentStream)
             const opponentStreamContainer = document.getElementById("opponentStream")
             const div = (document.createElement("div"))
             keys.forEach(key => {
-                const h1Element = document.createElement("h1")
-                const videoElement = document.createElement("video")
-                videoElement.setAttribute("height", "100px")
-                videoElement.setAttribute("height", "100px")
-                videoElement.setAttribute("autoPlay", "true")
-                videoElement.setAttribute("controls", "true")
-                console.log("setting stream to oppo video tag")
-                console.log(opponentStream[key])
-                h1Element.innerText = key
-                console.log(opponentStream[key]?.getTracks())
-                videoElement.srcObject = opponentStream[key]
-                div?.appendChild(h1Element)
-                div?.appendChild(videoElement)
+                console.log({ key, opponentNonMediaStreamStream })
+                if (opponentNonMediaStreamStream.includes(key)) {
+
+                } else {
+                    const h1Element = document.createElement("h1")
+                    const videoElement = document.createElement("video")
+                    videoElement.setAttribute("height", "100px")
+                    videoElement.setAttribute("height", "100px")
+                    videoElement.setAttribute("autoPlay", "true")
+                    videoElement.setAttribute("controls", "true")
+                    console.log("setting stream to oppo video tag")
+                    console.log(opponentStream[key])
+                    h1Element.innerText = key
+                    console.log(opponentStream[key]?.getTracks())
+                    videoElement.srcObject = opponentStream[key]
+                    div?.appendChild(h1Element)
+                    div?.appendChild(videoElement)
+                }
             });
             opponentStreamContainer?.replaceChildren(div)
         }
-    }, [Object.keys(opponentStream)])
+    }, [opponentStream, Object.keys(opponentStream), opponentNonMediaStreamStream])
 
     useEffect(() => {
         if (ref.current && myStream?.active) {
@@ -60,12 +89,119 @@ const Room = () => {
         }
     }, [myStream, ref, isJoinMeetPage])
 
-    const handelStreamCall = (joinedUserId: string) => {
-        // var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-        // getUserMedia({ video: video, audio: audio }, function (stream: MediaStream) {
+    // to on-off video or audio and to set myStream
+    const MediaController = (isVideoOn: boolean, isAudioOn: boolean) => {
+        console.log({ isVideoOn, isAudioOn })
+        mediaAction(isVideoOn, isAudioOn).then((stream) => {
+            if (participantsDetails && Array.isArray(participantsDetails)) {
+                Promise.all(participantsDetails?.map((participant: any, i: number) => {
+                    // handelCall(participant?.participantId)
+                    peerDataConnection({ type: "sending-media-stream", opponentId: userSelector?.userId }, participant?.participantId);
+                    console.log("stream")
+                    console.log(stream)
+                    handelOpponentStreamCall(participant?.participantId, stream)
+                    // removing joined user id from opponentNonMediaStreamStream
+                    setOpponentNonMediaStreamStream((prev: Array<String>) => {
+                        if (prev.includes(participant?.participantId)) {
+                            return prev.filter(id => id !== participant?.participantId)
+                        }
+                        else {
+                            return prev
+                        }
+                    })
+                    setMyStream(stream)
+                }))
+            }
+            console.log(stream);
+            setMyStream(stream)
+        })
+            .catch((err) => {
+                console.error("Error accessing media devices: ", err);
+            });
+    }
+
+    useEffect(() => {
+        if (socket && myPeer && (!isJoinMeetPage)) {
+            myPeer.on("call", function (call: any) {
+                console.log("recieved call")
+                console.log({ audio, video, call })
+                console.log(call?.peer)
+                var peerId = call.peer
+                if (myStream.active) {
+                    console.log("answering active stream")
+                    call.answer(myStream)
+                    console.log(myStream)
+                }
+                call.on('stream', function (remoteStream: MediaStream) {
+                    console.log("opponent stream");
+                    console.log(remoteStream);
+                    // setOpponentStream(remoteStream)
+                    const temp: any = {}
+                    temp[peerId] = remoteStream;
+                    setOpponentStream({ ...opponentStream, ...temp })
+                });
+                console.log(audio, video, myStream)
+            })
+        }
+    }, [socket, myPeer, userSelector?.userId, audio, video, myStream, isJoinMeetPage])
+
+    useEffect(() => {
+        if (myPeer) {
+            console.log({ myPeer })
+            myPeer.on('connection', function (conn: any) {
+                conn.on('data', function (data: any) {
+                    console.log("connection sucessfull");
+                    console.log(data);
+                    handelPeerSendData(data)
+                });
+            });
+        }
+    }, [myPeer])
+
+    const handelSendingNonMediaStream = (opponentId: string) => {
+        console.log("handelNonMediaStream")
+        setOpponentNonMediaStreamStream([...opponentNonMediaStreamStream, opponentId])
+    }
+
+    const handelSendingMediaStream = (opponentId: string) => {
+        setOpponentNonMediaStreamStream((prev: Array<String>) => {
+            if (prev.includes(opponentId)) {
+                return prev.filter(id => id !== opponentId)
+            }
+            else {
+                return prev
+            }
+        })
+    }
+
+    const handelPeerSendData = (data: any) => {
+        switch (data?.type) {
+            case "sending-non-custom-created-media-stream":
+                handelSendingNonMediaStream(data?.opponentId)
+                break;
+            case "sending-media-stream":
+                handelSendingMediaStream(data?.opponentId)
+                break;
+        }
+    }
+
+    const peerDataConnection = (data: any, opponentId: string) => {
+        var conn = myPeer.connect(opponentId);
+        console.log("connecting to " + opponentId)
+        conn.on('open', function () {
+            conn.send(data);
+        })
+    }
+
+    console.log({ opponentNonMediaStreamStream })
+
+    const handelOpponentStreamCall = (joinedUserId: string, stream: MediaStream) => {
         //     setMyStream(stream)
-        const call = myPeer.call(joinedUserId, myStream);
+        console.log("calling to " + joinedUserId)
+        const call = myPeer.call(joinedUserId, stream);
+
         call.on("stream", function (remoteStream: MediaStream) {
+            console.log("recieved stream from ")
             const temp: any = {}
             console.log("setting remote stream of  " + joinedUserId);
             temp[joinedUserId] = remoteStream;
@@ -77,7 +213,6 @@ const Room = () => {
                     }
                 )
             })
-            console.log("recieved stream from ")
             console.log(remoteStream)
         })
     }
@@ -87,7 +222,29 @@ const Room = () => {
         console.log("handel  call")
         console.log("calling " + joinedUserId);
         console.log(audio, video)
-        handelStreamCall(joinedUserId)
+        if (video || audio) {
+            peerDataConnection({ type: "sending-media-stream", opponentId: userSelector?.userId }, joinedUserId);
+            var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+            getUserMedia({ video: video, audio: audio }, function (stream: MediaStream) {
+                // calling to joined user
+                handelOpponentStreamCall(joinedUserId, stream)
+                // removing joined user id from opponentNonMediaStreamStream
+                setOpponentNonMediaStreamStream((prev: Array<String>) => {
+                    if (prev.includes(joinedUserId)) {
+                        return prev.filter(id => id !== joinedUserId)
+                    }
+                    else {
+                        return prev
+                    }
+                })
+                setMyStream(stream)
+            })
+        } else {
+            console.log("sending custom created stream")
+            peerDataConnection({ type: "sending-non-custom-created-media-stream", opponentId: userSelector?.userId }, joinedUserId);
+            const customAudioStream = createCustomStream()
+            handelOpponentStreamCall(joinedUserId, customAudioStream)
+        }
     }
 
     const handelJoin = (joinedUserId: string) => {
@@ -107,9 +264,13 @@ const Room = () => {
     const notificationHandler = (data: any) => {
         console.log("handel notify", data)
         console.log(data?.type === "establish-connect")
-        if (data?.type === "establish-connect") {
-            setIsJoinMeetPage(false)
-            handelCallAllParticipants(data)
+        switch (data?.type) {
+            case "establish-connect":
+                setIsJoinMeetPage(false)
+                handelCallAllParticipants(data)
+                break;
+            // case "non-video-stream":
+
         }
     }
 
@@ -118,41 +279,6 @@ const Room = () => {
         setAudio(true)
         setVideo(true)
     }
-
-    useEffect(() => {
-        if (socket && myPeer) {
-            myPeer.on("call", function (call: any) {
-                console.log("recieved call")
-                console.log({ audio, video, call })
-                console.log(call?.peer)
-                var peerId = call.peer
-                call.on('stream', function (remoteStream: MediaStream) {
-                    console.log("opponent stream");
-                    // setOpponentStream(remoteStream)
-                    const temp: any = {}
-                    temp[peerId] = remoteStream;
-                    setOpponentStream({ ...opponentStream, ...temp })
-                });
-                console.log("answering active stream")
-                console.log(myStream)
-                call.answer(myStream)
-                // if (myStream?.active) {
-                // }
-                console.log(audio, video, myStream)
-                // if ((audio || video)) {
-                //     console.log("answering call mystream")
-                // } 
-                // else {
-                //     console.log("answering call new MediaStream")
-                //     call.answer(new MediaStream())
-                // }
-                // var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-                // getUserMedia({ video: true, audio: true, screen: true }, async function (stream: MediaStream) {
-                // })
-            })
-        }
-    }, [socket, myPeer, userSelector?.userId, audio, video, myStream])
-
 
     useEffect(() => {
         if (socket && myPeer?._id && userSelector.userId && meetingId) {
@@ -185,21 +311,54 @@ const Room = () => {
                 <JoinMeetingRequest handleJoinMeet={handleJoinMeet} />
                 :
                 <div>
+                    <div className='w-full flex'>
+                        {video &&
+                            <div className='m-2 border border-slate-500 cursor-pointer rounded-full p-2'
+                                onClick={() => {
+                                    console.log("tying to off video ")
+                                    setVideo(false)
+                                    MediaController(false, audio)
+                                }}
+                            >
+                                <VideoICameraIco height={30} width={30} />
+                            </div>
+                        }
+                        {!video &&
+                            <div className='m-2 border border-slate-500 cursor-pointer rounded-full p-2'
+                                onClick={() => {
+                                    console.log("tying to on video ")
+                                    setVideo(true)
+                                    MediaController(true, audio)
+                                }}
+                            >
+                                <VideoSlashIco height={30} width={30} />
+                            </div>
+                        }
+                        {!audio && <div className='m-2 border border-slate-500 cursor-pointer rounded-full p-2'
+                            onClick={() => {
+                                setAudio(true)
+                                MediaController(video, true)
+                            }}
+                        >
+                            <UnMuteIco height={25} width={25} />
+                        </div>}
+                        {audio &&
+                            <div className='m-2 border border-slate-500 cursor-pointer rounded-full p-2'
+                                onClick={() => {
+                                    setAudio(false)
+                                    if (video) {
+                                        MediaController(video, false)
+                                    }
+                                }}
+                            >
+                                <VoiceMikeIco height={25} width={25} />
+                            </div>
+                        }
+                    </div>
                     <video width={200} height={150} ref={ref} autoPlay controls />
                     <video width={200} height={150} ref={oppo} autoPlay controls />
                     <div id='opponentStream' >
                         <h1>Opponent stream</h1>
-                    </div>
-                    <div>
-                        {
-                            Object.entries(opponentStream).map((ele: any, i: number) => {
-                                return (
-                                    <>
-                                        <video src={ele[1]} width={200} height={200} autoPlay controls id={ele[0]} />
-                                    </>
-                                )
-                            })
-                        }
                     </div>
                     <button
                         onClick={() => {
@@ -213,7 +372,8 @@ const Room = () => {
                             handelCall(userSelector?.userId == "6522964ed4e29dd9fb7c8547" ? "651f9f640fda2143f57d4a54" : "6522964ed4e29dd9fb7c8547")
                         }}
                     >call</button>
-                </div>}
+                </div>
+            }
         </>
         // <div className='w-[100vw - 50px] overflow-y-scroll'>
         //     {/* <DragableResizeDiv initPosition={{

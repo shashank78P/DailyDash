@@ -1,9 +1,9 @@
 "use client"
 import React, { useState, createContext, ReactNode, useCallback, useEffect } from 'react'
+import MediaContext from './MediaContext'
 interface Props {
     children: ReactNode
 }
-export let streamContext: any = null;
 
 interface mediaDto {
     isVideoOn: Boolean
@@ -11,17 +11,18 @@ interface mediaDto {
 }
 
 const MedaiState = ({ children }: Props) => {
-    streamContext = createContext({});
     const [myStream, setMyStream] = useState<MediaStream | null>(new MediaStream());
     // const [opponentStream, setOpponentStream] = useState<MediaStream | null>(new MediaStream());
+    const [opponentNonMediaStreamStream, setOpponentNonMediaStreamStream] = useState<Array<String>>([]);
     const [opponentStream, setOpponentStream] = useState<any>({});
+    const [participantsDetails, setParticipantsDetails] = useState<any>([]);
     const [video, setVideo] = useState(false)
     const [audio, setAudio] = useState(false)
     const [isJoinMeetPage, setIsJoinMeetPage] = useState(true)
 
     useEffect(() => {
         if (video == false || audio == false) {
-            
+
         }
         console.log(myStream)
     }, [video, audio])
@@ -51,7 +52,7 @@ const MedaiState = ({ children }: Props) => {
 
     return (
         <>
-            <streamContext.Provider value={{
+            <MediaContext.Provider value={{
                 myStream,
                 setMyStream,
                 MediaActions,
@@ -60,12 +61,14 @@ const MedaiState = ({ children }: Props) => {
                 audio,
                 video,
                 isJoinMeetPage, setIsJoinMeetPage,
-                opponentStream, setOpponentStream
+                opponentStream, setOpponentStream,
+                participantsDetails, setParticipantsDetails,
+                opponentNonMediaStreamStream, setOpponentNonMediaStreamStream
             }}>
                 {
                     children
                 }
-            </streamContext.Provider>
+            </MediaContext.Provider>
         </>
     )
 }
