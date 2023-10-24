@@ -91,7 +91,7 @@ const Room = () => {
                     Promise.all(participantsDetails?.map((participant: any, i: number) => {
                         console.log("sending-media-stream")
                         console.log(stream)
-                        console.log({video , audio})
+                        console.log({ video, audio })
                         peerDataConnection({ type: "sending-media-stream", opponentId: userSelector?.userId }, participant?.participantId);
                         handelOpponentStreamCall(participant?.participantId, stream)
                         setMyStream(stream)
@@ -107,7 +107,7 @@ const Room = () => {
             }
         }
     }
-        , [video, audio, isJoinMeetPage, participantsDetails , myPeer , socket])
+        , [video, audio, isJoinMeetPage, participantsDetails, myPeer, socket])
 
     useEffect(() => {
         if (socket && myPeer && (!isJoinMeetPage)) {
@@ -269,6 +269,17 @@ const Room = () => {
         }))
     }
 
+    const handelParticipantsLefMeeting = (data: any) => {
+        const { leftUserId } = data
+        if (leftUserId) {
+            setOpponentNonMediaStreamStream((prev: any) => prev.filter((id: string) => id === leftUserId))
+            setOpponentStream((prev: any) => {
+                const temp = prev;
+                delete temp[leftUserId];
+                return temp
+            })
+        }
+    }
     const notificationHandler = (data: any) => {
         console.log("handel notify", data)
         console.log(data?.type === "establish-connect")
@@ -276,6 +287,9 @@ const Room = () => {
             case "establish-connect":
                 setIsJoinMeetPage(false)
                 // handelCallAllParticipants(data)
+                break;
+            case "participants-left-meeting":
+                handelParticipantsLefMeeting(data)
                 break;
             // case "non-video-stream":
 
@@ -309,6 +323,13 @@ const Room = () => {
     const handleJoinMeet = async () => {
         if (meetingId) {
             socket?.emit("joinMeet", { meetingId })
+        }
+    }
+
+    const handelLeaveMeeting = async () => {
+        if (meetingId) {
+            socket?.emit("leaveMeet", { meetingId })
+            setIsJoinMeetPage(true)
         }
     }
 
@@ -380,6 +401,12 @@ const Room = () => {
                             handelCall(userSelector?.userId == "6522964ed4e29dd9fb7c8547" ? "651f9f640fda2143f57d4a54" : "6522964ed4e29dd9fb7c8547")
                         }}
                     >call</button>
+                    <br />
+                    <button type="button"
+                        onClick={handelLeaveMeeting}
+                    >
+                        leave meeting
+                    </button>
                 </div>
             }
         </>
