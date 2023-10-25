@@ -32,6 +32,7 @@ export default function RootLayout({
 
   console.log(pathname);
   const restriction_SideBar__Tab = ["/login", "/reset-password", "/forget-password", "/block", "/signup"];
+  const restriction__Tab = ["/meet" , "/trial"];
   return (
     <html lang="en">
       <title>DailyDash</title>
@@ -48,7 +49,7 @@ export default function RootLayout({
                     {/* <div className='flex w-full flex-col'> */}
                     <div className='w-full  h-screen flex flex-col justify-between '>
                       {children}
-                      {!restriction_SideBar__Tab.includes(pathname) && <TabSection />}
+                      {!restriction_SideBar__Tab.includes(pathname) && !restriction__Tab.includes(pathname) && <TabSection />}
                     </div>
                     {/* </div> */}
                   </div>

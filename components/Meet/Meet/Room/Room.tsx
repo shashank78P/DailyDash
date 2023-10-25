@@ -410,58 +410,6 @@ const Room = () => {
                 </div>
             }
         </>
-        // <div className='w-[100vw - 50px] overflow-y-scroll'>
-        //     {/* <DragableResizeDiv initPosition={{
-        //         x: 0,
-        //         y: 0
-        //     }} containerWidth={200} containerHeight={200} containerMinWidth={200} containerMinHeight={200} containerMaxWidth={500} containerMaxHeight={500} >
-        //         <div className='w-full h-full bg-red-200'></div>
-        //     </DragableResizeDiv> */}
-
-        //     <ul className='w-full px-1'>
-        //         <li className='w-full mb-2'>
-        //             <ul className='flex justify-between items-center'>
-        //                 <li className='font-bold text-xl'>Title</li>
-        //                 <li className='flex '>
-        //                     <span className='mr-2'>Meeting ends in:</span>
-        //                     <span className='text-red-700'>02 : 30 min</span>
-        //                 </li>
-        //             </ul>
-        //         </li>
-        //         <li className='w-full'>
-        //             <ul className='flex justify-between items-center'>
-        //                 <li className='flex items-center'>
-        //                     <div className='flex  justify-start items-center mr-2'>
-        //                         <div></div>
-        //                         <div>On-Call Participants</div>
-        //                         <div className='ml-2 p-1 px-1.5 bg-green-200 text-green-700 text-sm rounded-lg'>10</div>
-        //                     </div>
-        //                     <div className='flex  justify-start items-center'>
-        //                         <div></div>
-        //                         <div>Absent Participants</div>
-        //                         <div>20</div>
-        //                     </div>
-        //                 </li>
-        //                 <li>
-        //                     <div>
-        //                         <div></div>
-        //                         <div>Absent Participants</div>
-        //                     </div>
-        //                 </li>
-        //             </ul>
-        //         </li>
-        //     </ul>
-
-        //     {/* meeting participants card */}
-
-        //     <div className=' grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-2 grid-flow-dense py-2'>
-        //         <div className='min-w-[300px] min-h-[250px] border border-slate-500 p-2 '>1</div>
-        //         <div className='min-w-[300px] min-h-[250px] border border-slate-500 p-2 '>2</div>
-        //         <div className='min-w-[300px] min-h-[250px] border border-slate-500 p-2 '>3</div>
-        //         <div className='min-w-[300px] min-h-[250px] border border-slate-500 p-2 '>4</div>
-        //         <div className='min-w-[300px] min-h-[250px] border border-slate-500 p-2 '>8</div>
-        //     </div>
-        // </div >
     )
 }
 
