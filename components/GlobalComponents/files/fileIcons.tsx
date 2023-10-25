@@ -15,7 +15,7 @@ const FileIcons = ({ acceptedFiles }: { acceptedFiles: File[] }) => {
                 acceptedFiles?.map((file, i) => {
                     const fileType = acceptedFiles?.[0]?.["type"].split("/")?.[1]
                     return (
-                        <ul className=' border bg-slate-100 p-2 flex justify-between items-center rounded-lg'>
+                        <ul key={i} className=' border bg-slate-100 p-2 flex justify-between items-center rounded-lg'>
                             <li className='flex justify-center items-center'>
                                 <div className='w-10 h-10 m-2'>
                                     {

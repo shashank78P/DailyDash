@@ -43,7 +43,7 @@ const ChatUserList = ({ selectedChat, setSelectedChat }: ChatUserListDto) => {
                     {
                         Array.isArray(data?.data) && data?.data?.map((ele: any, i: number) => {
                             return (
-                                <ul
+                                <ul key={i}
                                     onClick={() => {
                                         setSelectedChat({
                                             opponentId:ele?.opponentId,

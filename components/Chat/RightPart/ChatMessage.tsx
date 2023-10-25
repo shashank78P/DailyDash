@@ -100,7 +100,7 @@ const ChatMessage = ({ selectedChat, socket ,refetch : refetchChatsNotification}
                 {
                     socketMsg?.map((ele, i) => {
                         return (
-                            <div className={`w-full mb-2 flex ${userSelector?.userId == ele?.from ? " justify-end" : " justify-start "} items-center`}>
+                            <div key={i} className={`w-full mb-2 flex ${userSelector?.userId == ele?.from ? " justify-end" : " justify-start "} items-center`}>
                                 <ul className={`min-w-[100px] border p-2 rounded ${userSelector?.userId == ele?.from ? " bg-purple-300 " : " bg-purple-100 "}`}>
                                     <li>
                                         <div id={i.toString()}>{ele?.message}</div>

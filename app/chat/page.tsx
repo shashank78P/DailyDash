@@ -24,7 +24,7 @@ import io from "socket.io-client";
 // const socket = io("ws://localhost:3001");
 // const socket = io("http://localhost:3001/polls",{ auth : { userId : "123" } });
 
-const index = () => {
+const Page = () => {
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const socket: any = useContext(SocketContext);
     const [messages, setMessages] = useState<Array<string>>([]);
@@ -142,7 +142,7 @@ const index = () => {
                                     selectedChat={selectedChat}
                                     socket={socket}
                                     refetch={refetchUnReadMessages}
-                                    isViewProfile= {isViewProfile}
+                                    // isViewProfile= {isViewProfile}
                                 />
                             </div>
                             <ChatActions
@@ -162,4 +162,4 @@ const index = () => {
     )
 }
 
-export default index
+export default Page
