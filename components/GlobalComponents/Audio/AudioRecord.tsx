@@ -49,11 +49,11 @@ const AudioRecord = ({ isOpen, setIsOpen, sendFile}: AudioRecordDto) => {
             <div>
 
                 <ReactMediaRecorder audio render={({ clearBlobUrl, error, mediaBlobUrl, pauseRecording, resumeRecording, startRecording, status, stopRecording, previewAudioStream }) => {
-                    useEffect(() => {
-                        if (mediaBlobUrl) {
-                            setMediaUrl([...mediaUrl, mediaBlobUrl])
-                        }
-                    }, [mediaBlobUrl])
+                    // useEffect(() => {
+                    //     if (mediaBlobUrl) {
+                    //         setMediaUrl([...mediaUrl, mediaBlobUrl])
+                    //     }
+                    // }, [mediaBlobUrl])
                     return (
                         <>
                             <Dialog open={isOpen} >
@@ -116,6 +116,7 @@ const AudioRecord = ({ isOpen, setIsOpen, sendFile}: AudioRecordDto) => {
                                                             setIsStarted(false)
                                                             setIsPlay(false)
                                                             stopRecording()
+                                                            setMediaUrl([...mediaUrl, mediaBlobUrl])
                                                         }}
                                                     >
                                                         <SaveIco width={20} height={20} color='white' />
@@ -141,7 +142,7 @@ const AudioRecord = ({ isOpen, setIsOpen, sendFile}: AudioRecordDto) => {
                                         {
                                             Array.isArray(mediaUrl) && mediaUrl?.map((url, i) => {
                                                 return (
-                                                    <div className=' flex items-center justify-center'>
+                                                    <div className=' flex items-center justify-center' key={i}>
                                                         <audio
                                                             className='my-2'
                                                             src={url}

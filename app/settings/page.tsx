@@ -1,6 +1,6 @@
 import React from 'react'
 
-const pages = () => {
+const Page = () => {
     return (
         <>
             <div className='flex w-full h-screen'>
@@ -13,4 +13,4 @@ const pages = () => {
     )
 }
 
-export default pages
+export default Page

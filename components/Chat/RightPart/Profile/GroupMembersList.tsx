@@ -22,10 +22,10 @@ type GroupMembersListDto = {
     options: any,
 }
 
-const GroupMembersList = ({ selectedChat, role ,options }: GroupMembersListDto) => {
+const GroupMembersList = ({ selectedChat, role, options }: GroupMembersListDto) => {
     const [skip, setSkip] = useState(0)
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
-    const {socket}: any = useContext(SocketContext);
+    const { socket }: any = useContext(SocketContext);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [index, setIndex] = useState<number>(-1);
     ;
@@ -51,7 +51,7 @@ const GroupMembersList = ({ selectedChat, role ,options }: GroupMembersListDto) 
                 toast.error(err?.response?.data?.message)
             },
             refetchOnMount: true,
-            keepPreviousData : true
+            keepPreviousData: true
         }
     );
 
@@ -72,7 +72,7 @@ const GroupMembersList = ({ selectedChat, role ,options }: GroupMembersListDto) 
             toast.error(err?.message)
         }
     })
-    
+
     const { mutate: removeUser } = useMutation((data: any) => {
         return api.delete(`/chats/remove-user-from-group?belongsTo=${selectedChat?.belongsTo}&userId=${data?.userId}&opponentName=${data?.opponentName}`)
     }, {
@@ -110,6 +110,7 @@ const GroupMembersList = ({ selectedChat, role ,options }: GroupMembersListDto) 
                         const color = (colorList[ele?.role]) ? colorList[ele?.role] : ""
                         return (
                             <ul
+                                key={i}
                                 onClick={() => {
                                 }}
                                 className='w-full h-full flex justify-start items-center p-2 px-4 hover:bg-slate-100 border-b-slate-100 border-b-2'
@@ -120,7 +121,7 @@ const GroupMembersList = ({ selectedChat, role ,options }: GroupMembersListDto) 
                                 <li className='w-full h-16 flex justify-between items-start ml-2'>
                                     <ul className='w-full flex flex-col justify-evenly h-16'>
                                         <li className='flex justify-between items-start flex-col'>
-                                            <span className='text-lg font-medium capitalize'>{ userSelector?.userId == ele?.memeberId ? "you" : ele?.name }</span>
+                                            <span className='text-lg font-medium capitalize'>{userSelector?.userId == ele?.memeberId ? "you" : ele?.name}</span>
                                             <span className='text-xs font-light text-slate-600'>{ele?.email}</span>
                                         </li>
                                     </ul>
@@ -160,12 +161,12 @@ const GroupMembersList = ({ selectedChat, role ,options }: GroupMembersListDto) 
                                                 // width: '100px',
                                             },
                                         }}
-                                        style={{"padding" : "0px"}}
+                                        style={{ "padding": "0px" }}
                                     >
                                         {role == "ADMIN" && <MenuItem key={"delete"} >
                                             <div className=' flex w-full  '
                                                 onClick={() => {
-                                                    removeUser({ belongsTo: selectedChat?.belongsTo, userId: ele?.memeberId , opponentName : ele?.name })
+                                                    removeUser({ belongsTo: selectedChat?.belongsTo, userId: ele?.memeberId, opponentName: ele?.name })
                                                 }}
                                             >
                                                 <span className='mr-2'>
@@ -177,7 +178,7 @@ const GroupMembersList = ({ selectedChat, role ,options }: GroupMembersListDto) 
                                         {role == "ADMIN" && ele?.role !== "ADMIN" && <MenuItem key={"admin"}>
                                             <div className='flex w-full '
                                                 onClick={() => {
-                                                    postChangeRole({ belongsTo: selectedChat?.belongsTo, role: "ADMIN", userId: ele?.memeberId , opponentName : ele?.name})
+                                                    postChangeRole({ belongsTo: selectedChat?.belongsTo, role: "ADMIN", userId: ele?.memeberId, opponentName: ele?.name })
                                                 }}
                                             >
                                                 <span className='mr-2'>
@@ -189,7 +190,7 @@ const GroupMembersList = ({ selectedChat, role ,options }: GroupMembersListDto) 
                                         {role == "ADMIN" && ele?.role !== "MEMBER" && <MenuItem key={"member"}>
                                             <div className='flex justify-start w-full '
                                                 onClick={() => {
-                                                    postChangeRole({ belongsTo: selectedChat?.belongsTo, role: "MEMBER", userId: ele?.memeberId , opponentName : ele?.name })
+                                                    postChangeRole({ belongsTo: selectedChat?.belongsTo, role: "MEMBER", userId: ele?.memeberId, opponentName: ele?.name })
                                                 }}
                                             >
                                                 <span className='mr-2'>

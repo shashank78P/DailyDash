@@ -1,3 +1,4 @@
+// @ts-nocheck
 export function mediaAction(isVideoOn: boolean, isAudioOn: boolean) {
     return new Promise((resolve, reject) => {
         console.log("==================================")
@@ -29,8 +30,10 @@ export const createCustomStream = () => {
     const width =200
     const height =200
 
-    const canvas = Object.assign(document.createElement('canvas'), { width, height });
-    canvas.getContext('2d').fillRect(0, 0, width, height);
+    const canvas : HTMLCanvasElement = Object.assign(document.createElement('canvas'), { width, height });
+    if(canvas){
+        canvas?.getContext('2d').fillRect(0, 0, width, height);
+    }
 
     return canvas.captureStream();
 };

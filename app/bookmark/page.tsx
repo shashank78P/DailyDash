@@ -1,15 +1,13 @@
-import SideFolderFrame from '@/components/BookMark/sideFolder/sideFolderFrame'
-import React from 'react'
-
-const index = () => {
+// import SideFolderFrame from '@/components/BookMark/sideFolder/sideFolderFrame'
+const Page = () => {
     return (
         <>
             {/* <SideBar /> */}
             <div className='h-screen'>
-                <SideFolderFrame />
+                {/* <SideFolderFrame /> */}
             </div>
         </>
     )
 }
 
-export default index
+export default Page

@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
-const Block = () => {
+const Page = () => {
 
     type blockType = {
         password: string,
@@ -73,4 +73,4 @@ const Block = () => {
   )
 }
 
-export default Block
+export default Page

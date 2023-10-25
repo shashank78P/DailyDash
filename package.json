@@ -35,7 +35,7 @@
     "peerjs": "^1.5.1",
     "platform": "^1.3.6",
     "platform.js": "^1.0.0",
-    "postcss": "8.4.24",
+    "postcss": "^8.4.31",
     "re-resizable": "^6.9.11",
     "react": "18.2.0",
     "react-doc-viewer": "^0.1.5",

@@ -18,7 +18,7 @@ import { useSelector } from 'react-redux'
 import { SocketContext } from '@/components/context/SocketContext'
 import { toast } from 'react-toastify'
 
-const profile = ({ setIsViewProfile, selectedChat, setRefetchList ,setSelectedChat}: any) => {
+const Profile = ({ setIsViewProfile, selectedChat, setRefetchList ,setSelectedChat}: any) => {
     const [role, setRole] = useState("MEMBER")
     const [options, setOptions] = useState("")
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
@@ -100,4 +100,4 @@ const profile = ({ setIsViewProfile, selectedChat, setRefetchList ,setSelectedCh
     )
 }
 
-export default profile
+export default Profile

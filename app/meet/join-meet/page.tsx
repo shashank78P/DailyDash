@@ -11,7 +11,7 @@ import { useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
-const page = () => {
+const Page = () => {
   const router = useRouter()
   const param = useSearchParams();
   const dispatch = useDispatch()
@@ -121,4 +121,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

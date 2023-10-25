@@ -11,37 +11,37 @@ import VideoICameraIco from '@/components/assets/VideoICameraIco';
 import VoiceMikeIco from '@/components/assets/VoiceMikeIco';
 import NoteIco from '@/components/assets/NoteIco';
 
-const ChatGroupList = ({ selectedChat, setSelectedChat ,refetchList ,refetchUnReadMessages}: ChatUserListDto) => {
+const ChatGroupList = ({ selectedChat, setSelectedChat, refetchList, refetchUnReadMessages }: ChatUserListDto) => {
     const limit = 50;
     const [skip, setSkip] = useState(0)
-    const {socket}: any = useContext(SocketContext);
-    const { data, error, isLoading , refetch } = useQuery(['groupList',refetchList,selectedChat?.belongsTo], () => {
+    const { socket }: any = useContext(SocketContext);
+    const { data, error, isLoading, refetch } = useQuery(['groupList', refetchList, selectedChat?.belongsTo], () => {
         return api.get("/chats/getAllInitiatedChatGroupList")
     },
-    {
-        refetchOnMount : true
-    }
+        {
+            refetchOnMount: true
+        }
     );
 
-    function getFileTypeMessage(fileType : string){
-        if(fileType){
+    function getFileTypeMessage(fileType: string) {
+        if (fileType) {
             const file = fileType.split("/")[0]
 
-            if(file.toLowerCase() === "audio"){
+            if (file.toLowerCase() === "audio") {
                 return <>
-                    <VoiceMikeIco height={15} width={15}/> 
+                    <VoiceMikeIco height={15} width={15} />
                     <span className='ml-0.5'>{file}</span>
                 </>
             }
-            else if(file.toLowerCase() === "video"){
+            else if (file.toLowerCase() === "video") {
                 return <>
-                    <VideoICameraIco height={15} width={15}/> 
+                    <VideoICameraIco height={15} width={15} />
                     <span className='ml-0.5'>{file}</span>
                 </>
             }
-            else{
+            else {
                 return <>
-                    <NoteIco height={15} width={15} color={''}/> 
+                    <NoteIco height={15} width={15} color={''} />
                     <span className='ml-2'>{file}</span>
                 </>
             }
@@ -87,6 +87,7 @@ const ChatGroupList = ({ selectedChat, setSelectedChat ,refetchList ,refetchUnRe
                         Array.isArray(data?.data) && data?.data?.map((ele: any, i: number) => {
                             return (
                                 <ul
+                                    key={i}
                                     onClick={() => {
                                         setSelectedChat({
                                             opponentId: ele?.belongsTo,

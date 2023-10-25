@@ -4,7 +4,7 @@ import PinIco from '@/components/assets/PinIco'
 import UnPinIco from '@/components/assets/UnPinIco'
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 
-const page = () => {
+export default function Page(prop : any){
     const [pinnedParticipants, setPinnedParticipants] = useState<Array<String>>([])
     const [showPinSection, setShowPinSection] = useState<String>('')
     const participants = [
@@ -208,4 +208,3 @@ const page = () => {
     )
 }
 
-export default page

@@ -25,7 +25,7 @@ import io from "socket.io-client";
 // const socket = io("ws://localhost:3001");
 // const socket = io("http://localhost:3001/polls",{ auth : { userId : "123" } });
 
-const page = () => {
+const Page = () => {
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const {socket}: any = useContext(SocketContext);
     const [selectedTab, setSelectedTab] = useState<string>("chat");
@@ -161,4 +161,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page
