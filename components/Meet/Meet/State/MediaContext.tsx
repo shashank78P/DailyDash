@@ -1,4 +1,4 @@
 import { createContext } from "react";
 
-const MediaContext = createContext()
+const MediaContext = createContext({})
 export default MediaContext

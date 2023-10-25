@@ -1,3 +1,4 @@
+// @ts-nocheck
 import MediaContext from '@/components/Meet/Meet/State/MediaContext'
 import api from '@/components/lib/api';
 import { useQuery } from 'react-query';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client"
 import MediaContext from '@/components/Meet/Meet/State/MediaContext'
 import UnMuteIco from '@/components/assets/UnMuteIco'

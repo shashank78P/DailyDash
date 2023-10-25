@@ -73,7 +73,7 @@ const ImagePostForm = () => {
                     <FileIcons acceptedFiles={'audio/wav'} />
                 </div> */}
                 <audio src='https://drive.google.com/uc?id=1EHMGCwR6S_nhFTV7W7vY37ixHSBOqb4r&export=download' controls />
-                <VideoRecord setFileID={setFileID}/> 
+                {/* <VideoRecord setFileID={setFileID}/>  */}
                 {/* <ReactMediaRecorder
                 video
                 render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
