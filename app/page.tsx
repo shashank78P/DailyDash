@@ -6,8 +6,7 @@ import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { Provider } from 'react-redux';
 import Store from '../components/store/root';
 
-export default function Home({ queries }: { queries: any }) {
-  console.log(queries)
+export default function Home() {
   return (
     <main className="bg-white text-c_black h-screen w-full">
       {/* <SideBar /> */}
@@ -16,13 +15,13 @@ export default function Home({ queries }: { queries: any }) {
 }
 
 
-export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  console.log("context here ==>", ctx)
-  const queries = ctx.query;
-  console.log("queries", queries)
-  return {
-    props: {
-      queries: queries
-    }
-  }
-}
+// export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+//   console.log("context here ==>", ctx)
+//   const queries = ctx.query;
+//   console.log("queries", queries)
+//   return {
+//     props: {
+//       queries: queries
+//     }
+//   }
+// }
