@@ -118,3 +118,15 @@ export default function Home() {
     </>
   )
 }
+
+
+// export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+//   console.log("context here ==>", ctx)
+//   const queries = ctx.query;
+//   console.log("queries", queries)
+//   return {
+//     props: {
+//       queries: queries
+//     }
+//   }
+// }
