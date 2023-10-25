@@ -24,7 +24,7 @@ import io from "socket.io-client";
 // const socket = io("ws://localhost:3001");
 // const socket = io("http://localhost:3001/polls",{ auth : { userId : "123" } });
 
-const Page = () => {
+const index = () => {
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const socket: any = useContext(SocketContext);
     const [messages, setMessages] = useState<Array<string>>([]);
@@ -32,17 +32,33 @@ const Page = () => {
     const [ThreeDotIsOpen, setThreeDotIsOpen] = useState<boolean>(false);
     const [ThreeDotActionResult, setThreeDotActionResult] = useState<String>("");
     const [isViewProfile, setIsViewProfile] = useState(false)
+    const [refetchList, setRefetchList] = useState(false)
 
     const [unReadMsg, setUnReadMsg] = useState({
-        INDIVIDUAL: 0,
-        GROUP: 0
+        chat: 0,
+        group: 0
     })
 
     // chat
     const [selectedChat, setSelectedChat] = useState<selecteChatDto>({ opponentId: "", opponentPic: "", opponentName: "", belongsTo: "", type: "" });
 
-
-
+    const { data, isLoading, refetch: refetchUnReadMessages } = useQuery(["getUnReadMessagesCount"], () => {
+        return api.get(`/chats/getUnReadMessagesCount`)
+    },
+        {
+            onSuccess({ data }: any) {
+                setUnReadMsg({
+                    group: (data?.group) ? data?.group : 0,
+                    chat: (data?.chat) ? data?.chat : 0,
+                })
+            },
+            onError(err: any) {
+                toast.error(err);
+            },
+            refetchOnWindowFocus: false,
+            refetchOnMount: false,
+        }
+    )
     socket?.on("hello", (msg: any) => {
         console.log(msg)
     });
@@ -56,42 +72,8 @@ const Page = () => {
 
     useEffect(() => {
         refetchUnReadMessages()
-    }, [userSelector?.belongsTo]);
+    }, [selectedChat?.belongsTo, refetchList]);
 
-    const { data, isLoading, refetch: refetchUnReadMessages } = useQuery(["getUnReadMessagesCount"], () => {
-        return api.get(`/chats/getUnReadMessagesCount`)
-    },
-        {
-            onSuccess({ data }: any) {
-                console.log(data)
-                if (data?.length == 0) {
-                    setUnReadMsg(
-                        {
-                            INDIVIDUAL: 0,
-                            GROUP: 0
-                        }
-                    )
-                    return;
-                }
-                data?.map((ele: { _id: string, count: number }) => {
-                    const temp: any = {};
-                    if (ele?._id == "INDIVIDUAL") {
-                        temp['INDIVIDUAL'] = ele?.count;
-                    } else {
-                        temp['GROUP'] = ele?.count;
-                    }
-                    console.log(temp)
-                    setUnReadMsg({ ...unReadMsg, ...temp })
-                }
-                )
-            },
-            onError(err: any) {
-                toast.error(err);
-            },
-            refetchOnWindowFocus: false,
-            refetchOnMount: false,
-        }
-    )
 
     return (
         <>
@@ -119,8 +101,8 @@ const Page = () => {
                         />
                     </div>
                     <div className='h-[50%] overflow-y-scroll' style={{ "height": "calc( 100% - 120px )" }}>
-                        {selectedTab == "chat" && <ChatUserList selectedChat={selectedChat} setSelectedChat={setSelectedChat} />}
-                        {selectedTab == "group_chat" && <ChatGroupList selectedChat={selectedChat} setSelectedChat={setSelectedChat} />}
+                        {selectedTab == "chat" && <ChatUserList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} />}
+                        {selectedTab == "group_chat" && <ChatGroupList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} refetchUnReadMessages={refetchUnReadMessages} />}
                         {selectedTab == "call" && <CallList />}
                     </div>
                 </div>
@@ -142,7 +124,8 @@ const Page = () => {
                                     selectedChat={selectedChat}
                                     socket={socket}
                                     refetch={refetchUnReadMessages}
-                                    // isViewProfile= {isViewProfile}
+                                    setRefetchList={setRefetchList}
+                                // isViewProfile= {isViewProfile}
                                 />
                             </div>
                             <ChatActions
@@ -153,7 +136,11 @@ const Page = () => {
                     }
                     {
                         selectedChat.opponentId != "" && isViewProfile && <>
-                        <Profile setIsViewProfile={setIsViewProfile}/>
+                            <Profile
+                                setIsViewProfile={setIsViewProfile}
+                                selectedChat={selectedChat}
+                                setRefetchList={setRefetchList}
+                            />
                         </>
                     }
                 </div>
@@ -162,4 +149,4 @@ const Page = () => {
     )
 }
 
-export default Page
+export default index

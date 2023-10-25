@@ -3,16 +3,44 @@ import Doc_viewer from '@/components/GlobalComponents/files/DocViewer';
 import FileIcons from '@/components/GlobalComponents/files/fileIcons';
 import UploadIcon from '@/components/assets/UploadIcon';
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone'
+import VideoTemp from './VideoTemp';
+
 
 
 const ImagePostForm = () => {
+
+    function readFile(file: any) {
+        const reader = new FileReader();
+
+        reader.onload = function (event: any) {
+            // The result property contains the file's contents
+
+            const fileContent = event.target.result;
+
+            // You can process the file content here
+            console.log(fileContent);
+        };
+
+        // Read the file as text, data URL, or other formats based on your needs
+        reader.readAsDataURL(file);
+    }
+
     const { acceptedFiles, fileRejections, getInputProps, getRootProps, isDragAccept, isDragActive, isDragReject, isFileDialogActive, isFocused } = useDropzone({
         // accept: { "*/*"},
         maxFiles: 10,
         // validator:
     });
+
+    useEffect(() => {
+        acceptedFiles?.map((file, i) => {
+            readFile(file)
+        })
+    }, [acceptedFiles])
+
+
+
     // {
     //     // 'application/*': [".pdf", ".JPEG"],
     //     "*/*": ['.*']
@@ -28,13 +56,29 @@ const ImagePostForm = () => {
         </li>
     )
 
+    console.log(acceptedFiles)
+
     const dropzoneClasses = `
     border-2 border-dashed border-gray-400 p-4 m-4 text-center
     ${isDragReject ? 'bg-red-200 border-red-500' : isDragActive ? 'bg-green-200 border-green-500' : 'bg-gray-100 border-gray-400'
         }`;
+
     return (
         <>
-            <section>
+        <VideoTemp />
+            {/* <ReactMediaRecorder
+                video
+                render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
+                    <div>
+                        <p>{status}</p>
+                        <button onClick={startRecording}>Start Recording</button>
+                        <button onClick={stopRecording}>Stop Recording</button>
+                        <video src={mediaBlobUrl} controls autoPlay loop />
+                    </div>
+                )}
+            /> */}
+            
+            {/* <section>
                 <div {...getRootProps({
                     className: `{ ${dropzoneClasses} w-full h-52 border border-2 flex justify-center items-center}}`
                 })}>
@@ -49,20 +93,20 @@ const ImagePostForm = () => {
                 <ul>{...files}</ul>
                 {/* <FileIcons acceptedFiles={acceptedFiles} /> */}
 
-                {/* {isDragAccept && <p>Drop it like it's hot!</p>}
+            {/* {isDragAccept && <p>Drop it like it's hot!</p>}
                 {isDragReject && <p>File type not supported!</p>}
                 {!isDragActive && <p>Drag files here or click to browse</p>}
-                <h1>{isDragReject && 'border-red-500' || isDragAccept && 'border-green-500' || isDragActive && 'bg-green-500' || isFileDialogActive && 'border-yellow-500'}</h1> */}
+                <h1>{isDragReject && 'border-red-500' || isDragAccept && 'border-green-500' || isDragActive && 'bg-green-500' || isFileDialogActive && 'border-yellow-500'}</h1>
                 {
                     acceptedFiles.map((image, i) => {
                         return (
-                            <img key={i} src={URL.createObjectURL(image)} alt="" />
+                            <img src={URL.createObjectURL(image)} alt="" />
                         )
                     }
                     )
                 }
-                {/* <Doc_viewer /> */}
-            </section>
+                <Doc_viewer />
+            </section> */}
         </>
     );
 };

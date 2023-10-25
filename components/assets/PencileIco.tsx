@@ -1,6 +1,6 @@
 import React from 'react'
 
-const PencileIco = (props: { width: number, height: number, color: string }) => {
+const PencileIco = (props: { width: number, height: number, color?: string }) => {
     return (
         <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 32 32" enable-background="new 0 0 32 32"  width={props?.width} height={props?.height}>

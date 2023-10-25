@@ -10,6 +10,7 @@ export default function Home() {
 
   const [showOptions, setShowOptions] = useState<number>(-1)
   const [isMouseOut, setIsMouseOut] = useState<boolean>(false)
+  const inptRef = useRef<HTMLInputElement>()
   let quickAcessData = [
     {
       title: "What's Up",
@@ -118,15 +119,3 @@ export default function Home() {
     </>
   )
 }
-
-
-// export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-//   console.log("context here ==>", ctx)
-//   const queries = ctx.query;
-//   console.log("queries", queries)
-//   return {
-//     props: {
-//       queries: queries
-//     }
-//   }
-// }
