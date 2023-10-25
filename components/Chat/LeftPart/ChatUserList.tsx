@@ -137,7 +137,7 @@ const ChatUserList = () => {
                 {
                     onLineUser.map((ele, i) => {
                         return (
-                            <ul className='w-full flex justify-start items-center p-2 hover:bg-purple-100 hover:border-l-4 hover:border-l-purple-500 border-b-slate-100 border-b-2'>
+                            <ul key={i} className='w-full flex justify-start items-center p-2 hover:bg-purple-100 hover:border-l-4 hover:border-l-purple-500 border-b-slate-100 border-b-2'>
                                 <li >
                                     <img src={ele.url} alt="" className='w-[60px] h-[60px] min-w-[60px] border rounded-full bg-slate-100 object-fit aspect-square' />
                                 </li>

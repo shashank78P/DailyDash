@@ -10,7 +10,7 @@ export default function Home() {
 
   const [showOptions, setShowOptions] = useState<number>(-1)
   const [isMouseOut, setIsMouseOut] = useState<boolean>(false)
-  const inptRef = useRef<HTMLInputElement>()
+  const inptRef = useRef<any>()
   let quickAcessData = [
     {
       title: "What's Up",

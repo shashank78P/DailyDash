@@ -56,7 +56,7 @@ const ImagePostForm = () => {
                 {
                     acceptedFiles.map((image, i) => {
                         return (
-                            <img src={URL.createObjectURL(image)} alt="" />
+                            <img src={URL.createObjectURL(image)} alt="" key={i}/>
                         )
                     }
                     )

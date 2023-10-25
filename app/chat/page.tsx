@@ -11,7 +11,7 @@ import io from "socket.io-client";
 // const socket = io("ws://localhost:3001");
 const socket = io("http://localhost:3001/polls");
 
-const index = () => {
+const Page = () => {
     const [messages, setMessages] = useState<Array<string>>([]);
     const [newMessages, setNewMessage] = useState("");
 
@@ -82,4 +82,4 @@ const index = () => {
     )
 }
 
-export default index
+export default Page
