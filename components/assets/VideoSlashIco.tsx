@@ -1,9 +1,15 @@
+// @ts-nocheck
 import React from 'react'
 
-const VideoSlashIco = (props: { width: number, height: number, color?: string }) => {
+const VideoSlashIco = (props: { width: number, height: number, color?: string, strokeWidth?: number }) => {
     return (
-        <svg fill={props?.color ? props?.color : "#202124"} strokeWidth={0.5} width={props?.width} height={props?.height} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M7.71,6.29h0l-4-4A1,1,0,0,0,2.29,3.71L4.62,6A3,3,0,0,0,2,9v6a3,3,0,0,0,3,3h9a3,3,0,0,0,1.9-.69l4.39,4.4a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42ZM14,16H5a1,1,0,0,1-1-1V9A1,1,0,0,1,5,8H6.59l7.87,7.88A1,1,0,0,1,14,16Zm7.53-8.85a1,1,0,0,0-1,0L17,8.89A3,3,0,0,0,14,6H12.66a1,1,0,0,0,0,2H14a1,1,0,0,1,1,1v1.5h0a1.62,1.62,0,0,0,0,.19.65.65,0,0,0,.05.2h0s.05.06.07.1a1,1,0,0,0,.15.21s.1.06.15.1l.17.11a.85.85,0,0,0,.23,0,.7.7,0,0,0,.14,0h0a1.62,1.62,0,0,0,.19,0,.65.65,0,0,0,.2-.05h0L20,9.62v5.72a1,1,0,1,0,2,0V8A1,1,0,0,0,21.53,7.15Z" />
+        <svg strokeWidth={props?.strokeWidth ? props?.strokeWidth : "1"} width={props?.width} height={props?.height} viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21.217 6L17 9.377V7a2.002 2.002 0 0 0-2-2H3a2.002 2.002 0 0 0-2 2v10a2.002 2.002 0 0 0 2 2h12a2.002 2.002 0 0 0 2-2v-2.445L21.214 18H23V6zM16 17a1.001 1.001 0 0 1-1 1H3a1.001 1.001 0 0 1-1-1V7a1.001 1.001 0 0 1 1-1h12a1.001 1.001 0 0 1 1 1zm6 0h-.429L17 13.263v-2.605L21.568 7H22z" fill={props?.color ? props?.color : "#202124"}
+                stroke-width={props?.strokeWidth ? props?.strokeWidth : "1"}
+            />
+            <line x1="0" y1="0" x2="24" y2="24"
+                stroke={props?.color ? props?.color : "#202124"} stroke-width={props?.strokeWidth ? props?.strokeWidth : "1"}
+            />
         </svg>
     )
 }

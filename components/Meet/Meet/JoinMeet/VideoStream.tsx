@@ -5,10 +5,9 @@ import UnMuteIco from '@/components/assets/UnMuteIco'
 import VideoICameraIco from '@/components/assets/VideoICameraIco'
 import VideoSlashIco from '@/components/assets/VideoSlashIco'
 import VoiceMikeIco from '@/components/assets/VoiceMikeIco'
-import { useState, useContext, useRef, useEffect, memo } from 'react'
+import { useState, useContext, useRef, useEffect, memo, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { meetingAction } from '@/components/store/slice/meetingSlice';
-import { mediaAction } from '../../type'
 import { streamContextDto } from '../../types'
 
 const VideoStreamer = () => {
@@ -38,7 +37,25 @@ const VideoStreamer = () => {
                 }
             });
         }
-    }, [audio , meetingSelector.video])
+    }, [audio, meetingSelector.video])
+
+    const mediaAction = useCallback((isVideoOn: boolean, isAudioOn: boolean) => {
+        return new Promise((resolve, reject) => {
+            console.log("==================================")
+            // @ts-ignore
+            if (navigator?.mediaDevices && navigator?.mediaDevices?.getUserMedia) {
+                // @ts-ignore
+                var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+                getUserMedia({ video: isVideoOn, audio: isAudioOn }, function (stream: MediaStream) {
+                    resolve(stream);
+                }, function (err: any) {
+                    reject(err);
+                });
+            } else {
+                reject(new Error("getUserMedia not supported"));
+            }
+        });
+    }, [navigator])
 
     const MediaController = (isVideoOn: boolean, isAudioOn: boolean) => {
         mediaAction(isVideoOn, isAudioOn).then((stream) => {

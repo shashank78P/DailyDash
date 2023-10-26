@@ -1,40 +1,57 @@
-// @ts-nocheck
 import MediaContext from '@/components/Meet/Meet/State/MediaContext'
 import api from '@/components/lib/api';
 import { useQuery } from 'react-query';
 import { toast } from 'react-toastify';
 import { SocketContext } from '@/components/context/SocketContext';
-import { meetingAction } from '@/components/store/slice/meetingSlice';
 import { useSearchParams } from 'next/navigation';
 import { memo, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import JoinMeetingRequest from './JoinMeetingRequest';
-import { createCustomStream, mediaAction } from '../../type';
-import UnMuteIco from '@/components/assets/UnMuteIco';
-import VideoSlashIco from '@/components/assets/VideoSlashIco';
-import VoiceMikeIco from '@/components/assets/VoiceMikeIco';
-import VideoICameraIco from '@/components/assets/VideoICameraIco';
+import { createCustomStream } from '../../type';
 import { streamContextDto } from '../../types';
+import MeetingRoom from './MeetingRoom';
 
 
 const Room = () => {
-    const [meetingId, setMeetingId] = useState<String | null>(null)
     const { socket, myPeer }: any = useContext(SocketContext);
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const meetingSelector = useSelector((state: any) => state?.meetingSliceReducer);
     const param = useSearchParams();
-    let dispatch = useDispatch();
     const ref = useRef<HTMLVideoElement>(null)
-    const oppo = useRef<HTMLVideoElement>(null)
-    const { opponentNonMediaStreamStream, setOpponentNonMediaStreamStream, participantsDetails, setParticipantsDetails, opponentStream, setOpponentStream, isJoinMeetPage, setIsJoinMeetPage, MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(MediaContext)
+    // @ts-ignore
+    const { pinnedParticipants, setAbsentParticipantsDetails, meetingId, setMeetingId, opponentNonMediaStreamStream, setOpponentNonMediaStreamStream, participantsDetails, setParticipantsDetails, opponentStream, setOpponentStream, isJoinMeetPage, setIsJoinMeetPage, MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(MediaContext)
 
-    const { data, isLoading, refetch: refetchAllActivePArticipants } = useQuery(["join-meet", meetingId], () => {
-        return api.get(`/meet/get-all-active-participants?meetingId=${meetingId}`)
+    const { data, isLoading, refetch: refetchAllActivePArticipants } = useQuery(["get-all-active-participants", meetingId], () => {
+        return api.get(`/meet/get-all-active-not-active-participants?meetingId=${meetingId}&isActive=true`)
     },
         {
             onSuccess({ data }) {
                 console.log(data)
-                setParticipantsDetails(data)
+                var temp = {};
+                data && Array.isArray(data) && data?.map((participant: { participantId: string }, i: number) => {
+                    // @ts-ignore
+                    temp[participant?.participantId] = participant
+                    // Object.defineProperty(temp, participant?.participantId, {value : participant, writable : true})
+                })
+                console.log(temp)
+                setParticipantsDetails(temp)
+            },
+            onError(err: any) {
+                toast?.error(err?.response?.data?.message)
+            },
+            enabled: Boolean(meetingId && (!isJoinMeetPage)),
+            keepPreviousData: true,
+            refetchOnMount: false,
+            refetchOnWindowFocus: false
+        }
+    )
+    const { data: AbsentUser, isLoading: AbsentUserLoading, refetch: refetchAllDisActiveParticipants } = useQuery(["get-all-not-active-participants", meetingId], () => {
+        return api.get(`/meet/get-all-active-not-active-participants?meetingId=${meetingId}&isActive=false`)
+    },
+        {
+            onSuccess({ data }) {
+                console.log(data)
+                setAbsentParticipantsDetails(data)
             },
             onError(err: any) {
                 toast?.error(err?.response?.data?.message)
@@ -47,36 +64,11 @@ const Room = () => {
     )
 
     useEffect(() => {
-        setMeetingId(param?.get("id"))
-        console.log("================= mounted  ===============")
-    }, [])
-    useEffect(() => {
-        if (opponentStream) {
-            console.log("called to set stream to oppo video tag")
-            let keys = Object?.keys(opponentStream)
-            const opponentStreamContainer = document.getElementById("opponentStream")
-            const div = (document.createElement("div"))
-            keys.forEach(key => {
-                console.log({ key, opponentNonMediaStreamStream, opponentStream })
-                if (opponentNonMediaStreamStream.includes(key)) {
-                    console.log(key + " is non-media ")
-                } else {
-                    const h1Element = document.createElement("h1")
-                    const videoElement = document.createElement("video")
-                    videoElement.setAttribute("height", "100px")
-                    videoElement.setAttribute("height", "100px")
-                    videoElement.setAttribute("autoPlay", "true")
-                    videoElement.setAttribute("controls", "true")
-                    console.log("setting stream to oppo video tag")
-                    h1Element.innerText = key
-                    videoElement.srcObject = opponentStream[key]
-                    div?.appendChild(h1Element)
-                    div?.appendChild(videoElement)
-                }
-            });
-            opponentStreamContainer?.replaceChildren(div)
+        if (setMeetingId) {
+            setMeetingId(param?.get("id"))
+            console.log("================= mounted  ===============")
         }
-    }, [opponentStream, Object.keys(opponentStream), opponentNonMediaStreamStream])
+    }, [setMeetingId])
 
     useEffect(() => {
         if (ref.current && myStream?.active) {
@@ -84,31 +76,50 @@ const Room = () => {
         }
     }, [myStream, ref, isJoinMeetPage])
 
+    const mediaAction = useCallback((isVideoOn: boolean, isAudioOn: boolean): Promise<MediaStream> => {
+        return new Promise((resolve, reject) => {
+            console.log("==================================")
+            // @ts-ignore
+            if (navigator?.mediaDevices && navigator?.mediaDevices?.getUserMedia) {
+                // @ts-ignore
+                var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+                getUserMedia({ video: isVideoOn, audio: isAudioOn }, function (stream: MediaStream) {
+                    resolve(stream);
+                }, function (err: any) {
+                    reject(err);
+                });
+            } else {
+                reject(new Error("getUserMedia not supported"));
+            }
+        });
+    }, [navigator])
+
     // to on-off video or audio and to set myStream
     useEffect(() => {
-        if (!isJoinMeetPage && participantsDetails && Array.isArray(participantsDetails) && myPeer && socket) {
+        if (!isJoinMeetPage && participantsDetails && myPeer && socket) {
             if ((video || audio)) {
-                mediaAction(video, audio).then((stream) => {
-                    Promise.all(participantsDetails?.map((participant: any, i: number) => {
+                mediaAction(video, audio).then((stream: MediaStream) => {
+
+                    Promise.all(Object?.keys(participantsDetails)?.map((participantId: any, i: number) => {
                         console.log("sending-media-stream")
                         console.log(stream)
                         console.log({ video, audio })
-                        peerDataConnection({ type: "sending-media-stream", opponentId: userSelector?.userId }, participant?.participantId);
-                        handelOpponentStreamCall(participant?.participantId, stream)
+                        socket.emit(`sending-stream`, { type: "sending-media-stream", opponentId: userSelector?.userId, sendingTo: participantId, meetingId });
+                        handelOpponentStreamCall(participantId, stream)
                         setMyStream(stream)
                     }))
                 })
             } else {
-                Promise.all(participantsDetails?.map((participant: any, i: number) => {
-                    peerDataConnection({ type: "sending-non-custom-created-media-stream", opponentId: userSelector?.userId }, participant?.participantId);
-                    const customVideoStream = createCustomStream()
-                    setMyStream(customVideoStream)
-                    handelOpponentStreamCall(participant?.participantId, customVideoStream)
+                const customVideoStream = createCustomStream()
+                setMyStream(customVideoStream)
+                Promise.all(Object?.keys(participantsDetails)?.map((participantId: any, i: number) => {
+                    socket.emit(`sending-stream`, { type: "sending-non-custom-created-media-stream", opponentId: userSelector?.userId, sendingTo: participantId, meetingId });
+                    handelOpponentStreamCall(participantId, customVideoStream)
                 }))
             }
         }
     }
-        , [video, audio, isJoinMeetPage, participantsDetails, myPeer, socket])
+        , [video, audio, isJoinMeetPage, participantsDetails, myPeer, socket, mediaAction])
 
     useEffect(() => {
         if (socket && myPeer && (!isJoinMeetPage)) {
@@ -119,11 +130,11 @@ const Room = () => {
                 var peerId = call.peer
                 if (myStream.active && (video || audio)) {
                     console.log("answering active stream")
-                    peerDataConnection({ type: "sending-media-stream", opponentId: userSelector?.userId }, peerId);
+                    socket.emit(`sending-stream`, { type: "sending-media-stream", opponentId: userSelector?.userId, sendingTo: peerId, meetingId });
                     call.answer(myStream)
                 } else {
                     console.log("answering custom created stream")
-                    peerDataConnection({ type: "sending-non-custom-created-media-stream", opponentId: userSelector?.userId }, peerId);
+                    socket.emit(`sending-stream`, { type: "sending-non-custom-created-media-stream", opponentId: userSelector?.userId, sendingTo: peerId, meetingId });
                     // const customAudioStream = createCustomStream()
                     call.answer(myStream)
                 }
@@ -145,18 +156,18 @@ const Room = () => {
         }
     }, [socket, myPeer, userSelector?.userId, audio, video, myStream, isJoinMeetPage])
 
-    useEffect(() => {
-        if (myPeer && (!isJoinMeetPage)) {
-            console.log({ myPeer })
-            myPeer.on('connection', function (conn: any) {
-                conn.on('data', function (data: any) {
-                    console.log("recieved data from peer");
-                    console.log(data);
-                    handelPeerSendData(data)
-                });
-            });
-        }
-    }, [myPeer, isJoinMeetPage])
+    // useEffect(() => {
+    //     if (myPeer && (!isJoinMeetPage)) {
+    //         console.log({ myPeer })
+    //         myPeer.on('connection', function (conn: any) {
+    //             conn.on('data', function (data: any) {
+    //                 console.log("recieved data from peer");
+    //                 console.log(data);
+    //                 handelPeerSendData(data)
+    //             });
+    //         });
+    //     }
+    // }, [myPeer, isJoinMeetPage])
 
     const handelSendingNonMediaStream = (opponentId: string) => {
         console.log("handelNonMediaStream")
@@ -183,29 +194,19 @@ const Room = () => {
         })
     }
 
-    const handelPeerSendData = (data: any) => {
-        switch (data?.type) {
-            case "sending-non-custom-created-media-stream":
-                handelSendingNonMediaStream(data?.opponentId)
-                break;
-            case "sending-media-stream":
-                handelSendingMediaStream(data?.opponentId)
-                break;
-        }
-    }
+    // const peerDataConnection = (data: any, opponentId: string) => {
+    //     var conn = myPeer.connect(opponentId);
+    //     console.log("connecting to " + opponentId)
+    //     conn.on('open', function () {
+    //         conn.send(data);
+    //     })
+    // }
 
-    const peerDataConnection = (data: any, opponentId: string) => {
-        var conn = myPeer.connect(opponentId);
-        console.log("connecting to " + opponentId)
-        conn.on('open', function () {
-            conn.send(data);
-        })
-    }
-
-    console.log({ opponentNonMediaStreamStream, opponentStream, myStream })
+    // console.log({ opponentNonMediaStreamStream, opponentStream, myStream })
 
     const handelOpponentStreamCall = (joinedUserId: string, stream: MediaStream) => {
         //     setMyStream(stream)
+
         console.log("calling to " + joinedUserId)
         const call = myPeer.call(joinedUserId, stream);
 
@@ -226,52 +227,44 @@ const Room = () => {
     }
 
 
-    const handelCall = (joinedUserId: string) => {
-        console.log("handel  call")
-        console.log(audio, video)
-        if (video || audio) {
-            peerDataConnection({ type: "sending-media-stream", opponentId: userSelector?.userId }, joinedUserId);
-            var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-            getUserMedia({ video: video, audio: audio }, function (stream: MediaStream) {
-                // calling to joined user
-                console.log("sending stream")
-                console.log(stream)
-                handelOpponentStreamCall(joinedUserId, stream)
-                // removing joined user id from opponentNonMediaStreamStream
-                // setOpponentNonMediaStreamStream((prev: Array<String>) => {
-                //     if (prev.includes(joinedUserId)) {
-                //         return prev.filter(id => id !== joinedUserId)
-                //     }
-                //     else {
-                //         return prev
-                //     }
-                // })
-                setMyStream(stream)
-            })
-        } else {
-            console.log("sending custom created stream")
-            peerDataConnection({ type: "sending-non-custom-created-media-stream", opponentId: userSelector?.userId }, joinedUserId);
-            const customAudioStream = createCustomStream()
-            handelOpponentStreamCall(joinedUserId, customAudioStream)
-        }
-    }
+    // const handelCall = (joinedUserId: string) => {
+    //     console.log("handel  call")
+    //     console.log(audio, video)
+    //     if (video || audio) {
+    //         socket.emit(`sending-stream`, { type: "sending-media-stream", opponentId: userSelector?.userId, sendingTo: joinedUserId });
+    //         var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    //         getUserMedia({ video: video, audio: audio }, function (stream: MediaStream) {
+    //             // calling to joined user
+    //             console.log("sending stream")
+    //             console.log(stream)
+    //             handelOpponentStreamCall(joinedUserId, stream)
+    //             setMyStream(stream)
+    //         })
+    //     } else {
+    //         console.log("sending custom created stream")
+    //         socket.emit(`sending-stream`, { type: "sending-non-custom-created-media-stream", opponentId: userSelector?.userId, sendingTo: joinedUserId, meetingId });
+    //         const customAudioStream = createCustomStream()
+    //         handelOpponentStreamCall(joinedUserId, customAudioStream)
+    //     }
+    // }
 
-    const handelJoin = (joinedUserId: string) => {
-        console.log("handel  join")
-        console.log(meetingSelector)
-        if (video || audio) {
-            handelCall(joinedUserId)
-        }
-    }
+    // const handelJoin = (joinedUserId: string) => {
+    //     console.log("handel  join")
+    //     console.log(meetingSelector)
+    //     if (video || audio) {
+    //         handelCall(joinedUserId)
+    //     }
+    // }
 
-    const handelCallAllParticipants = (data: any) => {
-        Promise.all(data?.participants?.map((participant: any, i: number) => {
-            handelCall(participant?.participantId)
-        }))
-    }
+    // const handelCallAllParticipants = (data: any) => {
+    //     Promise.all(data?.participants?.map((participant: any, i: number) => {
+    //         handelCall(participant?.participantId)
+    //     }))
+    // }
 
     const handelParticipantsLefMeeting = (data: any) => {
         const { leftUserId } = data
+        refetchAllActivePArticipants()
         if (leftUserId) {
             setOpponentNonMediaStreamStream((prev: any) => prev.filter((id: string) => id === leftUserId))
             setOpponentStream((prev: any) => {
@@ -287,31 +280,42 @@ const Room = () => {
         switch (data?.type) {
             case "establish-connect":
                 setIsJoinMeetPage(false)
+                refetchAllActivePArticipants()
+                refetchAllDisActiveParticipants()
                 // handelCallAllParticipants(data)
                 break;
-            case "participants-left-meeting":
-                handelParticipantsLefMeeting(data)
+            case "new-participants-joined-meeting":
+                if (!isJoinMeetPage) {
+                    refetchAllActivePArticipants()
+                    refetchAllDisActiveParticipants()
+                    toast.success((data?.name ?? "new user") + " joined meeting")
+                }
                 break;
-            // case "non-video-stream":
-
+            case "participants-left-meeting":
+                if (!isJoinMeetPage) {
+                    refetchAllActivePArticipants()
+                    refetchAllDisActiveParticipants()
+                    handelParticipantsLefMeeting(data)
+                    toast.error((data?.name ?? "new user") + " left meeting")
+                }
+                break;
+            case "sending-non-custom-created-media-stream":
+                if (!isJoinMeetPage) {
+                    handelSendingNonMediaStream(data?.opponentId)
+                }
+                break;
+            case "sending-media-stream":
+                if (!isJoinMeetPage) {
+                    handelSendingMediaStream(data?.opponentId)
+                }
+                break;
         }
     }
-
-    console.log({ isJoinMeetPage, myStream })
-    const startMedia = () => {
-        setAudio(true)
-        setVideo(true)
-    }
-
-    useEffect(() => {
-        if (socket && myPeer?._id && userSelector.userId && meetingId) {
-            // socket.emit("joined-meeting", { userId: userSelector.userId, meetingId })
-        }
-    }, [socket, myPeer?._id, userSelector.userId, meetingId, myStream])
 
     useEffect(() => {
         if (socket && myPeer?._id && userSelector.userId && meetingId) {
             socket.on(`${meetingId}-notify`, notificationHandler)
+            socket.on(`${userSelector?.userId}-notify`, notificationHandler)
             socket.on(`${userSelector?.userId}-meet-join-notification`, notificationHandler)
 
             return () => {
@@ -319,7 +323,7 @@ const Room = () => {
                 socket.off(`${userSelector?.userId}-meet-join-notification`, notificationHandler)
             }
         }
-    }, [socket, myPeer?._id, userSelector.userId, meetingId, meetingSelector.audio, video])
+    }, [socket, myPeer?._id, userSelector.userId, meetingId, meetingSelector.audio, video, isJoinMeetPage])
 
     const handleJoinMeet = async () => {
         if (meetingId) {
@@ -327,12 +331,7 @@ const Room = () => {
         }
     }
 
-    const handelLeaveMeeting = async () => {
-        if (meetingId) {
-            socket?.emit("leaveMeet", { meetingId })
-            setIsJoinMeetPage(true)
-        }
-    }
+    console.log({ pinnedParticipants })
 
     return (
 
@@ -340,8 +339,8 @@ const Room = () => {
             {isJoinMeetPage ?
                 <JoinMeetingRequest handleJoinMeet={handleJoinMeet} />
                 :
-                <div>
-                    <div className='w-full flex'>
+                <div className='w-[100hv - 50px] h-[100vw] overflow-hidden flex flex-col'>
+                    {/* <div className='w-full flex'>
                         {video &&
                             <div className='m-2 border border-slate-500 cursor-pointer rounded-full p-2'
                                 onClick={() => {
@@ -384,30 +383,8 @@ const Room = () => {
                                 <VoiceMikeIco height={25} width={25} />
                             </div>
                         }
-                    </div>
-                    <video width={200} height={150} ref={ref} autoPlay controls />
-                    <video width={200} height={150} ref={oppo} autoPlay controls />
-                    <div id='opponentStream' >
-                        <h1>Opponent stream</h1>
-                    </div>
-                    <button
-                        onClick={() => {
-                            startMedia()
-                        }}
-                    >Start media</button>
-                    <button
-                        onClick={() => {
-                            setAudio(true)
-                            setAudio(true)
-                            handelCall(userSelector?.userId == "6522964ed4e29dd9fb7c8547" ? "651f9f640fda2143f57d4a54" : "6522964ed4e29dd9fb7c8547")
-                        }}
-                    >call</button>
-                    <br />
-                    <button type="button"
-                        onClick={handelLeaveMeeting}
-                    >
-                        leave meeting
-                    </button>
+                    </div> */}
+                    <MeetingRoom />
                 </div>
             }
         </>

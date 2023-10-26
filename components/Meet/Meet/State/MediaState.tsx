@@ -11,21 +11,20 @@ interface mediaDto {
 }
 
 const MedaiState = ({ children }: Props) => {
+    const [meetingId, setMeetingId] = useState<String | null>(null)
     const [myStream, setMyStream] = useState<MediaStream | null>(new MediaStream());
     // const [opponentStream, setOpponentStream] = useState<MediaStream | null>(new MediaStream());
     const [opponentNonMediaStreamStream, setOpponentNonMediaStreamStream] = useState<Array<String>>([]);
     const [opponentStream, setOpponentStream] = useState<any>({});
-    const [participantsDetails, setParticipantsDetails] = useState<any>([]);
+    const [absentParticipantsDetails, setAbsentParticipantsDetails] = useState<Array<any>>([]);
+    const [participantsDetails, setParticipantsDetails] = useState<any>({});
     const [video, setVideo] = useState(false)
     const [audio, setAudio] = useState(false)
-    const [isJoinMeetPage, setIsJoinMeetPage] = useState(true)
+    const [isJoinMeetPage, setIsJoinMeetPage] = useState(!true)
+    const [pinnedParticipants, setPinnedParticipants] = useState<Array<String>>([])
+    const [showPinSection, setShowPinSection] = useState<String>('')
+    const [showParticipants, setShowParticipants] = useState<String>('')
 
-    useEffect(() => {
-        if (video == false || audio == false) {
-
-        }
-        console.log(myStream)
-    }, [video, audio])
 
     const MediaActions = useCallback(({ isVideo, isAudio }: { isVideo: boolean, isAudio: boolean }) => {
         try {
@@ -63,7 +62,12 @@ const MedaiState = ({ children }: Props) => {
                 isJoinMeetPage, setIsJoinMeetPage,
                 opponentStream, setOpponentStream,
                 participantsDetails, setParticipantsDetails,
-                opponentNonMediaStreamStream, setOpponentNonMediaStreamStream
+                opponentNonMediaStreamStream, setOpponentNonMediaStreamStream,
+                pinnedParticipants, setPinnedParticipants,
+                showPinSection, setShowPinSection,
+                showParticipants, setShowParticipants,
+                meetingId , setMeetingId,
+                absentParticipantsDetails, setAbsentParticipantsDetails
             }}>
                 {
                     children

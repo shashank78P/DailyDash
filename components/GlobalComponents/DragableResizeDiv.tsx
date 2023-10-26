@@ -15,15 +15,16 @@ interface Props {
     containerMinHeight: number,
     containerMaxWidth: number,
     containerMaxHeight: number,
+    style? : any
 }
 
-const DragableResizeDiv = ({ children, containerHeight, containerWidth, initPosition, containerMaxHeight, containerMaxWidth, containerMinHeight, containerMinWidth }: Props) => {
+const DragableResizeDiv = ({ children, containerHeight, containerWidth, initPosition, containerMaxHeight, containerMaxWidth, containerMinHeight, containerMinWidth , style}: Props) => {
 
     const [position, setPosition] = useState<any>(initPosition)
     const [width, setWidth] = useState<number>(containerWidth)
     const [height, setHeight] = useState<number>(containerHeight)
-    const [afterRsizeWidth, setAfterResizeWidth] = useState<number>(200)
-    const [afterResizeHeight, setAfterResizeHeight] = useState<number>(200)
+    const [afterRsizeWidth, setAfterResizeWidth] = useState<number>(containerMinWidth)
+    const [afterResizeHeight, setAfterResizeHeight] = useState<number>(containerMinHeight)
 
     const onDragHandler = (e: any) => {
         e?.preventDefault()
@@ -46,11 +47,9 @@ const DragableResizeDiv = ({ children, containerHeight, containerWidth, initPosi
     }
 
     const reSizeHandler = (e: any, direction: any, ref: HTMLElement, d: any) => {
-        console.log(d.width, d.height)
         
         let is_x_in_bound: boolean = (afterRsizeWidth + d.width > containerMinWidth) && (afterRsizeWidth + d.width < containerMaxWidth)
-        let is_y_in_bound: boolean = (afterResizeHeight + d.heigh > containerMinHeight) && (afterResizeHeight + d.heigh < containerMaxHeight)
-
+        let is_y_in_bound: boolean = (afterResizeHeight + d.height > containerMinHeight) && (afterResizeHeight + d.height < containerMaxHeight)
         if (is_x_in_bound && is_y_in_bound) {
             setWidth(afterRsizeWidth + d.width)
             setHeight(afterResizeHeight + d.height)
@@ -68,7 +67,10 @@ const DragableResizeDiv = ({ children, containerHeight, containerWidth, initPosi
             style={{
                 top: `${position?.y}px`,
                 left: `${position?.x}px`,
-                position: "fixed"
+                position: "fixed",
+                border : "none",
+                zIndex : 1000,
+                ...style,
             }}
             size={{
                 width: width, height: height,

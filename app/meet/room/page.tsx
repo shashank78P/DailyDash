@@ -1,14 +1,13 @@
 "use client"
-import JoinMeetingRequest from '@/components/Meet/Meet/Room/JoinMeetingRequest';
 import Room from '@/components/Meet/Meet/Room/Room'
 import MedaiState from '@/components/Meet/Meet/State/MediaState';
 
-const page = () => {
+const Page = () => {
   
   console.log("room")
   return (
     <>
-      <div className='w-full h-full'>
+      <div className='w-[100hv - 50px] h-[100vw] overflow-hidden flex flex-col'>
         <MedaiState>
           <Room />
         </MedaiState>
@@ -17,4 +16,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page
