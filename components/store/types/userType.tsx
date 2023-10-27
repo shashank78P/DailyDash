@@ -1,8 +1,9 @@
 export type userType = {
-    firstName?: String
-    lastName?: String
-    email?: String
-    login?: String
-    userId?: String
-    logInId?: String
+    firstName?: string
+    lastName?: string
+    email?: string
+    login?: string
+    userId?: string
+    logInId?: string
+    profilePic?:string
 }

@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, createContext, ReactNode, useCallback, useEffect } from 'react'
 import MediaContext from './MediaContext'
+import { meetingDetailsDto } from '../../types'
 interface Props {
     children: ReactNode
 }
@@ -18,6 +19,7 @@ const MedaiState = ({ children }: Props) => {
     const [opponentStream, setOpponentStream] = useState<any>({});
     const [absentParticipantsDetails, setAbsentParticipantsDetails] = useState<Array<any>>([]);
     const [participantsDetails, setParticipantsDetails] = useState<any>({});
+    const [meetingDetails, setMeetingDetails] = useState<meetingDetailsDto | null>();
     const [video, setVideo] = useState(false)
     const [audio, setAudio] = useState(false)
     const [isJoinMeetPage, setIsJoinMeetPage] = useState(!true)
@@ -67,7 +69,8 @@ const MedaiState = ({ children }: Props) => {
                 showPinSection, setShowPinSection,
                 showParticipants, setShowParticipants,
                 meetingId , setMeetingId,
-                absentParticipantsDetails, setAbsentParticipantsDetails
+                absentParticipantsDetails, setAbsentParticipantsDetails,
+                meetingDetails, setMeetingDetails
             }}>
                 {
                     children

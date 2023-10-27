@@ -5,16 +5,29 @@ import UnMuteIco from '@/components/assets/UnMuteIco'
 import VideoICameraIco from '@/components/assets/VideoICameraIco'
 import VideoSlashIco from '@/components/assets/VideoSlashIco'
 import VoiceMikeIco from '@/components/assets/VoiceMikeIco'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { streamContextDto } from '../../types'
 import MediaContext from '../State/MediaContext'
 import PinIco from '@/components/assets/PinIco'
 import UnPinIco from '@/components/assets/UnPinIco'
+import { useSelector } from 'react-redux'
 
 const ParticipantsList = ({ participants, isPresentDetails }: { participants: Array<any>, isPresentDetails: boolean }) => {
-
-    const { pinnedParticipants, setPinnedParticipants, setShowParticipants, opponentNonMediaStreamStream, opponentStream } = useContext<streamContextDto>(MediaContext)
+    
+    const { pinnedParticipants, setPinnedParticipants, audio , video , setShowParticipants, opponentNonMediaStreamStream, opponentStream } = useContext<streamContextDto>(MediaContext)
     console.log(participants)
+    const userSelector = useSelector((state: any) => state?.userSliceReducer);
+    const [me, setMe] = useState({})
+    useEffect(() => {
+        if (userSelector && userSelector?.userId) {
+            console.log(userSelector)
+            setMe({
+                userPic: userSelector?.profilePic,
+                userName: userSelector?.firstName + " " + userSelector?.lastName + " (You)",
+                participantId: userSelector?.userId,
+            })
+        }
+    }, [userSelector])
 
     function isVideoAudioOnOrOff(participantId: string) {
         if (!opponentNonMediaStreamStream.includes(participantId) || !isPresentDetails) {
@@ -46,6 +59,55 @@ const ParticipantsList = ({ participants, isPresentDetails }: { participants: Ar
         }
     }
 
+    function participantRow(participant: any, isVideo: boolean, isAudio: boolean) {
+        return (
+            <ul className='w-full h-auto flex justify-between items-center py-2 border border-transparent border-b-purple-200 border-b-1' key={participant?.participantId}>
+                <ul className='flex items-center justify-center'>
+                    <li className='w-[40px] h-[40px] mr-1 '>
+                        {/* <Image width={50} height={50} src={participant?.image} alt={participant?.name}  className='rounded-full'/> */}
+                        <img
+                            src={participant?.userPic} alt={participant?.userName} className='w-full h-full rounded-lg object-cover' />
+                    </li>
+                    <li className='truncate text-base font-medium min-w-[80px] '>
+                        {
+                            participant?.userName
+                        }
+                    </li>
+                </ul>
+                <li className='ml-2'>
+                    <ul className='flex items-center justify-center'>
+                        {isPresentDetails && !pinnedParticipants?.includes(participant?.participantId) && <li className='cursor-pointer'
+                            onClick={() => {
+                                handelPinParticipant(participant?.participantId)
+                            }}
+                        >
+                            <PinIco height={24} width={30} color='#202124' />
+                        </li>}
+                        {isPresentDetails && pinnedParticipants?.includes(participant?.participantId) && <li className='cursor-pointer'
+                            onClick={() => {
+                                handelUnPinParticipant(participant?.participantId)
+                            }}
+                        >
+                            <UnPinIco height={24} width={30} color='#202124' />
+                        </li>}
+                        {isAudio && <li className='cursor-pointer'>
+                            <VoiceMikeIco height={24} width={30} strokeWidth={1.5} />
+                        </li>}
+                        {!isAudio && <li className='cursor-pointer'>
+                            <UnMuteIco height={24} width={30} strokeWidth={1.5} />
+                        </li>}
+                        {!isVideo && <li className='cursor-pointer'>
+                            <VideoSlashIco height={25} width={30} strokeWidth={1.5} />
+                        </li>}
+                        {isVideo && <li className='cursor-pointer'>
+                            <VideoICameraIco height={25} width={30} strokeWidth={1.5} />
+                        </li>}
+                    </ul>
+                </li>
+            </ul>
+        )
+    }
+
     return (
         <>
             <DragableResizeDiv initPosition={{
@@ -72,54 +134,14 @@ const ParticipantsList = ({ participants, isPresentDetails }: { participants: Ar
                         </li>
                     </ul>
                     {
+                        me && participantRow(me , video ,audio)
+                    }
+                    {
                         participants && Array.isArray(participants) && participants?.map((participant: any, i: number) => {
                             console.log(isPresentDetails && !pinnedParticipants?.includes(participant?.participantId))
                             const { isVideo, isAudio } = isVideoAudioOnOrOff(participant?.participantId)
                             return (
-                                <ul className='w-full h-auto flex justify-between items-center py-2 border border-transparent border-b-purple-200 border-b-1' key={participant?.participantId}>
-                                    <ul className='flex items-center justify-center'>
-                                        <li className='w-[40px] h-[40px] mr-1 '>
-                                            {/* <Image width={50} height={50} src={participant?.image} alt={participant?.name}  className='rounded-full'/> */}
-                                            <img
-                                                src={participant?.userPic} alt={participant?.name} className='w-full h-full rounded-lg object-cover' />
-                                        </li>
-                                        <li className='truncate text-base font-medium max-w-[100px] '>
-                                            {
-                                                participant?.userName
-                                            }
-                                        </li>
-                                    </ul>
-                                    <li className='ml-2'>
-                                        <ul className='flex items-center justify-center'>
-                                            {isPresentDetails && !pinnedParticipants?.includes(participant?.participantId) && <li className='cursor-pointer'
-                                                onClick={() => {
-                                                    handelPinParticipant(participant?.participantId)
-                                                }}
-                                            >
-                                                <PinIco height={24} width={30} color='#202124'/>
-                                            </li>}
-                                            {isPresentDetails && pinnedParticipants?.includes(participant?.participantId) && <li className='cursor-pointer'
-                                                onClick={() => {
-                                                    handelUnPinParticipant(participant?.participantId)
-                                                }}
-                                            >
-                                                <UnPinIco height={24} width={30} color='#202124'/>
-                                            </li>}
-                                            {isAudio && <li className='cursor-pointer'>
-                                                <VoiceMikeIco height={24} width={30} strokeWidth={1.5} />
-                                            </li>}
-                                            {!isAudio && <li className='cursor-pointer'>
-                                                <UnMuteIco height={24} width={30} strokeWidth={1.5}/>
-                                            </li>}
-                                            {!isVideo && <li className='cursor-pointer'>
-                                                <VideoSlashIco height={25} width={30} strokeWidth={1.5} />
-                                            </li>}
-                                            {isVideo && <li className='cursor-pointer'>
-                                                <VideoICameraIco height={25} width={30} strokeWidth={1.5}/>
-                                            </li>}
-                                        </ul>
-                                    </li>
-                                </ul>
+                                participantRow(participant, isVideo, isAudio)
                             )
                         })
                     }

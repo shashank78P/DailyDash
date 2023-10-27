@@ -7,7 +7,7 @@ import ParticipantsList from './ParticipantsList'
 
 const MeetinTopSection = () => {
 
-    const { setShowParticipants, showParticipants, participantsDetails, absentParticipantsDetails } = useContext<streamContextDto>(MediaContext)
+    const { meetingDetails, setShowParticipants, showParticipants, participantsDetails, absentParticipantsDetails } = useContext<streamContextDto>(MediaContext)
 
     return (
         <>
@@ -16,7 +16,7 @@ const MeetinTopSection = () => {
             <ul className='w-full p-1'>
                 <li className='w-full mb-2'>
                     <ul className='flex justify-between items-center'>
-                        <li className='font-bold text-xl'>Title</li>
+                        <li className='font-bold text-xl'>{meetingDetails?.title}</li>
                         <li className='flex '>
                             <span className='mr-2'>Meeting ends in:</span>
                             <span className='text-red-700'>02 : 30 min</span>

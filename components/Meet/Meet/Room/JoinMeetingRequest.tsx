@@ -1,5 +1,5 @@
 "use client"
-import { FormateDate1 } from '@/components/GlobalComponents/FormateDate1'
+import { FormateDate1, isGivenDateTimeIsInLimit, timeDiffWithCurrentDate } from '@/components/GlobalComponents/FormateDate1'
 import VideoStreamer from '@/components/Meet/Meet/JoinMeet/VideoStream'
 import { SocketContext } from '@/components/context/SocketContext'
 import api from '@/components/lib/api'
@@ -10,14 +10,16 @@ import { Oval } from 'react-loader-spinner'
 import { useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { streamContextDto } from '../../types'
+import MediaContext from '../State/MediaContext'
 
-const JoinMeetingRequest = ({handleJoinMeet} : any) => {
+const JoinMeetingRequest = ({ handleJoinMeet }: any) => {
   const param = useSearchParams();
   const dispatch = useDispatch()
-  const [meetingId, setMeetingId] = useState<String | null>(null)
   const userSelector = useSelector((state: any) => state?.userSliceReducer);
   const { socket, myPeer }: any = useContext(SocketContext);
   const meetingSelector = useSelector((state: any) => state?.meetingSliceReducer);
+  const { meetingId, setMeetingId, meetingDetails, setMeetingDetails } = useContext<streamContextDto>(MediaContext)
 
   useEffect(() => {
     setMeetingId(param?.get("id"))
@@ -27,7 +29,10 @@ const JoinMeetingRequest = ({handleJoinMeet} : any) => {
   },
     {
       onSuccess({ data }) {
-        // console.log(data)
+        // console.log(data);
+        if (data && Array.isArray(data) && data?.[0]) {
+          setMeetingDetails(data?.[0])
+        }
       },
       onError(err: any) {
         toast?.error(err?.response?.data?.message)
@@ -35,6 +40,12 @@ const JoinMeetingRequest = ({handleJoinMeet} : any) => {
       enabled: Boolean(meetingId)
     }
   )
+
+  const meetingStatusStyle = {
+    "On Going": "text-green-700 bg-green-200 p-2 rounded-lg",
+    "Completed": "text-red-700 bg-red-200 p-2 rounded-lg",
+    "Not Started": "text-yellow-700 bg-yellow-200 p-2 rounded-lg"
+  }
 
   return (
     <>
@@ -47,7 +58,7 @@ const JoinMeetingRequest = ({handleJoinMeet} : any) => {
 
         {/* right side */}
         <ul className='ml-2 w-1/2 flex items-start justify-center flex-col'>
-          {<ul className=''>
+          {!isLoading && <ul className=''>
             <li >
               <h1 className='my-2 font-bold text-2xl'>
                 {data?.data?.[0]?.title}
@@ -57,23 +68,30 @@ const JoinMeetingRequest = ({handleJoinMeet} : any) => {
               <p className='text-gray-500 my-2 text-base first-line:ml-2'>{data?.data?.[0]?.description}</p>
             </li>
             <li className=''>
-              <p className='text-gray-500 my-2 text-base'>Meeting started at : {data?.data?.[0]?.meetingDate?.slice(0, 10)} {FormateDate1(data?.data?.[0]?.meetingDate)} by {data?.data?.[0]?.createrName}</p>
+              <p className='text-gray-500 my-2 text-base'>
+                {data?.data?.[0]?.meetingStatus === "Completed" || data?.data?.[0]?.meetingStatus === "Not Started" ? "Meeting started at : " : "Meeting timings : "}
+                {timeDiffWithCurrentDate(data?.data?.[0]?.meetingDate)} by {data?.data?.[0]?.createrName}
+              </p>
+              <p className='text-gray-500 my-2 text-base'>Meeting Length : {data?.data?.[0]?.meetingLength + " "+ data?.data?.[0]?.meetingLengthPararmeter}</p>
               <p className='text-gray-500 my-2 text-base'>Total participants : {data?.data?.[0]?.participantsCount}</p>
+              <p className='text-gray-500 my-2 text-base'>Meeting status : <span className={` ${
+                // @ts-ignore
+                data?.data?.[0]?.meetingStatus && meetingStatusStyle?.[data?.data?.[0]?.meetingStatus]
+                } `}>{data?.data?.[0]?.meetingStatus}</span></p>
             </li>
             <li className='my-2'>
-              <button className='p-2 px-4 border bg-purple-700 text-white rounded-lg font-bold text-base'
+              {data?.data?.[0]?.meetingStatus === "On Going" && <button className='p-2 px-4 border bg-purple-700 text-white rounded-lg font-bold text-base'
                 onClick={() => {
                   handleJoinMeet()
                   // router?.push(`/meet/room?id=${meetingId}`)
                 }}
-              >Join Now</button>
+              >Join Now</button>}
             </li>
           </ul>}
           {
             isLoading && <Oval color='#7e22ce' width={20} height={20} />
           }
         </ul>
-
       </div>
 
     </>
