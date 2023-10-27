@@ -4,13 +4,19 @@ import React, { useContext } from 'react'
 import { streamContextDto } from '../../types'
 import MediaContext from '../State/MediaContext'
 import ParticipantsList from './ParticipantsList'
+import InvitePeopleToMeet from './InvitePeopleToMeet'
+import { useSelector } from 'react-redux'
 
 const MeetinTopSection = () => {
 
-    const { meetingDetails, setShowParticipants, showParticipants, participantsDetails, absentParticipantsDetails } = useContext<streamContextDto>(MediaContext)
+    const { setOpenInvitePeople, openInvitePeople, meetingDetails, setShowParticipants, showParticipants, participantsDetails, absentParticipantsDetails } = useContext<streamContextDto>(MediaContext)
+    const userSelector = useSelector((state: any) => state?.userSliceReducer);
+
+    console.log(meetingDetails?.createdBy , userSelector?.userId)
 
     return (
         <>
+            { openInvitePeople && <InvitePeopleToMeet />}
             {showParticipants === "On-Call Participants" && <ParticipantsList participants={Object.values(participantsDetails)} isPresentDetails={true} />}
             {showParticipants == "Absent Participants" && <ParticipantsList participants={absentParticipantsDetails} isPresentDetails={false} />}
             <ul className='w-full p-1'>
@@ -28,9 +34,9 @@ const MeetinTopSection = () => {
                         <li className='flex items-center'>
                             <div className='flex  justify-start items-center mr-2 cursor-pointer'
                                 onClick={() => {
-                                    if(showParticipants === "On-Call Participants"){
+                                    if (showParticipants === "On-Call Participants") {
                                         setShowParticipants("")
-                                    }else{
+                                    } else {
                                         setShowParticipants("On-Call Participants")
                                     }
                                 }}
@@ -41,9 +47,9 @@ const MeetinTopSection = () => {
                             </div>
                             <div className='flex  justify-start items-center cursor-pointer mr-2'
                                 onClick={() => {
-                                    if(showParticipants === "Absent Participants"){
+                                    if (showParticipants === "Absent Participants") {
                                         setShowParticipants("")
-                                    }else{
+                                    } else {
                                         setShowParticipants("Absent Participants")
                                     }
                                 }}
@@ -53,14 +59,18 @@ const MeetinTopSection = () => {
                                 <div className='ml-2 p-1 px-1.5 bg-red-200 text-red-700 text-sm rounded-lg'>{absentParticipantsDetails.length ?? 0}</div>
                             </div>
                         </li>
-                        <li>
-                            <div className='flex  justify-start items-center cursor-pointer '>
+                        { meetingDetails?.createdBy === userSelector?.userId && <li>
+                            <div className='flex  justify-start items-center cursor-pointer '
+                                onClick={()=>{
+                                    setOpenInvitePeople(true)
+                                }}
+                            >
                                 <div className='mr-2 p-2 bg-green-200 text-green-700  rounded-lg'>
                                     <PlusIco height={12} width={12} color='green' />
                                 </div>
                                 <div>Invite Participant</div>
                             </div>
-                        </li>
+                        </li>}
                     </ul>
                 </li>
             </ul>

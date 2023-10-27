@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { streamContextDto } from '../../types'
 import MediaContext from '../State/MediaContext'
-
 const JoinMeetingRequest = ({ handleJoinMeet }: any) => {
   const param = useSearchParams();
   const dispatch = useDispatch()
@@ -20,7 +19,7 @@ const JoinMeetingRequest = ({ handleJoinMeet }: any) => {
   const { socket, myPeer }: any = useContext(SocketContext);
   const meetingSelector = useSelector((state: any) => state?.meetingSliceReducer);
   const { meetingId, setMeetingId, meetingDetails, setMeetingDetails } = useContext<streamContextDto>(MediaContext)
-
+  const router = useRouter()
   useEffect(() => {
     setMeetingId(param?.get("id"))
   }, [])
@@ -36,6 +35,9 @@ const JoinMeetingRequest = ({ handleJoinMeet }: any) => {
       },
       onError(err: any) {
         toast?.error(err?.response?.data?.message)
+        if( err?.response?.data?.message == "You don't have a access for his meeting"){
+          router.push("/")
+        }
       },
       enabled: Boolean(meetingId)
     }

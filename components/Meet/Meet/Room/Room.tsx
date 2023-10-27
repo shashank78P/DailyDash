@@ -86,10 +86,10 @@ const Room = () => {
                 getUserMedia({ video: isVideoOn, audio: isAudioOn }, function (stream: MediaStream) {
                     resolve(stream);
                 }, function (err: any) {
-                    reject(err);
+                    toast.error(err);
                 });
             } else {
-                reject(new Error("getUserMedia not supported"));
+                toast.error("getUserMedia not supported");
             }
         });
     }, [navigator])

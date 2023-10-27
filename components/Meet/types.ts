@@ -25,6 +25,8 @@ export interface streamContextDto {
     setAbsentParticipantsDetails: any,
     meetingDetails : meetingDetailsDto,
     setMeetingDetails : any
+    openInvitePeople : boolean,
+    setOpenInvitePeople : any,
 }
 
 
@@ -37,5 +39,5 @@ export interface meetingDetailsDto {
     createdBy: string,
     createrName: string,
     participantsCount: number,
-    meetingLength: string
+    meetingLength: string,
 }

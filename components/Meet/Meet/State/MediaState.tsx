@@ -22,6 +22,7 @@ const MedaiState = ({ children }: Props) => {
     const [meetingDetails, setMeetingDetails] = useState<meetingDetailsDto | null>();
     const [video, setVideo] = useState(false)
     const [audio, setAudio] = useState(false)
+    const [openInvitePeople, setOpenInvitePeople] = useState<Boolean>(false)
     const [isJoinMeetPage, setIsJoinMeetPage] = useState(!true)
     const [pinnedParticipants, setPinnedParticipants] = useState<Array<String>>([])
     const [showPinSection, setShowPinSection] = useState<String>('')
@@ -70,7 +71,8 @@ const MedaiState = ({ children }: Props) => {
                 showParticipants, setShowParticipants,
                 meetingId , setMeetingId,
                 absentParticipantsDetails, setAbsentParticipantsDetails,
-                meetingDetails, setMeetingDetails
+                meetingDetails, setMeetingDetails,
+                openInvitePeople, setOpenInvitePeople
             }}>
                 {
                     children
