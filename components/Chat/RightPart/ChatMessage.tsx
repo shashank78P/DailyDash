@@ -6,32 +6,34 @@ import { useSelector } from 'react-redux'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { toast } from 'react-toastify'
 import { Circles, Oval, InfinitySpin, ThreeDots } from "react-loader-spinner"
-const ChatMessage = ({ selectedChat, socket ,refetch : refetchChatsNotification}: ChatMessageDto) => {
+import FileIcons from '@/components/GlobalComponents/files/fileIcons'
+const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, setRefetchList }: ChatMessageDto) => {
     const [limit, setLimit] = useState(50)
     const [skip, setSkip] = useState(0)
     const [messages, setMessages] = useState<Array<any>>([]);
     const [socketMsg, setSocketMsg] = useState<Array<any>>([]);
     const [previousBelongsTo, setPreviousBelongsTo] = useState<string | null>(null);
 
-    const { refetch: reSetReadMesssages } = useQuery(["readMessages"], () => {
+    const { refetch: reSetReadMesssages } = useQuery(["readMessages", setRefetchList, selectedChat], () => {
         return api.get(`/chats/setReadmessages?belongsTo=${selectedChat?.belongsTo}&type=${selectedChat?.type}`,
         )
     },
-    {
-        onSuccess(){
-            refetchChatsNotification()
-        },
-    }
+        {
+            onSuccess() {
+                refetchChatsNotification()
+            },
+            refetchOnMount: true
+        }
     )
 
-    const { data, isLoading, refetch : refetchChat } = useQuery(["chat", skip, selectedChat ], () => {
+    const { data, isLoading, refetch: refetchChat } = useQuery(["chat", skip, selectedChat], () => {
         return api.get(`/chats/getAllchat?belongsTo=${selectedChat?.belongsTo}&limit=${limit}&skip=${skip}`)
     },
         {
             onSuccess({ data }: any) {
-                console.log(data)
                 setMessages([...messages, ...data?.chats]);
                 setSocketMsg([])
+                refetchChatsNotification()
             },
             onError(err: any) {
                 toast.error(err);
@@ -49,9 +51,7 @@ const ChatMessage = ({ selectedChat, socket ,refetch : refetchChatsNotification}
 
         if (selectedChat?.belongsTo) {
             socket?.on(selectedChat?.belongsTo, (msg: any) => {
-                console.log(msg);
-                console.log(socketMsg);
-                setSocketMsg((prevMsg) => [msg,...prevMsg]);
+                setSocketMsg((prevMsg) => [msg, ...prevMsg]);
                 reSetReadMesssages()
             });
         }
@@ -61,7 +61,7 @@ const ChatMessage = ({ selectedChat, socket ,refetch : refetchChatsNotification}
 
     }, [selectedChat?.belongsTo])
     useEffect(() => {
-        if(previousBelongsTo != null && previousBelongsTo != selectedChat?.belongsTo){
+        if (previousBelongsTo != null && previousBelongsTo != selectedChat?.belongsTo) {
             setMessages([]);
             setSkip(0)
             setSocketMsg([])
@@ -71,17 +71,22 @@ const ChatMessage = ({ selectedChat, socket ,refetch : refetchChatsNotification}
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
 
     function getPreviousChat() {
-        console.log("refetch start", data?.data?.total >= 20, messages.length >= data?.data?.total)
         if (!(skip >= data?.data?.total)) {
             setSkip(skip + limit);
         }
     }
 
-    console.log(socketMsg)
 
-    const getTime = (createdAt : string) => {
+    const getTime = (createdAt: string) => {
         let date = new Date(createdAt)
         return `${date?.getHours()}:${date?.getMinutes()}`
+    }
+
+    const getFileMessage = (file: any) => {
+        file = file?.[0]
+        return (
+            <FileIcons acceptedFiles={file?.mimeType} link={file?.link} />
+        )
     }
 
     return (
@@ -100,6 +105,7 @@ const ChatMessage = ({ selectedChat, socket ,refetch : refetchChatsNotification}
                 {
                     socketMsg?.map((ele, i) => {
                         return (
+<<<<<<< HEAD
                             <div key={i} className={`w-full mb-2 flex ${userSelector?.userId == ele?.from ? " justify-end" : " justify-start "} items-center`}>
                                 <ul className={`min-w-[100px] border p-2 rounded ${userSelector?.userId == ele?.from ? " bg-purple-300 " : " bg-purple-100 "}`}>
                                     <li>
@@ -108,6 +114,34 @@ const ChatMessage = ({ selectedChat, socket ,refetch : refetchChatsNotification}
                                     <li className='text-end text-xs my-1 text-slate-600 '>{getTime(ele?.createdAt)}</li>
                                 </ul>
                             </div>
+=======
+                            <>
+                                {
+                                    ele?.event?.type ?
+                                        <>
+                                            <div className='w-full p-1 bg-purple-100 text-center text-slate-500 rounded-md my-2'>
+                                                {/* {userSelector?.userId !== ele?.from ? `~${ele?.sender}: ` : "~you: "} */}
+                                                {ele?.event?.message}
+                                            </div>
+                                        </>
+                                        :
+                                        <div className={`w-full mb-2 flex ${userSelector?.userId == ele?.from ? " justify-end" : " justify-start "} items-center`}>
+                                            <ul className={`min-w-[100px] border p-2 rounded ${userSelector?.userId == ele?.from ? " bg-purple-300 " : " bg-purple-100 "}`}>
+                                                {/* {userSelector?.userId !== ele?.from && <li className='text-xs my-1 text-slate-600 '>~{ele?.sender}</li>} */}
+                                                <li className='pl-2'>
+                                                    {
+                                                        ele.messageType === "TEXT" ?
+                                                            <div id={i.toString()}>{ele?.message}</div>
+                                                            :
+                                                            getFileMessage(ele?.file)
+                                                    }
+                                                </li>
+                                                <li className='text-end text-xs my-1 text-slate-600 '>{getTime(ele?.createdAt)}</li>
+                                            </ul>
+                                        </div>
+                                }
+                            </>
+>>>>>>> ff663f61da62dcfdc0869439d85d36a6bd9d67c8
                         )
                     })
                 }
@@ -119,14 +153,30 @@ const ChatMessage = ({ selectedChat, socket ,refetch : refetchChatsNotification}
                                     ele?.chats?.map((chat: any, j: number) => {
                                         return (
                                             <>
-                                                <div className={`w-full mb-2 flex ${userSelector?.userId == chat?.from ? " justify-end" : " justify-start "} items-center`}>
-                                                    <ul className={`min-w-[100px] border p-2 rounded ${userSelector?.userId == chat?.from ? " bg-purple-300 " : " bg-purple-100 "}`}>
-                                                        <li>
-                                                            <div id={j.toString()}>{chat?.message}</div>
-                                                        </li>
-                                                        <li className='text-end text-xs my-1 text-slate-600 '>{getTime(chat?.createdAt)}</li>
-                                                    </ul>
-                                                </div>
+                                                {
+                                                    chat?.event?.type ?
+                                                        <>
+                                                            <div className='w-full p-1 bg-purple-100 text-center text-slate-500 rounded-md my-2'>
+                                                                {userSelector?.userId !== chat?.from ? `~${chat?.sender}: ` : "~you: "}
+                                                                {chat?.event?.message}
+                                                            </div>
+                                                        </>
+                                                        :
+                                                        <div className={`w-full mb-2 flex ${userSelector?.userId == chat?.from ? " justify-end" : " justify-start "} items-center`}>
+                                                            <ul className={`min-w-[100px] border p-2 rounded ${userSelector?.userId == chat?.from ? " bg-purple-300 " : " bg-purple-100 "}`}>
+                                                                {userSelector?.userId !== chat?.from && <li className='text-xs my-1 text-slate-600 '>~{chat?.sender}</li>}
+                                                                <li className='pl-2'>
+                                                                    {
+                                                                        chat.messageType === "TEXT" ?
+                                                                            <div id={j.toString()}>{chat?.message}</div>
+                                                                            :
+                                                                            getFileMessage(chat?.file)
+                                                                    }
+                                                                </li>
+                                                                <li className='text-end text-xs my-1 text-slate-600 '>{getTime(chat?.createdAt)}</li>
+                                                            </ul>
+                                                        </div>
+                                                }
                                             </>
                                         )
                                     })

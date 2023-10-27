@@ -95,7 +95,11 @@ const Login = () => {
                     <Google />
                 </div>
                 <div className=' text-right mt-5 sm:text-xl text-gray-300'>
+<<<<<<< HEAD
                     {"Don't have a account"}
+=======
+                   {"Don't have a account"}
+>>>>>>> ff663f61da62dcfdc0869439d85d36a6bd9d67c8
                     <Link href='/signup' className='text-purple-700 underline-offset font-semibold ml-2'> Sign Up</Link>
                 </div>
             </div>
