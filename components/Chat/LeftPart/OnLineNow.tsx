@@ -96,7 +96,7 @@ const OnLineNow = () => {
             <div className='w-full flex justify-start items-center overflow-x-scroll '>
                 {onLineUser.map((ele, i) => {
                     return (
-                        <ul className=' flex flex-col justify-start items-center'>
+                        <ul key={i} className=' flex flex-col justify-start items-center'>
                             <li key={i} className='w-[100px] flex flex-col items-center cursor-pointer'>
                                 <img
                                     src={ele?.url}

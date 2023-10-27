@@ -14,20 +14,19 @@ import Profile from '@/components/Chat/RightPart/profile'
 import { selecteChatDto } from '@/components/Chat/type'
 import { SocketContext } from '@/components/context/SocketContext'
 import api from '@/components/lib/api'
+import { userType } from '@/components/store/types/userType'
 import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import io from "socket.io-client";
 
 // /polls
 // const socket = io("ws://localhost:3001");
 // const socket = io("http://localhost:3001/polls",{ auth : { userId : "123" } });
 
-const index = () => {
-    const userSelector = useSelector((state: any) => state?.userSliceReducer);
+export default function Page(){
+    const userSelector : userType = useSelector((state: any) => state?.userSliceReducer);
     const socket: any = useContext(SocketContext);
-    const [messages, setMessages] = useState<Array<string>>([]);
     const [selectedTab, setSelectedTab] = useState<string>("chat");
     const [ThreeDotIsOpen, setThreeDotIsOpen] = useState<boolean>(false);
     const [ThreeDotActionResult, setThreeDotActionResult] = useState<String>("");
@@ -106,20 +105,17 @@ const index = () => {
                         {selectedTab == "call" && <CallList />}
                     </div>
                 </div>
-                {/* <div className='h-[100%] w-full bg-slate-600'></div> */}
-                {/* <div className='min-w-[340px] overflow-y-scroll w-full lg:w-1/4 border'>
-                    
-                </div> */}
+               
                 <div className={`h-[100%] flex chatActions w-full min-w-[400px] border flex-col justify-between items-start 
                     ${selectedChat?.opponentId == "" && " backgroundeImage "}
                 `}>
                     {selectedChat.opponentId != "" &&
                         (!isViewProfile) && <>
-                            <ChatTopNav
+                            {/* <ChatTopNav
                                 selectedChat={selectedChat}
                                 setIsViewProfile={setIsViewProfile}
-                            />
-                            <div className='grow w-full max-h-full overflow-y-scroll'>
+                            /> */}
+                            {/* <div className='grow w-full max-h-full overflow-y-scroll'>
                                 <ChatMessage
                                     selectedChat={selectedChat}
                                     socket={socket}
@@ -127,14 +123,14 @@ const index = () => {
                                     setRefetchList={setRefetchList}
                                 // isViewProfile= {isViewProfile}
                                 />
-                            </div>
+                            </div> */}
                             <ChatActions
                                 selectedChat={selectedChat}
                                 socket={socket}
                             />
                         </>
                     }
-                    {
+                    {/* {
                         selectedChat.opponentId != "" && isViewProfile && <>
                             <Profile
                                 setIsViewProfile={setIsViewProfile}
@@ -142,11 +138,10 @@ const index = () => {
                                 setRefetchList={setRefetchList}
                             />
                         </>
-                    }
+                    } */}
                 </div>
             </div>
         </>
     )
 }
 
-export default index

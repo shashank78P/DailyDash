@@ -1,6 +1,6 @@
 import React from 'react'
 
-const index = () => {
+const Page = () => {
     return (
         <>
             {/* <SideBar /> */}
@@ -9,4 +9,4 @@ const index = () => {
     )
 }
 
-export default index
+export default Page

@@ -9,7 +9,7 @@ import { Oval } from 'react-loader-spinner';
 import { useSelector } from 'react-redux';
 import { SocketContext } from '@/components/context/SocketContext';
 
-const page = () => {
+const Page = () => {
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const router = useRouter();
     const socket: any = useContext(SocketContext);
@@ -80,4 +80,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

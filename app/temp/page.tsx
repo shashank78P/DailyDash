@@ -6,7 +6,7 @@ import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone'
 import VideoTemp from './VideoTemp';
-import AudioRecord from '@/components/GlobalComponents/Audio/AudioRecord';
+import AudioRecord from '@/components/GlobalComponents/Audio/AudioRecorder';
 import VideoRecord from '@/components/GlobalComponents/Video/VideoRecord';
 
 const ImagePostForm = () => {
@@ -73,7 +73,7 @@ const ImagePostForm = () => {
                     <FileIcons acceptedFiles={'audio/wav'} />
                 </div> */}
                 <audio src='https://drive.google.com/uc?id=1EHMGCwR6S_nhFTV7W7vY37ixHSBOqb4r&export=download' controls />
-                <VideoRecord setFileID={setFileID}/> 
+                {/* <VideoRecord setFileID={setFileID}/>  */}
                 {/* <ReactMediaRecorder
                 video
                 render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (

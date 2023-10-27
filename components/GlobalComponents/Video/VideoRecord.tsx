@@ -31,7 +31,7 @@ const VideoRecord = ({ isOpen, setIsOpen, sendFile }: VideoRecordDto) => {
     const [isPlay, setIsPlay] = useState(false);
     const [isStarted, setIsStarted] = useState(false);
     const [selected, setSelected] = useState<number>(0);
-    const { mutate: postVideo , isLoading } = useMutation((data: any) => {
+    const { mutate: postVideo, isLoading } = useMutation((data: any) => {
         return api.post("/file-system/upload-video-base64-data", data)
     },
         {
@@ -49,16 +49,16 @@ const VideoRecord = ({ isOpen, setIsOpen, sendFile }: VideoRecordDto) => {
 
     return (
         <ReactMediaRecorder
-            video = {recordType == "video"}
-            screen = {recordType == "screen"}
+            video={recordType == "video"}
+            screen={recordType == "screen"}
             // screen
             render={({ previewStream, status, startRecording, stopRecording, mediaBlobUrl, resumeRecording, pauseRecording, clearBlobUrl, muteAudio, unMuteAudio, isAudioMuted }) => {
-                useEffect(() => {
-                    if (mediaBlobUrl) {
-                        setSelected(mediaUrl.length)
-                        setMediaUrl(prev => [...prev, mediaBlobUrl])
-                    }
-                }, [mediaBlobUrl])
+                // useEffect(() => {
+                //     if (mediaBlobUrl) {
+                //         setSelected(mediaUrl.length)
+                //         setMediaUrl(prev => [...prev, mediaBlobUrl])
+                //     }
+                // }, [mediaBlobUrl])
                 return (
                     <>
                         <Dialog open={isOpen}>
@@ -67,6 +67,8 @@ const VideoRecord = ({ isOpen, setIsOpen, sendFile }: VideoRecordDto) => {
                                     onClick={() => {
                                         setIsOpen(false)
                                         stopRecording()
+                                        setSelected(mediaUrl.length)
+                                        setMediaUrl(prev => [...prev, mediaBlobUrl])
                                     }}
                                 >
                                     <CrossIco width={30} height={30} color='red' />
@@ -75,14 +77,14 @@ const VideoRecord = ({ isOpen, setIsOpen, sendFile }: VideoRecordDto) => {
                                 <DialogContent>
                                     <ul className='flex'>
                                         <li className={`${recordType == "video" && "border-0 border-b-2 border-purple-500 text-purple-500"}   p-2 my-2 `}
-                                        onClick={()=>{
-                                            setRecordType("video")
-                                        }}
+                                            onClick={() => {
+                                                setRecordType("video")
+                                            }}
                                         >Video</li>
                                         <li className={`${recordType == "screen" && "border-0 border-b-2  border-purple-500 text-purple-500"} p-2 my-2 `}
-                                        onClick={()=>{
-                                            setRecordType("screen")
-                                        }}
+                                            onClick={() => {
+                                                setRecordType("screen")
+                                            }}
                                         >Screen</li>
                                     </ul>
                                     {previewStream && ["recording", "paused"].includes(status) && <VideoPreview stream={previewStream} />}
@@ -198,6 +200,8 @@ const VideoRecord = ({ isOpen, setIsOpen, sendFile }: VideoRecordDto) => {
                                                         setIsStarted(false)
                                                         setIsPlay(false)
                                                         stopRecording()
+                                                        setSelected(mediaUrl.length)
+                                                        setMediaUrl(prev => [...prev, mediaBlobUrl])
                                                     }}
                                                 >
                                                     <SaveIco width={20} height={20} color='white' />

@@ -95,7 +95,7 @@ const Login = () => {
                     <Google />
                 </div>
                 <div className=' text-right mt-5 sm:text-xl text-gray-300'>
-                    Don't have a account
+                   {"Don't have a account"}
                     <Link href='/signup' className='text-purple-700 underline-offset font-semibold ml-2'> Sign Up</Link>
                 </div>
             </div>

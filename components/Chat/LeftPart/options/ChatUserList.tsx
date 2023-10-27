@@ -55,6 +55,7 @@ const ChatUserList = ({ selectedChat, setSelectedChat ,refetchList}: ChatUserLis
                         Array.isArray(data?.data) && data?.data?.map((ele: any, i: number) => {
                             return (
                                 <ul
+                                key={i}
                                     onClick={() => {
                                         setSelectedChat({
                                             opponentId:ele?.opponentId,

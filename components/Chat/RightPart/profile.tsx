@@ -11,7 +11,7 @@ import MoreDetailed from './MoreDetailed'
 import LeftAngularArrow from '@/components/assets/LeftAngularArrow'
 import AddUser from './Profile/AddUser'
 
-const profile = ({ setIsViewProfile, selectedChat ,setRefetchList }: any) => {
+const Profile = ({ setIsViewProfile, selectedChat ,setRefetchList }: any) => {
     const [role, setRole] = useState("MEMBER")
     const [options, setOptions] = useState("")
 
@@ -67,4 +67,4 @@ const profile = ({ setIsViewProfile, selectedChat ,setRefetchList }: any) => {
     )
 }
 
-export default profile
+export default Profile

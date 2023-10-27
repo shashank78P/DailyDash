@@ -8,16 +8,16 @@ import { ChatUserListDto } from '../../type';
 import { FormateDate1 } from '@/components/GlobalComponents/FormateDate1';
 import { SocketContext } from '@/components/context/SocketContext';
 
-const ChatGroupList = ({ selectedChat, setSelectedChat ,refetchList ,refetchUnReadMessages}: ChatUserListDto) => {
+const ChatGroupList = ({ selectedChat, setSelectedChat, refetchList, refetchUnReadMessages }: ChatUserListDto) => {
     const limit = 50;
     const [skip, setSkip] = useState(0)
     const socket: any = useContext(SocketContext);
-    const { data, error, isLoading , refetch } = useQuery(['groupList',refetchList,selectedChat?.belongsTo], () => {
+    const { data, error, isLoading, refetch } = useQuery(['groupList', refetchList, selectedChat?.belongsTo], () => {
         return api.get("/chats/getAllInitiatedChatGroupList")
     },
-    {
-        refetchOnMount : true
-    }
+        {
+            refetchOnMount: true
+        }
     );
 
     useEffect(() => {
@@ -59,6 +59,7 @@ const ChatGroupList = ({ selectedChat, setSelectedChat ,refetchList ,refetchUnRe
                         Array.isArray(data?.data) && data?.data?.map((ele: any, i: number) => {
                             return (
                                 <ul
+                                    key={i}
                                     onClick={() => {
                                         setSelectedChat({
                                             opponentId: ele?.belongsTo,
