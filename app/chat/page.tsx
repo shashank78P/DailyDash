@@ -27,7 +27,7 @@ import io from "socket.io-client";
 
 const Page = () => {
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
-    const {socket}: any = useContext(SocketContext);
+    const { socket }: any = useContext(SocketContext);
     const [selectedTab, setSelectedTab] = useState<string>("chat");
     const [ThreeDotIsOpen, setThreeDotIsOpen] = useState<boolean>(false);
     const [ThreeDotActionResult, setThreeDotActionResult] = useState<String>("");
@@ -117,10 +117,6 @@ const Page = () => {
                         {selectedTab == "call" && <CallList />}
                     </div>
                 </div>
-                {/* <div className='h-[100%] w-full bg-slate-600'></div> */}
-                {/* <div className='min-w-[340px] overflow-y-scroll w-full lg:w-1/4 border'>
-                    
-                </div> */}
                 <div className={`h-[100%] flex chatActions w-full min-w-[400px] border flex-col justify-between items-start 
                     ${selectedChat?.opponentId == "" && " backgroundeImage "}
                 `}>

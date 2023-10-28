@@ -5,9 +5,6 @@ import UploadIcon from '@/components/assets/UploadIcon';
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone'
-import VideoTemp from './VideoTemp';
-import AudioRecord from '@/components/GlobalComponents/Audio/AudioRecord';
-import VideoRecord from '@/components/GlobalComponents/Video/VideoRecord';
 
 const ImagePostForm = () => {
     const [fileId, setFileID] = useState([])

@@ -27,6 +27,8 @@ export interface streamContextDto {
     setMeetingDetails : any
     openInvitePeople : boolean,
     setOpenInvitePeople : any,
+    Navigator:any,
+    setNavigator:any
 }
 
 

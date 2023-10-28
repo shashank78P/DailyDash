@@ -2,6 +2,7 @@
 import React, { useState, createContext, ReactNode, useCallback, useEffect } from 'react'
 import MediaContext from './MediaContext'
 import { meetingDetailsDto } from '../../types'
+import { toast } from 'react-toastify'
 interface Props {
     children: ReactNode
 }
@@ -27,30 +28,36 @@ const MedaiState = ({ children }: Props) => {
     const [pinnedParticipants, setPinnedParticipants] = useState<Array<String>>([])
     const [showPinSection, setShowPinSection] = useState<String>('')
     const [showParticipants, setShowParticipants] = useState<String>('')
+    const [Navigator, setNavigator] = useState<any>()
 
 
     const MediaActions = useCallback(({ isVideo, isAudio }: { isVideo: boolean, isAudio: boolean }) => {
         try {
-            // @ts-ignore
-            var getUserMedia = navigator.getUserMedia
-            if (getUserMedia) {
-                if (isVideo === false && isAudio === false) {
-                    return;
-                }
-                getUserMedia(
-                    { video: isVideo, audio: isAudio },
-                    function (stream: MediaStream) {
-                        setMyStream(stream)
+            if(Navigator){
+
+                // @ts-ignore
+                var getUserMedia = Navigator.getUserMedia
+                if (getUserMedia) {
+                    if (isVideo === false && isAudio === false) {
+                        return;
                     }
-                )
-            } else {
-                console.error("getUserMedia not found")
-                return new MediaStream();
+                    getUserMedia(
+                        { video: isVideo, audio: isAudio },
+                        function (stream: MediaStream) {
+                            setMyStream(stream)
+                        }
+                    )
+                } else {
+                    console.error("getUserMedia not found")
+                    return new MediaStream();
+                }
+            }else{
+                toast.error("Your browser is supported")
             }
         } catch (err: any) {
             console.error(err?.message)
         }
-    }, [navigator])
+    }, [Navigator])
 
     return (
         <>
@@ -72,7 +79,8 @@ const MedaiState = ({ children }: Props) => {
                 meetingId , setMeetingId,
                 absentParticipantsDetails, setAbsentParticipantsDetails,
                 meetingDetails, setMeetingDetails,
-                openInvitePeople, setOpenInvitePeople
+                openInvitePeople, setOpenInvitePeople,
+                Navigator, setNavigator
             }}>
                 {
                     children

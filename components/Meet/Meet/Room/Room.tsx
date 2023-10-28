@@ -19,7 +19,7 @@ const Room = () => {
     const param = useSearchParams();
     const ref = useRef<HTMLVideoElement>(null)
     // @ts-ignore
-    const { pinnedParticipants, setAbsentParticipantsDetails, meetingId, setMeetingId, opponentNonMediaStreamStream, setOpponentNonMediaStreamStream, participantsDetails, setParticipantsDetails, opponentStream, setOpponentStream, isJoinMeetPage, setIsJoinMeetPage, MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(MediaContext)
+    const { Navigator, setNavigator, pinnedParticipants, setAbsentParticipantsDetails, meetingId, setMeetingId, opponentNonMediaStreamStream, setOpponentNonMediaStreamStream, participantsDetails, setParticipantsDetails, opponentStream, setOpponentStream, isJoinMeetPage, setIsJoinMeetPage, MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(MediaContext)
 
     const { data, isLoading, refetch: refetchAllActivePArticipants } = useQuery(["get-all-active-participants", meetingId], () => {
         return api.get(`/meet/get-all-active-not-active-participants?meetingId=${meetingId}&isActive=true`)
@@ -64,11 +64,17 @@ const Room = () => {
     )
 
     useEffect(() => {
-        if (setMeetingId) {
+        if (meetingId) {
             setMeetingId(param?.get("id"))
             console.log("================= mounted  ===============")
         }
-    }, [setMeetingId])
+    }, [meetingId])
+
+    useEffect(() => {
+        if (window && window?.navigator) {
+            setNavigator(window?.navigator)
+        }
+    }, [window, window?.navigator])
 
     useEffect(() => {
         if (ref.current && myStream?.active) {
@@ -80,9 +86,9 @@ const Room = () => {
         return new Promise((resolve, reject) => {
             console.log("==================================")
             // @ts-ignore
-            if (navigator?.mediaDevices && navigator?.mediaDevices?.getUserMedia) {
+            if (Navigator && Navigator?.mediaDevices && Navigator?.mediaDevices?.getUserMedia) {
                 // @ts-ignore
-                var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+                var getUserMedia = Navigator.getUserMedia || Navigator.webkitGetUserMedia || Navigator.mozGetUserMedia;
                 getUserMedia({ video: isVideoOn, audio: isAudioOn }, function (stream: MediaStream) {
                     resolve(stream);
                 }, function (err: any) {
@@ -92,7 +98,7 @@ const Room = () => {
                 toast.error("getUserMedia not supported");
             }
         });
-    }, [navigator])
+    }, [Navigator])
 
     // to on-off video or audio and to set myStream
     useEffect(() => {
@@ -232,7 +238,7 @@ const Room = () => {
     //     console.log(audio, video)
     //     if (video || audio) {
     //         socket.emit(`sending-stream`, { type: "sending-media-stream", opponentId: userSelector?.userId, sendingTo: joinedUserId });
-    //         var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    //         var getUserMedia = Navigator.getUserMedia || Navigator.webkitGetUserMedia || Navigator.mozGetUserMedia;
     //         getUserMedia({ video: video, audio: audio }, function (stream: MediaStream) {
     //             // calling to joined user
     //             console.log("sending stream")

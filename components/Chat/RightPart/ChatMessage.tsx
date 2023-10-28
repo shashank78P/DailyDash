@@ -5,7 +5,7 @@ import api from '@/components/lib/api'
 import { useSelector } from 'react-redux'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { toast } from 'react-toastify'
-import { Circles, Oval, InfinitySpin, ThreeDots } from "react-loader-spinner"
+import { Oval } from "react-loader-spinner"
 import FileIcons from '@/components/GlobalComponents/files/fileIcons'
 const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, setRefetchList }: ChatMessageDto) => {
     const [limit, setLimit] = useState(50)

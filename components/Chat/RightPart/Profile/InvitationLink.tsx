@@ -1,6 +1,6 @@
 import CopyIco from '@/components/assets/CopyIco'
 import api from '@/components/lib/api'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Oval } from 'react-loader-spinner'
 import { useQueries, useQuery } from 'react-query'
 
@@ -11,13 +11,13 @@ const InvitationLink = ({ setOptions, selectedChat }: any) => {
   const [Message, setMessage] = useState("")
   console.log({ enterNum, selected })
 
-  async function copyTextToClipboard(text : string) {
-    if ('clipboard' in navigator) {
-      return await navigator.clipboard.writeText(text);
+  const copyTextToClipboard = useCallback(async(text: string) => {
+    if (window && window?.navigator && 'clipboard' in window?.navigator) {
+      return await window?.navigator?.clipboard?.writeText(text);
     } else {
-      return document.execCommand('copy', true, text);
+      return document?.execCommand('copy', true, text);
     }
-  }
+  }, [window , window?.navigator])
 
   const { data, isLoading, refetch } = useQuery(["generateInviteLink"], () => {
     return api.get(`/chats/generateInviteLink?belongsTo=${selectedChat?.belongsTo}&lifeSpan=${enterNum + selected}`)
@@ -57,7 +57,7 @@ const InvitationLink = ({ setOptions, selectedChat }: any) => {
           <ul className='flex justify-between items-center border border-1 bg-slate-50 p-2 rounded-lg my-2'>
             <li className='truncate'>{link}</li>
             <li className='cursor-pointer'
-              onClick={async()=>{
+              onClick={async () => {
                 console.log(await copyTextToClipboard(link))
                 setMessage("Copied!!")
               }}
@@ -76,16 +76,16 @@ const InvitationLink = ({ setOptions, selectedChat }: any) => {
             }}
           >Cancel</button>
           {
-            isLoading ? 
-            <Oval color='#7e22ce' secondaryColor='#7e22ce' height={20} width={20}/>
-            :
-            <button
-              className='mx-2 p-2 px-4 rounded-lg text-white border border-blue-700 bg-blue-700 text-base'
-              onClick={() => {
-                setMessage("")
-                refetch()
-              }}
-            >Generate</button>
+            isLoading ?
+              <Oval color='#7e22ce' secondaryColor='#7e22ce' height={20} width={20} />
+              :
+              <button
+                className='mx-2 p-2 px-4 rounded-lg text-white border border-blue-700 bg-blue-700 text-base'
+                onClick={() => {
+                  setMessage("")
+                  refetch()
+                }}
+              >Generate</button>
           }
         </li>
       </ul>

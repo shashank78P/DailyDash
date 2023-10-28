@@ -14,8 +14,9 @@ const VideoStreamer = () => {
     const meetingSelector = useSelector((state: any) => state?.meetingSliceReducer);
     const dispatch = useDispatch()
 
-    const { MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(MediaContext)
+    const {Navigator, MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(MediaContext)
     const videoRef = useRef<HTMLVideoElement>()
+
 
     useEffect(() => {
         console.log(" setting stream to video tag")
@@ -43,9 +44,9 @@ const VideoStreamer = () => {
         return new Promise((resolve, reject) => {
             console.log("==================================")
             // @ts-ignore
-            if (navigator?.mediaDevices && navigator?.mediaDevices?.getUserMedia) {
+            if ( Navigator && Navigator?.mediaDevices && Navigator?.mediaDevices?.getUserMedia) {
                 // @ts-ignore
-                var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+                var getUserMedia = Navigator.getUserMedia || Navigator.webkitGetUserMedia || Navigator.mozGetUserMedia;
                 getUserMedia({ video: isVideoOn, audio: isAudioOn }, function (stream: MediaStream) {
                     resolve(stream);
                 }, function (err: any) {
@@ -55,7 +56,7 @@ const VideoStreamer = () => {
                 reject(new Error("getUserMedia not supported"));
             }
         });
-    }, [navigator])
+    }, [Navigator])
 
     const MediaController = (isVideoOn: boolean, isAudioOn: boolean) => {
         mediaAction(isVideoOn, isAudioOn).then((stream) => {

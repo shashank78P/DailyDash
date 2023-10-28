@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogTitle } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Oval } from 'react-loader-spinner';
-import { ReactMediaRecorder } from 'react-media-recorder';
+// import { ReactMediaRecorder } from 'react-media-recorder';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
@@ -48,12 +48,7 @@ const AudioRecord = ({ isOpen, setIsOpen, sendFile}: AudioRecordDto) => {
         <>
             <div>
 
-                <ReactMediaRecorder audio render={({ clearBlobUrl, error, mediaBlobUrl, pauseRecording, resumeRecording, startRecording, status, stopRecording, previewAudioStream }) => {
-                    // useEffect(() => {
-                    //     if (mediaBlobUrl) {
-                    //         setMediaUrl([...mediaUrl, mediaBlobUrl])
-                    //     }
-                    // }, [mediaBlobUrl])
+                {/* <ReactMediaRecorder audio render={({ clearBlobUrl, error, mediaBlobUrl, pauseRecording, resumeRecording, startRecording, status, stopRecording, previewAudioStream }) => {
                     return (
                         <>
                             <Dialog open={isOpen} >
@@ -67,9 +62,6 @@ const AudioRecord = ({ isOpen, setIsOpen, sendFile}: AudioRecordDto) => {
                                     </span>
                                     <DialogTitle style={{ fontWeight: "700" }}>Audio Recorder</DialogTitle>
                                     <DialogContent>
-                                        {/* <div className='text-center'>
-                                            0:12:00
-                                        </div> */}
                                         {
                                             ["recording", "stopping", "stopped", "paused"].includes(status) &&
                                             <div className='my-2 text-purple-700 text-sm text-center flex items-center justify-center'>
@@ -191,7 +183,7 @@ const AudioRecord = ({ isOpen, setIsOpen, sendFile}: AudioRecordDto) => {
                             </Dialog >
                         </>
                     )
-                }} />
+                }} /> */}
             </div>
         </>
     )
