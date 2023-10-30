@@ -7,6 +7,7 @@ import Peer from 'peerjs';
 const SocketProvider = (props: any) => {
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const [myPeer, setMyPeer] = useState<Peer>()
+    const [myScreenPeer, setMyScreenPeer] = useState<Peer>()
     const options = {
         'force new connection': true,
         reconnectionAttempt: 'Infinity',
@@ -21,10 +22,15 @@ const SocketProvider = (props: any) => {
     useEffect(() => {
         if (typeof window !== 'undefined' && userSelector?.userId && window?.navigator) {
             const peer = new Peer(userSelector?.userId);
+            const screenSharePeer = new Peer(`${userSelector?.userId}-screen-share`);
             peer.on("open", (id) => {
                 console.log("peerId => " + id)
             })
+            screenSharePeer.on("open", (id) => {
+                console.log("screen share peerId => " + id)
+            })
             setMyPeer(peer)
+            setMyScreenPeer(screenSharePeer)
         }
     }, [userSelector?.userId])
 
@@ -33,7 +39,7 @@ const SocketProvider = (props: any) => {
 
 
     return (
-        <SocketContext.Provider value={{ socket, myPeer }}>
+        <SocketContext.Provider value={{ socket, myPeer , myScreenPeer}}>
             {props?.children}
         </SocketContext.Provider>
     )

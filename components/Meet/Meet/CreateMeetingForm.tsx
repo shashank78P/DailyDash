@@ -38,7 +38,7 @@ const CreateMeetingForm = () => {
         {
             onSuccess({ data }) {
                 console.log(data?.[0]?._id)
-                router?.push(`/meet/join-meet?id=${data?.[0]?._id}`)
+                router?.push(`/meet/room?id=${data?.[0]?._id}`)
             },
             onError(err: any) {
                 toast.error(err?.response?.data?.message)

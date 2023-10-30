@@ -6,30 +6,31 @@ import React, { useContext, useEffect } from 'react'
 import { streamContextDto } from '../../types';
 import MediaContext from '../State/MediaContext';
 
-const ParticipantCard = ({ participant, key }: { participant: any, key: number }) => {
+const ParticipantCard = ({ participant, key, isScreenShare }: { participant: any, key: string, isScreenShare: boolean }) => {
     // @ts-ignore
-    const { meetingId, opponentNonMediaStreamStream, opponentStream, setShowPinSection, showPinSection, pinnedParticipants, setPinnedParticipants } = useContext<streamContextDto>(MediaContext)
-
+    const { opponentScreenShareStream, meetingId, opponentNonMediaStreamStream, opponentStream, setShowPinSection, showPinSection, pinnedParticipants, setPinnedParticipants } = useContext<streamContextDto>(MediaContext)
     function returnImgeContainer(container: any) {
         let imgTag = document.createElement("img")
         imgTag.setAttribute("alt", participant?.name)
         imgTag.setAttribute("src", participant?.userPic)
         imgTag.setAttribute("draggable", "false")
         imgTag.setAttribute("class", "w-full h-full object-cover rounded-full overflow-hidden select-none")
-        container.classList.remove("w-full", "h-full");
-        container.classList.add("w-[150px]", "h-[150px]");
-        container.innerHTML = "";
-        container.appendChild(imgTag)
+        if(container){
+            container.classList.remove("w-full", "h-full");
+            container.classList.add("w-[150px]", "h-[150px]");
+            container.innerHTML = "";
+            container.appendChild(imgTag)
+        }
     }
 
     useEffect(() => {
         if (participant?.participantId && meetingId && opponentStream && opponentNonMediaStreamStream) {
-            let container: any = document.getElementById(participant.participantId + meetingId)
-            console.log({opponentNonMediaStreamStream , opponentStream})
+            const id = isScreenShare ? `${participant?.participantId}-screen-share-${meetingId}` : `${participant?.participantId}-${meetingId}`
+            let container: any = document.getElementById(id)
             if (
                 Array.isArray(opponentNonMediaStreamStream) &&
                 !opponentNonMediaStreamStream?.includes(participant?.participantId) &&
-                Object.keys(opponentStream).includes(participant?.participantId)
+                Object.keys(opponentStream).includes(participant?.participantId) || isScreenShare
             ) {
                 let stream: MediaStream = opponentStream[participant?.participantId]
                 let track = stream.getTracks()
@@ -42,7 +43,16 @@ const ParticipantCard = ({ participant, key }: { participant: any, key: number }
                     container.appendChild(audioTag)
                 } else {
                     let videoTag = document.createElement("video")
-                    videoTag.srcObject = opponentStream[participant?.participantId]
+                    if (isScreenShare) {
+                        console.log("videoTag.srcObject - screen share")
+                        console.log(opponentScreenShareStream[`${participant?.participantId}-screen-share`])
+                        console.log(opponentScreenShareStream[`${participant?.participantId}-screen-share`]?.getTracks())
+                        videoTag.srcObject = opponentScreenShareStream[`${participant?.participantId}-screen-share`]
+                    } else {
+                        console.log("videoTag.srcObject")
+                        console.log(opponentStream[participant?.participantId])
+                        videoTag.srcObject = opponentStream[participant?.participantId]
+                    }
                     videoTag.setAttribute("autoPlay", "true")
                     videoTag.setAttribute("class", "w-full h-full aspect-video object-cover select-none pointer-events-none ")
                     container.classList.add("w-full", "h-full");
@@ -54,7 +64,7 @@ const ParticipantCard = ({ participant, key }: { participant: any, key: number }
                 returnImgeContainer(container)
             }
         }
-    }, [participant, meetingId, opponentNonMediaStreamStream, opponentStream])
+    }, [participant, meetingId, opponentNonMediaStreamStream, opponentStream, key])
 
 
     function handelPinParticipant(participantId: string) {
@@ -98,7 +108,7 @@ const ParticipantCard = ({ participant, key }: { participant: any, key: number }
 
     return (
         <>
-            <div className='min-w-[300px] min-h-[250px] bg-purple-100 relative rounded-lg flex justify-center items-center' key={key}
+            <div className='min-w-[300px] min-h-[250px] bg-purple-100 relative rounded-lg flex justify-center items-center' key={participant?.participantId}
                 onMouseEnter={() => {
                     setShowPinSection(participant?.participantId)
                 }}
@@ -133,7 +143,7 @@ const ParticipantCard = ({ participant, key }: { participant: any, key: number }
                         </li>
                     </ul>
                 </ul>
-                <ul className=' w-full h-full flex items-center justify-center' id={participant?.participantId + meetingId}>
+                <ul className=' w-full h-full flex items-center justify-center' id={!isScreenShare ? `${participant?.participantId}-${meetingId}` : `${participant?.participantId}-screen-share-${meetingId}`}>
                     {/* {getContent(participant, 150)} */}
                 </ul>
             </div>

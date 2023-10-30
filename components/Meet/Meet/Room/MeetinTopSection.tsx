@@ -12,7 +12,6 @@ const MeetinTopSection = () => {
     const { setOpenInvitePeople, openInvitePeople, meetingDetails, setShowParticipants, showParticipants, participantsDetails, absentParticipantsDetails } = useContext<streamContextDto>(MediaContext)
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
 
-    console.log(meetingDetails?.createdBy , userSelector?.userId)
 
     return (
         <>
@@ -24,8 +23,8 @@ const MeetinTopSection = () => {
                     <ul className='flex justify-between items-center'>
                         <li className='font-bold text-xl'>{meetingDetails?.title}</li>
                         <li className='flex '>
-                            <span className='mr-2'>Meeting ends in:</span>
-                            <span className='text-red-700'>02 : 30 min</span>
+                            <span className='mr-2'>Meeting length:</span>
+                            <span className='text-red-700'>{meetingDetails?.meetingLength + " "+meetingDetails?.meetingLengthPararmeter }</span>
                         </li>
                     </ul>
                 </li>
@@ -65,7 +64,7 @@ const MeetinTopSection = () => {
                                     setOpenInvitePeople(true)
                                 }}
                             >
-                                <div className='mr-2 p-2 bg-green-200 text-green-700  rounded-lg'>
+                                <div className='mr-2 p-2 bg-purple-200 text-purple-700  rounded-lg'>
                                     <PlusIco height={12} width={12} color='green' />
                                 </div>
                                 <div>Invite Participant</div>
