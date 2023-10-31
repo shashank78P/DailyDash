@@ -9,13 +9,15 @@ import { useState, useContext, useRef, useEffect, memo, useCallback } from 'reac
 import { useDispatch, useSelector } from 'react-redux'
 import { meetingAction } from '@/components/store/slice/meetingSlice';
 import { streamContextDto } from '../../types'
+import { toast } from 'react-toastify'
 
 const VideoStreamer = () => {
     const meetingSelector = useSelector((state: any) => state?.meetingSliceReducer);
     const dispatch = useDispatch()
 
-    const { MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(MediaContext)
+    const { Navigator, MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(MediaContext)
     const videoRef = useRef<HTMLVideoElement>()
+
 
     useEffect(() => {
         console.log(" setting stream to video tag")
@@ -43,19 +45,21 @@ const VideoStreamer = () => {
         return new Promise((resolve, reject) => {
             console.log("==================================")
             // @ts-ignore
-            if (navigator?.mediaDevices && navigator?.mediaDevices?.getUserMedia) {
+            if (Navigator && Navigator?.mediaDevices && Navigator?.mediaDevices?.getUserMedia) {
                 // @ts-ignore
-                var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+                var getUserMedia = Navigator.getUserMedia || Navigator.webkitGetUserMedia || Navigator.mozGetUserMedia;
                 getUserMedia({ video: isVideoOn, audio: isAudioOn }, function (stream: MediaStream) {
                     resolve(stream);
                 }, function (err: any) {
                     reject(err);
+                    toast.error(err?.message ?? "Your device is not supported")
                 });
             } else {
                 reject(new Error("getUserMedia not supported"));
+                toast.error("Your device is not supported , else")
             }
         });
-    }, [navigator])
+    }, [Navigator])
 
     const MediaController = (isVideoOn: boolean, isAudioOn: boolean) => {
         mediaAction(isVideoOn, isAudioOn).then((stream) => {

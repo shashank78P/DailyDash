@@ -5,9 +5,6 @@ import React, { useState } from 'react'
 import { ChatActionsDto } from '../type'
 import { useSelector } from 'react-redux'
 import CameraIco from '@/components/assets/CameraIco'
-import AudioRecord from '@/components/GlobalComponents/Audio/AudioRecord'
-import VideoRecord from '@/components/GlobalComponents/Video/VideoRecord'
-import api from '@/components/lib/api'
 import { useMutation } from 'react-query'
 import { toast } from 'react-toastify'
 import apiFromData from '@/components/lib/apiFormData'
@@ -61,8 +58,8 @@ const ChatActions = ({ selectedChat, socket }: ChatActionsDto) => {
 
     return (
         <>
-            {isOpen && <AudioRecord isOpen={isOpen} setIsOpen={setIsOpen} sendFile={sendFile} />}
-            {isVideoOpen && <VideoRecord isOpen={isVideoOpen} setIsOpen={setIsVideoOpen} sendFile={sendFile} />}
+            {/* {isOpen && <AudioRecord isOpen={isOpen} setIsOpen={setIsOpen} sendFile={sendFile} />}
+            {isVideoOpen && <VideoRecord isOpen={isVideoOpen} setIsOpen={setIsVideoOpen} sendFile={sendFile} />} */}
             <ul className='w-full flex justify-between items-center'>
                 <input
                     type="file"

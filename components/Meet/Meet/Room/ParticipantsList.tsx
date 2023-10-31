@@ -11,10 +11,11 @@ import MediaContext from '../State/MediaContext'
 import PinIco from '@/components/assets/PinIco'
 import UnPinIco from '@/components/assets/UnPinIco'
 import { useSelector } from 'react-redux'
+import RaiseHandIco from '@/components/assets/RaiseHandIco'
 
 const ParticipantsList = ({ participants, isPresentDetails }: { participants: Array<any>, isPresentDetails: boolean }) => {
-    
-    const { pinnedParticipants, setPinnedParticipants, audio , video , setShowParticipants, opponentNonMediaStreamStream, opponentStream } = useContext<streamContextDto>(MediaContext)
+
+    const { HandRaisedUser, participantsDetails, pinnedParticipants, setPinnedParticipants, audio, video, setShowParticipants, opponentNonMediaStreamStream, opponentStream } = useContext<streamContextDto>(MediaContext)
     console.log(participants)
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const [me, setMe] = useState({})
@@ -30,32 +31,37 @@ const ParticipantsList = ({ participants, isPresentDetails }: { participants: Ar
     }, [userSelector])
 
     function isVideoAudioOnOrOff(participantId: string) {
-        if (!opponentNonMediaStreamStream.includes(participantId) || !isPresentDetails) {
+        if (!opponentNonMediaStreamStream?.includes(participantId) || !isPresentDetails) {
             return { isVideo: false, isAudio: false }
         }
-        const stream: MediaStream = opponentStream[participantId]
-        const track = stream.getTracks()
-        if (track.length == 2) {
+        const stream: MediaStream = opponentStream?.[participantId]
+        if (!stream) {
+            return;
+        }
+        const track = stream?.getTracks()
+        if (track?.length == 2) {
             return { isVideo: true, isAudio: true }
         }
-        if (track.length == 1 && track?.[0]?.type == "audio") {
+        if (track?.length == 1 && track?.[0]?.type == "audio") {
             return { isVideo: true, isAudio: false }
         }
-        if (track.length == 1 && track?.[0]?.type == "video") {
+        if (track?.length == 1 && track?.[0]?.type == "video") {
             return { isVideo: false, isAudio: true }
+        } else {
+            return { isVideo: false, isAudio: false }
         }
     }
 
     function handelPinParticipant(participantId: string) {
-        console.log(pinnedParticipants.length)
-        console.log(!pinnedParticipants.includes(participantId))
-        if (pinnedParticipants.length < 4 && !pinnedParticipants.includes(participantId)) {
+        console.log(pinnedParticipants?.length)
+        console.log(!pinnedParticipants?.includes(participantId))
+        if (pinnedParticipants?.length < 4 && !pinnedParticipants?.includes(participantId)) {
             setPinnedParticipants((prev: Array<String>) => [...prev, participantId])
         }
     }
     function handelUnPinParticipant(participantId: string) {
-        if (pinnedParticipants.includes(participantId)) {
-            setPinnedParticipants((prev: Array<String>) => prev.filter((id) => id !== participantId))
+        if (pinnedParticipants?.includes(participantId)) {
+            setPinnedParticipants((prev: Array<String>) => prev?.filter((id) => id !== participantId))
         }
     }
 
@@ -76,31 +82,34 @@ const ParticipantsList = ({ participants, isPresentDetails }: { participants: Ar
                 </ul>
                 <li className='ml-2'>
                     <ul className='flex items-center justify-center'>
-                        {isPresentDetails && !pinnedParticipants?.includes(participant?.participantId) && <li className='cursor-pointer'
+                        {isPresentDetails && !pinnedParticipants?.includes(participant?.participantId) && <li className='cursor-pointer mr-1.5'
                             onClick={() => {
                                 handelPinParticipant(participant?.participantId)
                             }}
                         >
-                            <PinIco height={24} width={30} color='#202124' />
+                            <PinIco height={20} width={20} color='#202124' />
                         </li>}
-                        {isPresentDetails && pinnedParticipants?.includes(participant?.participantId) && <li className='cursor-pointer'
+                        {isPresentDetails && pinnedParticipants?.includes(participant?.participantId) && <li className='cursor-pointer mr-1.5'
                             onClick={() => {
                                 handelUnPinParticipant(participant?.participantId)
                             }}
                         >
-                            <UnPinIco height={24} width={30} color='#202124' />
+                            <UnPinIco height={20} width={20} color='#202124' />
                         </li>}
-                        {isAudio && <li className='cursor-pointer'>
-                            <VoiceMikeIco height={24} width={30} strokeWidth={1.5} />
+                        {HandRaisedUser?.includes(participant?.participantId) && <li className='cursor-pointer mr-1.5'>
+                            <RaiseHandIco height={20} width={20} color='#202124' />
                         </li>}
-                        {!isAudio && <li className='cursor-pointer'>
-                            <UnMuteIco height={24} width={30} strokeWidth={1.5} />
+                        {isAudio && <li className='cursor-pointer mr-1.5'>
+                            <VoiceMikeIco height={25} width={20} strokeWidth={1.5} />
                         </li>}
-                        {!isVideo && <li className='cursor-pointer'>
-                            <VideoSlashIco height={25} width={30} strokeWidth={1.5} />
+                        {!isAudio && <li className='cursor-pointer mr-1.5'>
+                            <UnMuteIco height={25} width={20} strokeWidth={1.5} />
                         </li>}
-                        {isVideo && <li className='cursor-pointer'>
-                            <VideoICameraIco height={25} width={30} strokeWidth={1.5} />
+                        {!isVideo && <li className='cursor-pointer mr-1.5'>
+                            <VideoSlashIco height={25} width={20} strokeWidth={1.5} />
+                        </li>}
+                        {isVideo && <li className='cursor-pointer mr-1.5'>
+                            <VideoICameraIco height={25} width={20} strokeWidth={1.5} />
                         </li>}
                     </ul>
                 </li>
@@ -125,7 +134,7 @@ const ParticipantsList = ({ participants, isPresentDetails }: { participants: Ar
                             <span>{(isPresentDetails) ? "Participants" : "Absentice"}</span>
                             <div className='ml-2 p-1 px-1.5 bg-purple-200 text-purple-700 text-sm rounded-lg'>{participants?.length ?? 0}</div>
                         </li>
-                        <li className='cursor-pointer'
+                        <li className='cursor-pointer mr-1.5'
                             onClick={() => {
                                 setShowParticipants("")
                             }}
@@ -133,16 +142,35 @@ const ParticipantsList = ({ participants, isPresentDetails }: { participants: Ar
                             <CrossIco height={30} width={30} color='red' />
                         </li>
                     </ul>
+                    {/* showing me as a participant */}
                     {
-                        me && participantRow(me , video ,audio)
+                        isPresentDetails && me && participantRow(me, video, audio)
                     }
+                    {/* showing all hand raise user top  */}
                     {
-                        participants && Array.isArray(participants) && participants?.map((participant: any, i: number) => {
-                            console.log(isPresentDetails && !pinnedParticipants?.includes(participant?.participantId))
-                            const { isVideo, isAudio } = isVideoAudioOnOrOff(participant?.participantId)
+                        HandRaisedUser && HandRaisedUser?.length >= 1 && HandRaisedUser?.map((id: string) => {
+                            console.log("printing handraised user")
+                            if (HandRaisedUser?.includes(id)) {
+                                return;
+                            }
+                            const { isVideo, isAudio } = isVideoAudioOnOrOff(id)
+                            const participant = participantsDetails?.[id]
                             return (
                                 participantRow(participant, isVideo, isAudio)
                             )
+                        })
+                    }
+                    {
+                        participants && Array.isArray(participants) && participants?.map((participant: any, i: number) => {
+                            if (HandRaisedUser.length >= 1 && HandRaisedUser?.includes(participant?.participantId)) {
+                                return;
+                            } else {
+                                console.log(participant)
+                                const { isVideo, isAudio } = isVideoAudioOnOrOff(participant?.participantId)
+                                return (
+                                    participantRow(participant, isVideo, isAudio)
+                                )
+                            }
                         })
                     }
                 </div>

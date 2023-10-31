@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
-import { meetingContext } from './State/meetState'
 import { useForm } from 'react-hook-form'
 import { meetingDto } from './TopBarAction'
 import CrossIco from '@/components/assets/CrossIco'
@@ -19,7 +18,7 @@ type createMeetingFormDto = {
     meetingDate: Date
 }
 
-const CreateMeetingForm = () => {
+const CreateMeetingForm = ({createMeeting, setCreateMeeting} : meetingDto) => {
     const { register, handleSubmit, formState: { errors, }, getValues, unregister , setValue } = useForm<createMeetingFormDto>({ defaultValues: { whoCanJoin: "ANY_ONE_WITH_MEET_LINK" } });
     const [selected, setSelected] = useState([])
     const [whoCanJoin, setWhoCanJoin] = useState("")
@@ -38,7 +37,7 @@ const CreateMeetingForm = () => {
         {
             onSuccess({ data }) {
                 console.log(data?.[0]?._id)
-                router?.push(`/meet/join-meet?id=${data?.[0]?._id}`)
+                router?.push(`/meet/room?id=${data?.[0]?._id}`)
             },
             onError(err: any) {
                 toast.error(err?.response?.data?.message)
@@ -50,7 +49,6 @@ const CreateMeetingForm = () => {
         console.log(data)
         postCreateMeeting(data)
     }
-    const { createMeeting, setCreateMeeting } = useContext<meetingDto>(meetingContext)
     return (
         <Dialog
             open={createMeeting}
@@ -61,7 +59,7 @@ const CreateMeetingForm = () => {
         >
             <DialogTitle>
                 <ul className='w-full flex justify-between items-center'>
-                    <li className='font-medium'>Create Meeting</li>
+                    <li className='font-semibold '>Create Meeting</li>
                     <li
                         className='cursor-pointer'
                         onClick={() => {

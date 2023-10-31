@@ -9,7 +9,7 @@ const AuthMe = () => {
   let dispatch = useDispatch();
 
     useEffect(()=> {
-        axios.get("http://localhost:3001/users/authme", { withCredentials: true })
+        axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/users/authme`, { withCredentials: true })
         .then(({data} : any)=>{
           console.log(data)
           dispatch(userAction?.setuser(data))

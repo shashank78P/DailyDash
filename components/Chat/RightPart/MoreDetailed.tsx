@@ -1,9 +1,8 @@
-import { Button, Menu, MenuItem, Select, Tab, Tabs } from '@mui/material'
+import { Button, Menu, Tab, Tabs } from '@mui/material'
 import React from 'react'
 
 const MoreDetailed = () => {
     const [value, setValue] = React.useState(2);
-    const [age, setAge] = React.useState(2);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
