@@ -74,6 +74,8 @@ const Room = () => {
     useEffect(() => {
         if (typeof window !== 'undefined' && userSelector?.userId && window?.navigator) {
             setNavigator(window?.navigator)
+        }else{
+            toast.error("permission error")
         }
     }, [userSelector?.userId, socket, myPeer])
 
