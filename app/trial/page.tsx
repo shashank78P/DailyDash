@@ -4,16 +4,17 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 export default function Page(prop: any) {
     const [myStream, setMyStream] = useState<MediaStream | null>()
     const [isScreenShare, setIsScreenShare] = useState<boolean>()
-    const ref = useRef()
+    const ref : any = useRef<HTMLVideoElement>(null)
 
     useEffect(() => {
-        if (ref.current) {
+        if (ref?.current) {
             console.log({ myStream })
             ref.current.srcObject = myStream
         }
     }, [myStream])
 
     const startScreenShare = useCallback(async () => {
+        // @ts-ignore
         const stream = await navigator.mediaDevices.getDisplayMedia({ video: { mediaSource: "screen" }, audio: false })
         return stream
     }, [])

@@ -6,13 +6,13 @@ import { streamContextDto } from '../../types'
 import MediaContext from '../State/MediaContext'
 import Message from './Message'
 
-const MeetingRoom = () => {
+const MeetingRoom = ({myVideoRef} : { myVideoRef : any }) => {
     // @ts-ignore
     const { myStream , opponentScreenShareStream, isShowChat, participantsDetails, pinnedParticipants, showParticipants } = useContext<streamContextDto>(MediaContext)
-    const ref = useRef()
     useEffect(()=>{
-        if(ref?.current){
-            ref.current.srcObject = myStream
+        if(myVideoRef?.current){
+            myVideoRef.current.srcObject = myStream
+            console.log(myVideoRef?.current?.srcObject)
         }
     },[myStream])
 
@@ -38,7 +38,7 @@ const MeetingRoom = () => {
             </div>
             {isShowChat && <Message />}
             {/* meeting participants card */}
-            <video width={200} height={200} id="video" ref={ref} autoPlay/>
+            <video width={200} height={200} id="video" ref={myVideoRef} autoPlay/>
             <div className={`${pinnedParticipants.length !== 0 || Object.keys(participantsDetails).length < 5 ? returnStyleForPinnedCard() : " grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 "} w-full h-full overflow-y-scroll gap-2 grid-flow-dense p-2 relative`}>
                 <MeetingActionBtns />
                 {

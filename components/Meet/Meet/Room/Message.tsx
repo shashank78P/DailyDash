@@ -11,7 +11,7 @@ const Message = () => {
     const { socket, myPeer }: any = useContext(SocketContext);
     const { setMessages, messages, meetingId } = useContext<streamContextDto>(MediaContext)
     const [localMessage, setLocalMessage] = useState("")
-    const messageEndRef = useRef()
+    const messageEndRef : any = useRef()
     const ref = useRef()
 
     const getTime = (createdAt: Date) => {
@@ -24,7 +24,7 @@ const Message = () => {
     }, [messages]);
 
     const scrollToBottom = () => {
-        if (messageEndRef) {
+        if (messageEndRef && messageEndRef?.current) {
             messageEndRef?.current?.scrollIntoView({ behavior: "smooth" });
         }
     };

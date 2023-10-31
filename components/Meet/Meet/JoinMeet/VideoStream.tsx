@@ -9,12 +9,13 @@ import { useState, useContext, useRef, useEffect, memo, useCallback } from 'reac
 import { useDispatch, useSelector } from 'react-redux'
 import { meetingAction } from '@/components/store/slice/meetingSlice';
 import { streamContextDto } from '../../types'
+import { toast } from 'react-toastify'
 
 const VideoStreamer = () => {
     const meetingSelector = useSelector((state: any) => state?.meetingSliceReducer);
     const dispatch = useDispatch()
 
-    const {Navigator, MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(MediaContext)
+    const { Navigator, MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(MediaContext)
     const videoRef = useRef<HTMLVideoElement>()
 
 
@@ -44,16 +45,18 @@ const VideoStreamer = () => {
         return new Promise((resolve, reject) => {
             console.log("==================================")
             // @ts-ignore
-            if ( Navigator && Navigator?.mediaDevices && Navigator?.mediaDevices?.getUserMedia) {
+            if (Navigator && Navigator?.mediaDevices && Navigator?.mediaDevices?.getUserMedia) {
                 // @ts-ignore
                 var getUserMedia = Navigator.getUserMedia || Navigator.webkitGetUserMedia || Navigator.mozGetUserMedia;
                 getUserMedia({ video: isVideoOn, audio: isAudioOn }, function (stream: MediaStream) {
                     resolve(stream);
                 }, function (err: any) {
                     reject(err);
+                    toast.error(err?.message ?? "Your device is not supported")
                 });
             } else {
                 reject(new Error("getUserMedia not supported"));
+                toast.error("Your device is not supported")
             }
         });
     }, [Navigator])

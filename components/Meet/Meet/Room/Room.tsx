@@ -18,7 +18,7 @@ const Room = () => {
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const meetingSelector = useSelector((state: any) => state?.meetingSliceReducer);
     const param = useSearchParams();
-    const ref = useRef<HTMLVideoElement>(null)
+    const myVideoRef = useRef<HTMLVideoElement>(null)
     // @ts-ignore
     const { opponentScreenShareStream, setOpponentScreenShareStrem, setMyScreenShareStream, myScreenShareStream, isScreenShare, setIsScreenShare, setMessages, messages, setHandRaisedUser, HandRaisedUser, Navigator, setNavigator, pinnedParticipants, setAbsentParticipantsDetails, meetingId, setMeetingId, opponentNonMediaStreamStream, setOpponentNonMediaStreamStream, participantsDetails, setParticipantsDetails, opponentStream, setOpponentStream, isJoinMeetPage, setIsJoinMeetPage, MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(MediaContext)
 
@@ -77,12 +77,6 @@ const Room = () => {
         }
     }, [userSelector?.userId, socket, myPeer])
 
-    useEffect(() => {
-        if (ref.current && myStream?.active) {
-            ref.current.srcObject = myStream
-        }
-    }, [myStream, ref, isJoinMeetPage])
-
     const mediaAction = useCallback((isVideoOn: boolean, isAudioOn: boolean): Promise<MediaStream> => {
         return new Promise((resolve, reject) => {
             console.log("==================================")
@@ -96,7 +90,7 @@ const Room = () => {
                 getUserMedia({ video: isVideoOn, audio: isAudioOn }, function (stream: MediaStream) {
                     resolve(stream);
                 }, function (err: any) {
-                    toast.error(err);
+                    toast.error(err?.message ?? "getUserMedia not supported");
                 });
             } else {
                 toast.error("getUserMedia not supported");
@@ -104,7 +98,7 @@ const Room = () => {
         });
     }, [Navigator])
 
-    console.log({ opponentScreenShareStream, opponentNonMediaStreamStream, opponentStream , myStream})
+    console.log({ opponentScreenShareStream, opponentNonMediaStreamStream, opponentStream, myStream })
 
     // calling - screen share
     useEffect(() => {
@@ -130,7 +124,7 @@ const Room = () => {
             // }
         }
     }
-        , [isScreenShare, isJoinMeetPage, participantsDetails, myScreenPeer, socket, mediaAction])
+        , [isScreenShare, isJoinMeetPage, participantsDetails, myScreenPeer, socket])
     // recieving - screen stream
     useEffect(() => {
         if (socket && myPeer && (!isJoinMeetPage)) {
@@ -148,10 +142,9 @@ const Room = () => {
                 }
                 call.on('stream', function (remoteStream: MediaStream) {
                     console.log("recieved opponent screen stream");
-                    console.log(remoteStream.getTracks());
+                    console.log(remoteStream);
                     const temp: any = {}
                     temp[peerId] = remoteStream;
-                    const remoteStreamTrack = remoteStream.getTracks()
                     setOpponentScreenShareStrem((prev: any) => {
                         return (
                             {
@@ -163,13 +156,13 @@ const Room = () => {
                 });
             })
         }
-    }, [socket, myScreenPeer, userSelector?.userId, audio, video, myStream, isJoinMeetPage, myScreenShareStream])
+    }, [socket, myScreenPeer, userSelector?.userId, isScreenShare, isJoinMeetPage, myScreenShareStream])
 
 
     // to on-off video or audio and to set myStream
     useEffect(() => {
         if (!isJoinMeetPage && participantsDetails && myPeer && socket) {
-            if ((video || audio)) {
+            if (video || audio) {
                 mediaAction(video, audio).then((stream: MediaStream) => {
                     Promise.all(Object?.keys(participantsDetails)?.map((participantId: any, i: number) => {
                         console.log("sending-media-stream")
@@ -177,14 +170,8 @@ const Room = () => {
                         console.log({ video, audio })
                         socket.emit(`sending-stream`, { type: "sending-media-stream", opponentId: userSelector?.userId, sendingTo: participantId, meetingId });
                         handelOpponentStreamCall(participantId, stream, myPeer)
+                        setMyStream(stream)
                     }))
-                    if(myStream){
-                        const tracks = myStream.getTracks()
-                        tracks.forEach((track) => {
-                            track.stop()
-                        })
-                    }
-                    setMyStream(stream)
                 })
             } else {
                 const customVideoStream = createCustomStream()
@@ -199,52 +186,28 @@ const Room = () => {
         , [video, audio, isJoinMeetPage, participantsDetails, myPeer, socket, mediaAction])
 
     useEffect(() => {
-        console.log("myStream changed")
-        console.log(myStream)
-    }, [myStream])
-
-    // useEffect(() => {
-    // if (!isJoinMeetPage && isScreenShare) {
-    //     console.log("sending-screen-stream")
-    //     Promise.all(Object?.keys(participantsDetails)?.map((participantId: any, i: number) => {
-    //         socket?.emit(`sending-stream`, { type: "sending-media-stream", opponentId: userSelector?.userId, sendingTo: participantId, meetingId });
-    //         handelOpponentStreamCall(participantId, myStream)
-    //     }))
-    // }
-    // else if (!isJoinMeetPage && !isScreenShare && myStream) {
-    //     console.log("sending-screen-stream")
-    //     let tracks = myStream.getTracks()
-    //     if (tracks.length == 0) {
-    //         Promise.all(Object?.keys(participantsDetails)?.map((participantId: any, i: number) => {
-    //             socket?.emit(`sending-stream`, { type: "sending-non-custom-created-media-stream", opponentId: userSelector?.userId, sendingTo: participantId, meetingId });
-    //             handelOpponentStreamCall(participantId, myStream)
-    //         }))
-    //     } else {
-    //         Promise.all(Object?.keys(participantsDetails)?.map((participantId: any, i: number) => {
-    //             console.log("sending-media-stream")
-    //             socket?.emit(`sending-stream`, { type: "sending-media-stream", opponentId: userSelector?.userId, sendingTo: participantId, meetingId });
-    //             handelOpponentStreamCall(participantId, myStream)
-    //         }))
-    //     }
-    // }
-    // }, [socket, myPeer, isJoinMeetPage, isScreenShare, startScreenShare, myStream])
-
-    useEffect(() => {
         if (socket && myPeer && (!isJoinMeetPage)) {
             myPeer?.on("call", function (call: any) {
-                var peerId = call?.peer
-                if (myStream && myStream?.active && (video || audio || isScreenShare)) {
+                console.log({ video, audio })
+                console.log("recieved call")
+                console.log("call by => ", call?.peer)
+                var peerId = call.peer
+                const currentMyStream: any = myVideoRef?.current?.srcObject;
+                if (currentMyStream?.active && (video || audio)) {
                     console.log("answering active stream")
+                    console.log(currentMyStream)
                     socket.emit(`sending-stream`, { type: "sending-media-stream", opponentId: userSelector?.userId, sendingTo: peerId, meetingId });
-                    call?.answer(myStream)
+                    call.answer(currentMyStream)
                 } else {
                     console.log("answering custom created stream")
+                    console.log(currentMyStream)
                     socket.emit(`sending-stream`, { type: "sending-non-custom-created-media-stream", opponentId: userSelector?.userId, sendingTo: peerId, meetingId });
                     // const customAudioStream = createCustomStream()
-                    call?.answer(myStream)
+                    call.answer(currentMyStream)
                 }
                 call.on('stream', function (remoteStream: MediaStream) {
                     console.log("recieved opponent stream");
+                    console.log(remoteStream);
                     const temp: any = {}
                     temp[peerId] = remoteStream;
                     setOpponentStream((prev: any) => {
@@ -258,7 +221,14 @@ const Room = () => {
                 });
             })
         }
-    }, [socket, myPeer, userSelector?.userId, audio, video, myStream, isJoinMeetPage, myScreenShareStream])
+    }, [socket, myPeer, userSelector?.userId, isJoinMeetPage, myStream, video, audio])
+
+
+    useEffect(() => {
+        console.log("myStream changed")
+        console.log(myStream)
+    }, [myStream])
+
 
     // useEffect(() => {
     //     if (myPeer && (!isJoinMeetPage)) {
@@ -311,7 +281,7 @@ const Room = () => {
 
     // console.log({ opponentNonMediaStreamStream, opponentStream, myStream })
 
-    const handelOpponentStreamCall = (joinedUserId: string, stream: MediaStream, peer: Peer) => {
+    const handelOpponentStreamCall = useCallback((joinedUserId: string, stream: MediaStream, peer: Peer) => {
         //     setMyStream(stream)
 
         if (!joinedUserId) {
@@ -321,9 +291,10 @@ const Room = () => {
         const call = peer?.call(joinedUserId, stream);
 
         call?.on("stream", function (remoteStream: MediaStream) {
-            console.log("recieved stream from ")
-            const temp: any = {}
+            console.log("recieved stream response ")
             console.log("setting remote stream of  " + joinedUserId);
+            const temp: any = {}
+            console.log(remoteStream)
             temp[joinedUserId] = remoteStream;
             setOpponentStream((prev: any) => {
                 return (
@@ -334,43 +305,7 @@ const Room = () => {
                 )
             })
         })
-    }
-
-
-    // const handelCall = (joinedUserId: string) => {
-    //     console.log("handel  call")
-    //     console.log(audio, video)
-    //     if (video || audio) {
-    //         socket.emit(`sending-stream`, { type: "sending-media-stream", opponentId: userSelector?.userId, sendingTo: joinedUserId });
-    //         var getUserMedia = Navigator.getUserMedia || Navigator.webkitGetUserMedia || Navigator.mozGetUserMedia;
-    //         getUserMedia({ video: video, audio: audio }, function (stream: MediaStream) {
-    //             // calling to joined user
-    //             console.log("sending stream")
-    //             console.log(stream)
-    //             handelOpponentStreamCall(joinedUserId, stream)
-    //             setMyStream(stream)
-    //         })
-    //     } else {
-    //         console.log("sending custom created stream")
-    //         socket.emit(`sending-stream`, { type: "sending-non-custom-created-media-stream", opponentId: userSelector?.userId, sendingTo: joinedUserId, meetingId });
-    //         const customAudioStream = createCustomStream()
-    //         handelOpponentStreamCall(joinedUserId, customAudioStream)
-    //     }
-    // }
-
-    // const handelJoin = (joinedUserId: string) => {
-    //     console.log("handel  join")
-    //     console.log(meetingSelector)
-    //     if (video || audio) {
-    //         handelCall(joinedUserId)
-    //     }
-    // }
-
-    // const handelCallAllParticipants = (data: any) => {
-    //     Promise.all(data?.participants?.map((participant: any, i: number) => {
-    //         handelCall(participant?.participantId)
-    //     }))
-    // }
+    }, [])
 
     const handelParticipantsLefMeeting = (data: any) => {
         const { leftUserId } = data
@@ -482,7 +417,7 @@ const Room = () => {
                 <JoinMeetingRequest handleJoinMeet={handleJoinMeet} />
                 :
                 <div className='w-[100hv - 50px] h-[100vw] overflow-hidden flex flex-col'>
-                    <MeetingRoom />
+                    <MeetingRoom myVideoRef={myVideoRef} />
                 </div>
             }
         </>
