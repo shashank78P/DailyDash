@@ -1,6 +1,5 @@
 import PlusIco from '@/components/assets/PlusIco'
-import React, { useContext } from 'react'
-import { meetingContext } from './State/meetState'
+import React, { useContext, useState } from 'react'
 import CreateMeetingForm from './CreateMeetingForm'
 
 export interface meetingDto {
@@ -10,24 +9,32 @@ export interface meetingDto {
 
 const TopBarAction = () => {
 
-    const { createMeeting, setCreateMeeting } = useContext<meetingDto>(meetingContext)
-    console.log({ createMeeting, setCreateMeeting })
+    const [selectedTab , setSelectedTab] = useState(0);
+    const [createMeeting , setCreateMeeting] = useState(false);
     return (
         <>
             {
-                createMeeting && <CreateMeetingForm />
+                createMeeting && <CreateMeetingForm createMeeting={createMeeting} setCreateMeeting={setCreateMeeting} />
             }
             <ul className='w-full flex justify-between items-center'>
                 <li>
                     <ul className='w-full flex items-center '>
-                        <li className='text-base font-medium cursor-pointer border border-transparent border-b-purple-700 p-2 border-b-2 select-none'>
-                            <span>
+                        <li className={`text-base font-medium cursor-pointer ${ selectedTab === 0 && 'border-b-purple-700'} p-2 select-none ease-in transition-all mr-2 border border-b-2 border-transparent`}
+                            onClick={()=>{
+                                setSelectedTab(0)
+                            }}
+                        >
+                            <span className={`${ selectedTab === 0 ? " text-slate-700 ":   "text-slate-500" } `}>
                                 Scheduled Metting
                             </span>
                             <span className='ml-1 p-1  rounded-md bg-purple-700 text-xs text-white font-light'>01</span>
                         </li>
-                        <li className='text-base font-medium cursor-pointer border border-transparent border-b-purple-700 p-2 border-b-2 select-none'>
-                            <span className='text-slate-500'>
+                        <li className={`text-base font-medium cursor-pointer ${ selectedTab === 1 && 'border-b-purple-700'} p-2 select-none ease-in transition-all border border-b-2 border-transparent`}
+                            onClick={()=>{
+                                setSelectedTab(1)
+                            }}
+                        >
+                            <span className={`${ selectedTab === 1 ? " text-slate-700 ":   "text-slate-500" } `}>
                                 Metting History
                             </span>
                             <span className='ml-1 p-1  rounded-md bg-purple-700 text-xs text-white font-light'>02</span>

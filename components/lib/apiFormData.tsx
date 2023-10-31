@@ -7,7 +7,8 @@ const apiFromData = axios.create({
     headers: {
         'Access-Control-Allow-Credentials': true,
         'Content-Type': 'multipart/form-data',
-        'type':"formData"
+        'type':"formData",
+        "Access-Control-Allow-Origin": "*",
     }
 
 });
