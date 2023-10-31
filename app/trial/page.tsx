@@ -1,5 +1,6 @@
 "use client"
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { toast } from 'react-toastify'
 
 export default function Page(prop: any) {
     const [myStream, setMyStream] = useState<MediaStream | null>()
@@ -14,9 +15,13 @@ export default function Page(prop: any) {
     }, [myStream])
 
     const startScreenShare = useCallback(async () => {
-        // @ts-ignore
-        const stream = await navigator.mediaDevices.getDisplayMedia({ video: { mediaSource: "screen" }, audio: false })
-        return stream
+        try{
+            // @ts-ignore
+            const stream = await navigator.mediaDevices.getDisplayMedia({ video: { mediaSource: "screen" }, audio: false })
+            return stream
+        }catch(err : any){
+            toast.error(err?.message ?? "Not supported")
+        }
     }, [])
 
     useEffect(() => {
@@ -25,7 +30,7 @@ export default function Page(prop: any) {
                 const combined = new MediaStream()
                 console.log(combined?.getTracks())
                 const tracks = stream?.getTracks()
-                tracks.map((track, i)=>{
+                tracks?.map((track, i)=>{
                     combined.addTrack(track)
                 })
                 console.log(combined?.getTracks())
