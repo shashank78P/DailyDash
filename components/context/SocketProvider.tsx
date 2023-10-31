@@ -35,7 +35,7 @@ const SocketProvider = (props: any) => {
     }, [userSelector?.userId])
 
     // @ts-ignore
-    const socket = userSelector?.userId && userSelector?.userId !== 'undefined' && io.connect(String("http://localhost:3001/polls"), options);
+    const socket = userSelector?.userId && userSelector?.userId !== 'undefined' && io.connect(String(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/polls`), options);
 
 
     return (
