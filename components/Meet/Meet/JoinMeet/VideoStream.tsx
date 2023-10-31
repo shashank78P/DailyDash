@@ -56,7 +56,7 @@ const VideoStreamer = () => {
                 });
             } else {
                 reject(new Error("getUserMedia not supported"));
-                toast.error("Your device is not supported")
+                toast.error("Your device is not supported , else")
             }
         });
     }, [Navigator])
