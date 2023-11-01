@@ -3,21 +3,16 @@ import api from '@/components/lib/api'
 import React, { useCallback, useState } from 'react'
 import { Oval } from 'react-loader-spinner'
 import { useQueries, useQuery } from 'react-query'
+import useCopyToClipboard from "@/components/GlobalComponents/useCopyToClipboard"
 
 const InvitationLink = ({ setOptions, selectedChat }: any) => {
   const [selected, setSelected] = useState("h")
   const [enterNum, setEnteredNum] = useState(1)
   const [link, setLink] = useState("")
   const [Message, setMessage] = useState("")
+  const [copyTextToClipboard] = useCopyToClipboard()
   console.log({ enterNum, selected })
 
-  const copyTextToClipboard = useCallback(async(text: string) => {
-    if (window && window?.navigator && 'clipboard' in window?.navigator) {
-      return await window?.navigator?.clipboard?.writeText(text);
-    } else {
-      return document?.execCommand('copy', true, text);
-    }
-  }, [window , window?.navigator])
 
   const { data, isLoading, refetch } = useQuery(["generateInviteLink"], () => {
     return api.get(`/chats/generateInviteLink?belongsTo=${selectedChat?.belongsTo}&lifeSpan=${enterNum + selected}`)

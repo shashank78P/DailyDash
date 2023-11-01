@@ -7,6 +7,7 @@ import HomeIco from '@/components/assets/HomeIco'
 import NoteIco from '@/components/assets/NoteIco'
 import PlusIco from '@/components/assets/PlusIco'
 import ProjectManagement from '@/components/assets/ProjectManagement'
+import VideoICameraIco from '@/components/assets/VideoICameraIco'
 import React, { useEffect, useState } from 'react'
 
 const Tab = (props: { tabData: any, key: number }) => {
@@ -27,6 +28,9 @@ const Tab = (props: { tabData: any, key: number }) => {
         }
         if (title === "Chat") {
             return <ChatIco width={20} height={20} color={''} />
+        }
+        if (title === "Meet") {
+            return <VideoICameraIco width={20} height={25} color={''} />
         }
         if (title === "Bookmark") {
             return <BookMark width={20} height={20} color={''} />
@@ -50,6 +54,9 @@ const Tab = (props: { tabData: any, key: number }) => {
         }
         if (tabData?.route === "/chat") {
             setValue("Chat")
+        }
+        if (tabData?.route === "/meet") {
+            setValue("Meet")
         }
         if (tabData?.route === "/bookmark") {
             setValue("Bookmark")

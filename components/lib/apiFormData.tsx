@@ -3,7 +3,7 @@ import axios from "axios";
 const apiFromData = axios.create({
     baseURL: process.env.NEXT_PUBLIC_BACKEND_API_URL,
     // + '/api',
-    withCredentials: true,
+    withCredentials: true, 
     headers: {
         'Access-Control-Allow-Credentials': true,
         'Content-Type': 'multipart/form-data',

@@ -32,7 +32,7 @@ export default function RootLayout({
 
   console.log(pathname);
   const restriction_SideBar__Tab = ["/login", "/reset-password", "/forget-password", "/block", "/signup"];
-  const restriction__Tab = ["/meet/room" , "/trial"];
+  const restriction__Tab = ["/meet/room", "/trial"];
   return (
     <html lang="en">
       <title>DailyDash</title>
@@ -43,9 +43,11 @@ export default function RootLayout({
               <ReactQueryProvider>
                 <AuthMe />
                 <body className={inter.className}>
-                  <div className='flex w-full'>
+                  <div className='flex w-[100vw] justify-center items-center'>
                     <ToastContainer />
-                    {!restriction_SideBar__Tab.includes(pathname) && <SideBar />}
+                    <div className='w-[50px]'>
+                      {!restriction_SideBar__Tab.includes(pathname) && <SideBar />}
+                    </div>
                     {/* <div className='flex w-full flex-col'> */}
                     <div className='w-full  h-screen flex flex-col justify-between '>
                       {children}

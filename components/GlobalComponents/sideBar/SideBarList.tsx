@@ -13,6 +13,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import HomeIco from '../../assets/HomeIco'
 import { routeAction } from "../../store/slice/router_slice"
 import { usePathname, useSearchParams } from 'next/navigation'
+import CameraIco from '@/components/assets/CameraIco'
+import VideoICameraIco from '@/components/assets/VideoICameraIco'
 
 const SideBarList = () => {
     const currentRoute = useSelector((state: any) => state.routeSliceReducer)
@@ -62,16 +64,16 @@ const SideBarList = () => {
                                 {/* <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Home</span> */}
                             </Link>
                         </li>
-                        <li className={`p-2 my-2 flex items-center  ${pathname === '/project-management' && "bg-purple-500 text-white rounded-md ease-in"}`}
+                        {/* <li className={`p-2 my-2 flex items-center  ${pathname === '/project-management' && "bg-purple-500 text-white rounded-md ease-in"}`}
                             onClick={() => {
                                 ChangeRouter("project-management")
                             }}
                         >
                             <Link href={'/project-management'} className='flex items-center'>
                                 <ProjectManagement width={25} height={25} color={pathname === '/project-management' ? "white" : "#202124"} />
-                                {/* <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Project Management</span> */}
+                                <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Project Management</span> 
                             </Link>
-                        </li>
+                        </li> */}
                         <li className={`p-2 my-2 flex items-center  ${pathname === '/chat' && "bg-purple-500 text-white rounded-md ease-in"}`}
                             onClick={() => {
                                 ChangeRouter("chat")
@@ -79,6 +81,16 @@ const SideBarList = () => {
                         >
                             <Link href={'/chat'} className='flex items-center'>
                                 <ChatIco width={25} height={25} color={pathname === '/chat' ? "white" : "#202124"} />
+                                {/* <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Chat</span> */}
+                            </Link>
+                        </li>
+                        <li className={`p-2 my-2 flex items-center  ${pathname === '/meet' && "bg-purple-500 text-white rounded-md ease-in"}`}
+                            onClick={() => {
+                                ChangeRouter("meet")
+                            }}
+                        >
+                            <Link href={'/meet'} className='flex items-center'>
+                                <VideoICameraIco width={25} height={25} color={pathname === '/meet' ? "white" : "#202124"} strokeWidth={5}/>
                                 {/* <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Chat</span> */}
                             </Link>
                         </li>

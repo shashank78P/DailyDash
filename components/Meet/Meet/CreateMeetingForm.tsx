@@ -8,6 +8,8 @@ import { toast } from 'react-toastify'
 import api from '@/components/lib/api'
 import { useRouter } from "next/navigation";
 import { TagsInput } from 'react-tag-input-component'
+import MeetContext from './State/MeetContext'
+import { MeetingContext } from '../types'
 
 type createMeetingFormDto = {
     title: string,
@@ -18,8 +20,9 @@ type createMeetingFormDto = {
     meetingDate: Date
 }
 
-const CreateMeetingForm = ({createMeeting, setCreateMeeting} : meetingDto) => {
-    const { register, handleSubmit, formState: { errors, }, getValues, unregister , setValue } = useForm<createMeetingFormDto>({ defaultValues: { whoCanJoin: "ANY_ONE_WITH_MEET_LINK" } });
+const CreateMeetingForm = () => {
+    const { register, handleSubmit, formState: { errors, }, getValues, unregister, setValue } = useForm<createMeetingFormDto>({ defaultValues: { whoCanJoin: "ANY_ONE_WITH_MEET_LINK" } });
+    const { createMeeting, setCreateMeeting, selectedId, selectedTab, isEdit, setIsEdit, setSelectedTab, setSelectedId } = useContext<MeetingContext>(MeetContext)
     const [selected, setSelected] = useState([])
     const [whoCanJoin, setWhoCanJoin] = useState("")
     const router = useRouter()
@@ -49,9 +52,18 @@ const CreateMeetingForm = ({createMeeting, setCreateMeeting} : meetingDto) => {
         console.log(data)
         postCreateMeeting(data)
     }
+
+    const handelClose = ()=>{
+        if(createMeeting){
+            setCreateMeeting(false)
+        }
+        else{
+            setIsEdit(false)
+        }
+    }
     return (
         <Dialog
-            open={createMeeting}
+            open={(createMeeting || (isEdit && selectedTab == 0 && selectedId != null))}
             style={{
                 padding: "2px",
                 minWidth: "300px",
@@ -59,11 +71,11 @@ const CreateMeetingForm = ({createMeeting, setCreateMeeting} : meetingDto) => {
         >
             <DialogTitle>
                 <ul className='w-full flex justify-between items-center'>
-                    <li className='font-semibold '>Create Meeting</li>
+                    <li className='font-semibold '>{ isEdit ? "Edit" : "Create"} Meeting</li>
                     <li
                         className='cursor-pointer'
                         onClick={() => {
-                            setCreateMeeting(false)
+                            handelClose()
                         }}>
                         <CrossIco height={30} width={30} color='red' />
                     </li>
@@ -152,12 +164,12 @@ const CreateMeetingForm = ({createMeeting, setCreateMeeting} : meetingDto) => {
                                 value={selected}
                                 {...register(
                                     "participantsEmail",
-                                    { required: "participants email is required"  }
+                                    { required: "participants email is required" }
                                 )
                                 }
                                 onChange={(e: any) => {
                                     setSelected(e)
-                                    setValue("participantsEmail" , e)                                    
+                                    setValue("participantsEmail", e)
                                 }}
                             // placeHolder="enter email"
                             // className='p-2.5 border border-1 min-w-[350px]  border-gray-300 rounded-lg text-base'
@@ -193,7 +205,7 @@ const CreateMeetingForm = ({createMeeting, setCreateMeeting} : meetingDto) => {
                                 className='min-h-[100px] p-2.5 border border-1  border-gray-300 rounded-lg text-base'
                                 {...register(
                                     "description",
-                                    {  })}
+                                    {})}
                             />
                             {errors.description && (
                                 <p className="text-sm mt-2 text-red-500">
@@ -202,7 +214,7 @@ const CreateMeetingForm = ({createMeeting, setCreateMeeting} : meetingDto) => {
                             )}
                         </div>
                         <input
-                            className='w-full mt-5 full rounded-md p-2.5 bg-purple-700 font-semibold cursor-pointer text-white'
+                            className='w-full mt-5 full rounded-md p-2.5 bg-gradient-to-r from-purple-400 from-10% via-purple-700 via-80% to-purple-900 font-semibold cursor-pointer text-white'
                             type="submit"
                             value="Create Meeting"
                         />

@@ -1,8 +1,8 @@
 export interface streamContextDto {
     myStream: MediaStream
     MediaActions: any,
-    opponentScreenShareStream : any, 
-    setOpponentScreenShareStrem : any,
+    opponentScreenShareStream: any,
+    setOpponentScreenShareStrem: any,
     myScreenShareStream: MediaStream,
     setMyScreenShareStream: any,
     video: boolean,
@@ -78,4 +78,25 @@ export interface meetingDetailsDto {
     createrName: string,
     participantsCount: number,
     meetingLength: string,
+}
+
+export interface MeetingContext {
+    show: boolean,
+    setShow: Function,
+    isEdit: boolean,
+    setIsEdit: Function,
+    selectedTab: number,
+    setSelectedTab: Function,
+    createMeeting: boolean,
+    setCreateMeeting: Function,
+    selectedId : string | null,
+    setSelectedId: Function,
+    search : string ,
+    setSearch : Function,
+    rows : string,
+    setRows : Function,
+    page : string,
+    setPage : Function,
+    status:string,
+    setStatus:Function,
 }
