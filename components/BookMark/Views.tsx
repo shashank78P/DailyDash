@@ -6,11 +6,11 @@ import { BookMarkContextDto } from './types'
 import BookMarkForm from './Form/BookMarkForm'
 
 const Views = () => {
-    const { isCardView } = useContext<BookMarkContextDto>(BookMarkContext)
+    const { isCardView , isEdit , createBookMark , selectedId } = useContext<BookMarkContextDto>(BookMarkContext)
 
     return (
         <>
-            <BookMarkForm />
+            { (createBookMark || (isEdit && selectedId != null)) && <BookMarkForm />}
             {isCardView && <CardView />}
             {!isCardView && <ListView />}
         </>

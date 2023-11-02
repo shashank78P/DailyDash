@@ -8,6 +8,8 @@ import { toast } from 'react-toastify'
 import api from '@/components/lib/api'
 import { useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
+import DragAndDropFileInput from '@/components/GlobalComponents/DragAndDropFileInput'
+import DeleteIco from '@/components/assets/DeleteIco'
 
 interface BookMarkFormDto {
     title: string,
@@ -18,11 +20,13 @@ interface BookMarkFormDto {
 const BookMarkForm = () => {
     const { selectedTab, createBookMark, setIsEdit, setCreateBookMark, isEdit, selectedId } = useContext<BookMarkContextDto>(BookMarkContext)
     const { register, handleSubmit, formState: { errors, }, getValues, unregister, setValue } = useForm<BookMarkFormDto>({ defaultValues: {} });
-    const [selected, setSelected] = useState([])
-    const [whoCanJoin, setWhoCanJoin] = useState("")
+    const [hashTag, setHashTag] = useState([])
+    const [fileRequiredError, setFileRequiredError] = useState<string>()
+    const [file, setFile] = useState<Array<File>>([])
+    const [preView, setPreView] = useState<Array<any>>([])
 
-    const { mutate: postCreateMeeting, isLoading } = useMutation((data: any) => {
-        return api.post("/meet/create-meeting", data)
+    const { mutate: postCreateBookmark, isLoading } = useMutation((data: any) => {
+        return api.post("/bookmark/create-bookmark", data)
     },
         {
             onSuccess({ data }) {
@@ -36,7 +40,15 @@ const BookMarkForm = () => {
 
     const onSubmit = (data: any) => {
         console.log(data)
-        postCreateMeeting(data)
+        if(file?.length === 0){
+            setFileRequiredError("File is required")
+            return;
+        }
+        if(isEdit){
+
+        }else{
+            postCreateBookmark(data)
+        }
     }
 
     const handelClose = () => {
@@ -47,6 +59,8 @@ const BookMarkForm = () => {
             setIsEdit(false)
         }
     }
+
+    console.log(preView)
     return (
         <>
             <Dialog
@@ -95,14 +109,14 @@ const BookMarkForm = () => {
                                 <label className='text-lg mb-1 '>Hash Tags</label>
                                 <div className='text-sm placeholder:text-xs'>
                                     <TagsInput
-                                        value={selected}
+                                        value={hashTag}
                                         {...register(
                                             "hashTag",
                                             {}
                                         )
                                         }
                                         onChange={(e: any) => {
-                                            // setSelected(e)
+                                            setHashTag(e)
                                             // setValue("participantsEmail", e)
                                         }}
                                         placeHolder="Ex: #important"
@@ -141,12 +155,46 @@ const BookMarkForm = () => {
                                         {})}
                                 />
                             </div>
+                            <div>
+                                <DragAndDropFileInput maxFiles={1} multiple={false} maxSize={200000} minSize={10} setPreView={setPreView} isShowError={true}  setFiles = { setFile }/>
+                                {fileRequiredError && (
+                                    <p className="text-sm mt-2 text-red-500">
+                                        {fileRequiredError}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className='my-2'>
+                                {
+                                    preView && Array.isArray(preView) && preView?.map((url, i) => {
+                                        console.log(url)
+                                        return (
+                                            <>
+                                                <div className='w-[150px] h-auto relative flex items-center m-2'>
+                                                    <img src={url} alt="image" className=' min-w-[100px] w-auto max-h-[100px] rounded-lg' />
+                                                    <div className='p-1 cursor-pointer'
+                                                        onClick={()=>{
+                                                            const temp = preView?.filter((url , j) => {
+                                                                return i !== j;
+                                                            })
+                                                            setPreView(temp)
+                                                        }}
+                                                    >
+                                                        <DeleteIco height={20} width={20} color='red' />
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )
+                                    })
+                                }
+                            </div>
                             <input
                                 className='w-full mt-5 full rounded-md p-2.5 bg-gradient-to-r from-purple-400 from-10% via-purple-700 via-80% to-purple-900 font-semibold cursor-pointer text-white'
                                 type="submit"
-                                value="Create BookMark"
+                                value={` ${isEdit ? "Create" : "Update"} BookMark`}
                             />
                         </div>
+                        <div></div>
                     </form>
                 </DialogContent>
             </Dialog>

@@ -8,10 +8,13 @@ import ShareIco from '@/components/assets/ShareIco'
 import { Menu, MenuItem } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import useCopyToClipboard from "@/components/GlobalComponents/useCopyToClipboard"
-import React from 'react'
+import React, { useContext } from 'react'
+import BookMarkContext from '../state/BookMarkContext'
+import { BookMarkContextDto } from '../types'
 
 const Card = () => {
     const [copyTextToClipboard] = useCopyToClipboard()
+    const { handelSelectAndEdit , setSelectedId , setIsEdit} = useContext<BookMarkContextDto>(BookMarkContext)
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -27,12 +30,17 @@ const Card = () => {
         <div className='min-w-[150px] w-full p-2 rounded-lg shadow-lg border'>
             <ul>
                 <li>
-                    <div className='flex justify-between items-center'>
+                    <div className='flex justify-between items-start'>
                         <img className=' w-[50px] h-[50px] rounded-full overflow-hidden object-fill' src="/images/car4.2.jpg" alt="" />
                         <ul className='flex flex-col flex-1 '>
                             <li className='w-full flex ml-1'>
-                                <div className='text-lg font-medium text-purple-700'>Twitter</div>
-                                <div className='ml-2 cursor-pointer'>
+                                <div className='text-lg font-medium text-purple-700 truncate max-w-[80px]'>Twitter</div>
+                                <div className='ml-2 cursor-pointer'
+                                    onClick={()=>{
+                                        setSelectedId("1")
+                                        setIsEdit(true)
+                                    }}
+                                >
                                     <PencileIco height={20} width={20} />
                                 </div>
                                 <div className='ml-2 cursor-pointer'

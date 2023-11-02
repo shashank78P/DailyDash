@@ -9,33 +9,38 @@ import { useDropzone } from 'react-dropzone'
 const ImagePostForm = () => {
     const [fileId, setFileID] = useState([])
 
-    function readFile(file: any) {
-        const reader = new FileReader();
+    // function readFile(file: any) {
+    //     const reader = new FileReader();
 
-        reader.onload = function (event: any) {
-            // The result property contains the file's contents
+    //     reader.onload = function (event: any) {
+    //         // The result property contains the file's contents
 
-            const fileContent = event.target.result;
+    //         const fileContent = event.target.result;
 
-            // You can process the file content here
-            console.log(fileContent);
-        };
+    //         // You can process the file content here
+    //         console.log(fileContent);
+    //     };
 
-        // Read the file as text, data URL, or other formats based on your needs
-        reader.readAsDataURL(file);
-    }
+    //     // Read the file as text, data URL, or other formats based on your needs
+    //     reader.readAsDataURL(file);
+    // }
 
     const { acceptedFiles, fileRejections, getInputProps, getRootProps, isDragAccept, isDragActive, isDragReject, isFileDialogActive, isFocused } = useDropzone({
         // accept: { "*/*"},
         maxFiles: 10,
+        multiple : true,
+        maxSize:1000,
+        minSize:500
         // validator:
     });
 
-    useEffect(() => {
-        acceptedFiles?.map((file, i) => {
-            readFile(file)
-        })
-    }, [acceptedFiles])
+    console.log(fileRejections)
+
+    // useEffect(() => {
+    //     acceptedFiles?.map((file, i) => {
+    //         readFile(file)
+    //     })
+    // }, [acceptedFiles])
 
 
 
@@ -58,8 +63,7 @@ const ImagePostForm = () => {
 
     const dropzoneClasses = `
     border-2 border-dashed border-gray-400 p-4 m-4 text-center
-    ${isDragReject ? 'bg-red-200 border-red-500' : isDragActive ? 'bg-green-200 border-green-500' : 'bg-gray-100 border-gray-400'
-        }`;
+    ${isDragReject ? 'bg-red-200 border-red-500' : isDragActive ? 'bg-slate-200 border-slate-500' : 'bg-slate-100 border-slate-400'}`;
     console.log(fileId)
 
     return (
@@ -69,7 +73,7 @@ const ImagePostForm = () => {
                 {/* <div className='w-[200px]'>
                     <FileIcons acceptedFiles={'audio/wav'} />
                 </div> */}
-                <audio src='https://drive.google.com/uc?id=1EHMGCwR6S_nhFTV7W7vY37ixHSBOqb4r&export=download' controls />
+                {/* <audio src='https://drive.google.com/uc?id=1EHMGCwR6S_nhFTV7W7vY37ixHSBOqb4r&export=download' controls /> */}
                 {/* <VideoRecord setFileID={setFileID}/>  */}
                 {/* <ReactMediaRecorder
                 video
@@ -83,35 +87,35 @@ const ImagePostForm = () => {
                 )}
             /> */}
 
-                {/* <section>
-                <div {...getRootProps({
-                    className: `{ ${dropzoneClasses} w-full h-52 border border-2 flex justify-center items-center}}`
-                })}>
-                    <input {...getInputProps()} className='invisible' />
-                    <ul className='flex flex-col justify-center items-center'>
-                        <li className='mb-2'><UploadIcon width={30} height={30} /></li>
-                        <li>Drag & Drop or choose to upload</li>
-                    </ul>
+                <section>
+                    <div {...getRootProps({
+                        className: `{ ${dropzoneClasses} w-full h-52 border border-2 flex justify-center items-center}}`
+                    })}>
+                        <input {...getInputProps()} className='invisible' />
+                        <ul className='flex flex-col justify-center items-center'>
+                            <li className='mb-2'><UploadIcon width={30} height={30} /></li>
+                            <li>Drag & Drop or choose to upload</li>
+                        </ul>
 
-                </div>
-                <h1>Accepte file</h1>
-                <ul>{...files}</ul>
-                {/* <FileIcons acceptedFiles={acceptedFiles} /> */}
+                    </div>
+                    <h1>Accepte file</h1>
+                    <ul>{...files}</ul>
+                    {/* <FileIcons acceptedFiles={acceptedFiles} /> */}
 
-                {/* {isDragAccept && <p>Drop it like it's hot!</p>}
-                {isDragReject && <p>File type not supported!</p>}
-                {!isDragActive && <p>Drag files here or click to browse</p>}
-                <h1>{isDragReject && 'border-red-500' || isDragAccept && 'border-green-500' || isDragActive && 'bg-green-500' || isFileDialogActive && 'border-yellow-500'}</h1>
-                {
-                    acceptedFiles.map((image, i) => {
-                        return (
-                            <img src={URL.createObjectURL(image)} alt="" />
+                    {isDragAccept && <p>Drop it like it's hot!</p>}
+                    {isDragReject && <p>File type not supported!</p>}
+                    {!isDragActive && <p>Drag files here or click to browse</p>}
+                    <h1>{isDragReject && 'border-red-500' || isDragAccept && 'border-green-500' || isDragActive && 'bg-green-500' || isFileDialogActive && 'border-yellow-500'}</h1>
+                    {
+                        acceptedFiles.map((image, i) => {
+                            return (
+                                <img src={URL.createObjectURL(image)} alt="" />
+                            )
+                        }
                         )
                     }
-                    )
-                }
-                <Doc_viewer />
-            </section> */}
+                    {/* <Doc_viewer /> */}
+                </section>
             </div>
         </>
     );
