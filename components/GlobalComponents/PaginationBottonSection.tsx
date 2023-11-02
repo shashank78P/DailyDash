@@ -10,7 +10,7 @@ const PaginationBottonSection = ({ setPage , totalCount ,defaultPage}: { setPage
           defaultPage={defaultPage}
           onChange={(e: any) => {
             console.log(e?.target?.innerText)
-            setPage(e?.target?.innerText)
+            setPage(Number(e?.target?.innerText) -1)
           }}
           sx={{
             '& .Mui-selected': {

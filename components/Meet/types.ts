@@ -87,16 +87,43 @@ export interface MeetingContext {
     setIsEdit: Function,
     selectedTab: number,
     setSelectedTab: Function,
+    selected: scheduledMeetingDto,
+    setSelected: Function,
     createMeeting: boolean,
     setCreateMeeting: Function,
-    selectedId : string | null,
+    selectedId: string | null,
     setSelectedId: Function,
-    search : string ,
-    setSearch : Function,
-    rows : string,
-    setRows : Function,
-    page : string,
-    setPage : Function,
-    status:string,
-    setStatus:Function,
+    search: string,
+    setSearch: Function,
+    rows: string,
+    setRows: Function,
+    page: string,
+    setPage: Function,
+    status: string,
+    setStatus: Function,
+    handelClearSelectedData: Function,
+}
+
+export type scheduledMeetingDto = {
+    participantsEmail: string[]
+    createdAt: string,
+    createdBy: string,
+    createrName: string,
+    description: string,
+    meetingDate: string,
+    meetingEndingAt: string,
+    meetingId: string,
+    meetingLength: string,
+    meetingLengthPararmeter: string,
+    meetingStatus: string,
+    participantsCount: number,
+    title: string,
+    whoCanJoin: string,
+    _id: string,
+}
+
+export const meetingStatusStyle: any = {
+    "On Going": "text-green-700 bg-green-200 p-2 rounded-lg",
+    "Completed": "text-red-700 bg-red-200 p-2 rounded-lg",
+    "Not Started": "text-yellow-700 bg-yellow-200 p-2 rounded-lg"
 }

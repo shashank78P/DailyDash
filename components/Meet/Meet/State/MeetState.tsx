@@ -1,3 +1,4 @@
+import { scheduledMeetingDto } from "../../types";
 import MeetContext from "./MeetContext";
 import React, { ReactNode, useState } from 'react'
 interface Props {
@@ -8,11 +9,18 @@ const MeetState = ({ children }: Props) => {
     const [isEdit, setIsEdit] = useState<boolean>(false)
     const [selectedTab, setSelectedTab] = useState<number>(0);
     const [createMeeting, setCreateMeeting] = useState<boolean>(false);
+    const [selected , setSelected] = useState<scheduledMeetingDto | null>();
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [search, setSearch] = useState<string | null>("")
-    const [rows, setRows] = useState<string | number | null>("")
-    const [page, setPage] = useState<string | number | null>("")
+    const [rows, setRows] = useState<string | number | null>(10)
+    const [page, setPage] = useState<string | number | null>(0)
     const [status, setStatus] = useState<string | null>("All")
+
+    function handelClearSelectedData(){
+        setSelectedId(null)
+        setSelected(null)
+    }
+
     return (
         <MeetContext.Provider value={{
             show, setShow,
@@ -23,7 +31,9 @@ const MeetState = ({ children }: Props) => {
             search, setSearch,
             rows, setRows,
             page, setPage,
+            selected , setSelected,
             status, setStatus,
+            handelClearSelectedData
         }}>
             {children}
         </MeetContext.Provider>

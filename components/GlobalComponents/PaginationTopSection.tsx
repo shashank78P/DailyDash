@@ -52,8 +52,9 @@ const PaginationTopSection = ({ setStatus, search, setRows, setSearch, rows, sta
                         }}
                     >
                         <option selected={status === "All"} key={"All"} value={"All"} >All</option>
-                        <option selected={status === "Scheduled"} key={"Scheduled"} value={"Scheduled"}>Scheduled</option>
                         <option selected={status === "Not Started"} key={"Not Started"} value={"Not Started"}>Not Started</option>
+                        <option selected={status === "On Going"} key={"On Going"} value={"On Going"}>On Going</option>
+                        <option selected={status === "Completed"} key={"Completed"} value={"Completed"}>Completed</option>
                     </select>
                 </div>}
             </div>

@@ -11,26 +11,36 @@ export interface meetingDto {
 
 const TopBarAction = () => {
 
-    const { setCreateMeeting, selectedTab, setSelectedTab, createMeeting , isEdit , selectedId } = useContext<MeetingContext>(MeetContext)
+    const { setCreateMeeting, selectedTab, setSelectedTab, createMeeting, isEdit, selected } = useContext<MeetingContext>(MeetContext)
     return (
         <>
             {
-                <CreateMeetingForm />
+                <CreateMeetingForm defaultValue={isEdit ? {
+                    description: selected?.description,
+                    meetingDate: selected?.meetingDate,
+                    meetingLength: `${selected?.meetingLength} ${selected?.meetingLengthPararmeter}`,
+                    participantsEmail: selected?.participantsEmail,
+                    title: selected?.title,
+                    whoCanJoin: selected?.whoCanJoin
+                } : {
+                    description: "",
+                    meetingDate: new Date(),
+                    meetingLength: "",
+                    participantsEmail: [],
+                    title: "",
+                    whoCanJoin: ""
+                }} />
             }
             <ul className='w-full flex justify-between items-center bg-slate-50 py-2 mb-2'>
                 <li>
                     <ul className='w-full flex items-center flex-wrap'>
-                        <li className={`text-base font-medium cursor-pointer ${selectedTab === 0 && 'border-b-purple-700'} p-2 select-none ease-in transition-all ml-2 border border-b-2 border-transparent`}
-                            onClick={() => {
-                                setSelectedTab(0)
-                            }}
+                        <li className={`text-xl font-medium cursor-pointer p-2 select-none ease-in transition-all ml-2 border border-b-2 border-transparent`}
                         >
-                            <span className={`${selectedTab === 0 ? " text-slate-700 " : "text-slate-500"} font-medium `}>
-                                Home
+                            <span className={`text-slate-700 font-semibold `}>
+                                Meeting
                             </span>
-                            <span className='ml-1 p-1  rounded-md bg-gradient-to-br from-purple-400 from-10% via-purple-700 via-80% to-purple-900 text-xs text-white font-light'>01</span>
                         </li>
-                        <li className={`text-base font-medium cursor-pointer ${selectedTab === 1 && 'border-b-purple-700'} p-2 select-none ease-in transition-all ml-2 border border-b-2 border-transparent`}
+                        {/* <li className={`text-base font-medium cursor-pointer ${selectedTab === 1 && 'border-b-purple-700'} p-2 select-none ease-in transition-all ml-2 border border-b-2 border-transparent`}
                             onClick={() => {
                                 setSelectedTab(1)
                             }}
@@ -39,7 +49,7 @@ const TopBarAction = () => {
                                 History
                             </span>
                             <span className='ml-1 p-1  rounded-md bg-gradient-to-br from-purple-400 from-10% via-purple-700 via-80% to-purple-900 text-xs text-white font-light'>02</span>
-                        </li>
+                        </li> */}
                     </ul>
                 </li>
                 <li className='cursor-pointer p-2 flex items-center justify-center bg-gradient-to-r from-purple-400 from-10% via-purple-700 via-80% to-purple-900 rounded-md select-none mr-2 '>

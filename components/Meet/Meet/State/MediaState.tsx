@@ -95,7 +95,7 @@ const MedaiState = ({ children }: Props) => {
                 HandRaisedUser, setHandRaisedUser,
                 isShowChat, setIsShowChat,
                 messages, setMessages,
-                isScreenShare, setIsScreenShare
+                isScreenShare, setIsScreenShare,
             }}>
                 {
                     children

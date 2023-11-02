@@ -21,12 +21,16 @@ type getHumanReadableDateDiffDto = {
     minutes: number,
     seconds: number,
 }
-export function getTimeWithAMorPM(hour: number, minute: number, second: number): string {
+export function getTimeWithAMorPM(date: string): string {
+    const givenDate = new Date(date)
+    let hour = givenDate?.getHours()
+    let second = givenDate?.getSeconds()
+    let minute = givenDate?.getMinutes()
     let AM_PM = "AM"
     if (hour >= 12 && hour < 24) {
         AM_PM = "PM"
     }
-    return `${hour % 12} : ${minute} : ${second} ${AM_PM}`
+    return `${hour % 12}:${minute}:${second} ${AM_PM}`
 }
 
 export function FormateDate1(date: Date) {
@@ -40,10 +44,8 @@ export function FormateDate1(date: Date) {
 
 
     if (givenDate === currentDate && givenMonth === currentMonth && givenYear === currentYear) {
-        let hour = date.getHours()
-        let second = date.getSeconds()
-        let minute = date.getMinutes()
-        return getTimeWithAMorPM(hour, minute, second)
+
+        return getTimeWithAMorPM(date.toString())
     } else if (givenDate + 1 === currentDate && givenMonth === currentMonth && givenYear === currentYear) {
         return "Yesterday"
     }
@@ -61,6 +63,16 @@ export function ExtractDateParamenters(date: Date): ExtractDateParamentersDto {
     let givenMonth = date.getMonth() + 1
     let givenYear = date.getFullYear()
     return { givenDate, givenMonth, givenYear, givenHours, givenMinute, givenSecond }
+}
+
+// yyyy-mm-ddThr:min
+export function dateFormate(date: Date) {
+    const { givenDate, givenHours, givenMinute, givenMonth, givenSecond, givenYear } = ExtractDateParamenters(date)
+    const formattedHours = String(givenHours).padStart(2, '0');
+    const formattedMinute = String(givenMinute).padStart(2, '0');
+    const formattedmonth = String(givenHours).padStart(2, '0');
+    const formattedDate = String(givenMinute).padStart(2, '0');
+    return `${givenYear}-${formattedmonth}-${formattedDate}T${formattedHours}:${formattedMinute}`
 }
 
 function getHumanReadableDateDiff(dateDiff: number): getHumanReadableDateDiffDto {
@@ -123,41 +135,41 @@ export function timeDiffWithCurrentDate(date: Date) {
     }
     else {
         const { givenDate, givenMonth, givenHours, givenMinute, givenSecond, givenYear } = ExtractDateParamenters(new Date(date))
-        return `${givenDate} / ${givenMonth} / ${givenYear} - ${getTimeWithAMorPM(givenHours, givenMinute, givenSecond)}`
+        return `${givenDate} / ${givenMonth} / ${givenYear} - ${getTimeWithAMorPM(date?.toString())}`
     }
 
 }
 
-export function isGivenDateTimeIsInLimit(date : Date , meetingLength : { min? : number , hr? : number , day? :number }) : boolean{
+export function isGivenDateTimeIsInLimit(date: Date, meetingLength: { min?: number, hr?: number, day?: number }): boolean {
     let currentDate = new Date()
     let givenDate = new Date(date)
 
-    console.log({meetingLength , givenDate , currentDate})
-    if(givenDate <= currentDate){
-        if(meetingLength?.min){
+    console.log({ meetingLength, givenDate, currentDate })
+    if (givenDate <= currentDate) {
+        if (meetingLength?.min) {
             givenDate.setMinutes(Number(givenDate.getMinutes()) + 45)
             console.log(givenDate?.getMinutes())
             console.log(meetingLength?.min)
-            console.log({givenDate})
+            console.log({ givenDate })
         }
-        else if(meetingLength?.hr){
+        else if (meetingLength?.hr) {
             givenDate.setHours(givenDate.getHours() + meetingLength?.hr)
         }
-        
-        else if(meetingLength?.day){
+
+        else if (meetingLength?.day) {
             givenDate.setDate(givenDate.getDate() + meetingLength?.day)
         }
-        else{
+        else {
             return false
         }
-        console.log({givenDate , currentDate})
-        if(givenDate <= currentDate){
+        console.log({ givenDate, currentDate })
+        if (givenDate <= currentDate) {
             return true
-        }    
-        else{
+        }
+        else {
             return false
         }
-    }else{
+    } else {
         return false
     }
 

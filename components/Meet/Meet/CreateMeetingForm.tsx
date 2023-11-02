@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import { TagsInput } from 'react-tag-input-component'
 import MeetContext from './State/MeetContext'
 import { MeetingContext } from '../types'
+import { dateFormate } from '@/components/GlobalComponents/FormateDate1'
+var format = require('date-format');
 
 type createMeetingFormDto = {
     title: string,
@@ -17,14 +19,15 @@ type createMeetingFormDto = {
     meetingLength: string,
     participantsEmail: string[],
     whoCanJoin: string,
-    meetingDate: Date
+    meetingDate: Date | string
 }
 
-const CreateMeetingForm = () => {
-    const { register, handleSubmit, formState: { errors, }, getValues, unregister, setValue } = useForm<createMeetingFormDto>({ defaultValues: { whoCanJoin: "ANY_ONE_WITH_MEET_LINK" } });
-    const { createMeeting, setCreateMeeting, selectedId, selectedTab, isEdit, setIsEdit, setSelectedTab, setSelectedId } = useContext<MeetingContext>(MeetContext)
-    const [selected, setSelected] = useState([])
-    const [whoCanJoin, setWhoCanJoin] = useState("")
+const CreateMeetingForm = ({ defaultValue }: { defaultValue: createMeetingFormDto }) => {
+    console.log(defaultValue)
+    const { register, handleSubmit, formState: { errors, }, getValues, unregister, setValue } = useForm<createMeetingFormDto>({ defaultValues: {} });
+    const { createMeeting, setShow , handelClearSelectedData , setCreateMeeting, selectedId, selectedTab, setSelected, isEdit, setIsEdit, setSelectedTab, setSelectedId } = useContext<MeetingContext>(MeetContext)
+    const [selectedEmail, setSelectedEmail] = useState([])
+    const [whoCanJoin, setWhoCanJoin] = useState("ANY_ONE_WITH_MEET_LINK")
     const router = useRouter()
 
     useEffect(() => {
@@ -34,13 +37,62 @@ const CreateMeetingForm = () => {
             register("participantsEmail")
         }
     }, [whoCanJoin])
+
+    useEffect(() => {
+        if (isEdit) {
+            const keys = Object.keys(defaultValue)
+            if (Array.isArray(keys)) {
+                keys?.map((key: any, i: number) => {
+                    // @ts-ignore
+                    const value: any = defaultValue?.[key];
+                    if (key === "meetingDate") {
+                        const date = value
+                        setValue("meetingDate", format(new Date(date)))
+                        return;
+                    }
+                    else if (key === "participantsEmail") {
+                        setSelectedEmail(value)
+                        setValue("participantsEmail", value)
+                        return;
+                    }
+                    else if (key === "whoCanJoin") {
+                        setWhoCanJoin(value)
+                        setValue("whoCanJoin", value)
+                        return;
+                    }
+                    else {
+                        // @ts-ignore
+                        setValue(key, defaultValue?.[key])
+                    }
+                })
+            }
+        }
+    }, [defaultValue])
+
     const { mutate: postCreateMeeting, isLoading } = useMutation((data: any) => {
         return api.post("/meet/create-meeting", data)
     },
         {
             onSuccess({ data }) {
                 console.log(data?.[0]?._id)
-                router?.push(`/meet/room?id=${data?.[0]?._id}`)
+                toast.success("Created SucessFully")
+                // router?.push(`/meet/room?id=${data?.[0]?._id}`)
+                handelClose()
+            },
+            onError(err: any) {
+                toast.error(err?.response?.data?.message)
+            }
+        }
+    )
+
+    const { mutate: postUpdateMeeting, isLoading: updateLoading } = useMutation((data: any) => {
+        return api.put(`/meet/update-meeting?meetingId=${selectedId}`, data)
+    },
+        {
+            onSuccess({ data }) {
+                console.log(data?.[0]?._id);
+                handelClose()
+                toast.success("Updated SucessFully")
             },
             onError(err: any) {
                 toast.error(err?.response?.data?.message)
@@ -50,20 +102,25 @@ const CreateMeetingForm = () => {
 
     const onSubmit = (data: any) => {
         console.log(data)
-        postCreateMeeting(data)
+        if (isEdit) {
+            postUpdateMeeting(data)
+        } else {
+            postCreateMeeting(data)
+        }
     }
 
-    const handelClose = ()=>{
-        if(createMeeting){
+    const handelClose = () => {
+        handelClearSelectedData()
+        if (createMeeting) {
             setCreateMeeting(false)
         }
-        else{
+        else {
             setIsEdit(false)
         }
     }
     return (
         <Dialog
-            open={(createMeeting || (isEdit && selectedTab == 0 && selectedId != null))}
+            open={(createMeeting || (isEdit && selectedId != null))}
             style={{
                 padding: "2px",
                 minWidth: "300px",
@@ -71,7 +128,7 @@ const CreateMeetingForm = () => {
         >
             <DialogTitle>
                 <ul className='w-full flex justify-between items-center'>
-                    <li className='font-semibold '>{ isEdit ? "Edit" : "Create"} Meeting</li>
+                    <li className='font-semibold '>{isEdit ? "Edit" : "Create"} Meeting</li>
                     <li
                         className='cursor-pointer'
                         onClick={() => {
@@ -120,6 +177,7 @@ const CreateMeetingForm = () => {
                                 <option value={"2 hr"} >2 hrs</option>
                                 <option value={"6 hr"} >6 hrs</option>
                                 <option value={"1 day"} >1 day</option>
+                                <option value={"10 day"} >10 day</option>
                             </select>
                             {errors.meetingLength && (
                                 <p className="text-sm text-red-500 mt-2">
@@ -161,14 +219,14 @@ const CreateMeetingForm = () => {
                         >
                             <label className='text-lg mb-1 '>Add users email:</label>
                             <TagsInput
-                                value={selected}
+                                value={selectedEmail}
                                 {...register(
                                     "participantsEmail",
                                     { required: "participants email is required" }
                                 )
                                 }
                                 onChange={(e: any) => {
-                                    setSelected(e)
+                                    setSelectedEmail(e)
                                     setValue("participantsEmail", e)
                                 }}
                             // placeHolder="enter email"
@@ -216,7 +274,7 @@ const CreateMeetingForm = () => {
                         <input
                             className='w-full mt-5 full rounded-md p-2.5 bg-gradient-to-r from-purple-400 from-10% via-purple-700 via-80% to-purple-900 font-semibold cursor-pointer text-white'
                             type="submit"
-                            value="Create Meeting"
+                            value={` ${!isEdit ? 'Create ' : 'Update '} Meeting`}
                         />
                     </div>
                 </form>
