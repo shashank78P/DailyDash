@@ -32,7 +32,6 @@ const Room = () => {
                 data && Array.isArray(data) && data?.map((participant: { participantId: string }, i: number) => {
                     // @ts-ignore
                     temp[participant?.participantId] = participant
-                    // Object.defineProperty(temp, participant?.participantId, {value : participant, writable : true})
                 })
                 console.log(temp)
                 setParticipantsDetails(temp)
@@ -75,9 +74,6 @@ const Room = () => {
         if (typeof window !== 'undefined' && userSelector?.userId && window?.navigator) {
             setNavigator(window?.navigator)
         }
-        // else{
-        //     toast.error("permission error")
-        // }
     }, [userSelector?.userId, socket, myPeer])
 
     const mediaAction = useCallback((isVideoOn: boolean, isAudioOn: boolean): Promise<MediaStream> => {
@@ -101,14 +97,28 @@ const Room = () => {
         });
     }, [Navigator])
 
-    console.log({ opponentScreenShareStream, opponentNonMediaStreamStream, opponentStream, myStream })
+    console.log({ opponentScreenShareStream, opponentNonMediaStreamStream, opponentStream, myScreenShareStream, myStream })
+
+    useEffect(() => {
+        if (!myScreenShareStream?.active) {
+            console.log("turned off screen share")
+        }
+    }, [myScreenShareStream?.active, myScreenShareStream])
 
     // calling - screen share
     useEffect(() => {
         if (!isJoinMeetPage && participantsDetails && myScreenPeer && socket) {
-            if (isScreenShare) {
+            if (isScreenShare && !myScreenShareStream) {
                 Navigator.mediaDevices.getDisplayMedia({ video: { mediaSource: "screen" }, audio: false })
                     .then((stream: MediaStream) => {
+
+                        const videoTrack = stream.getVideoTracks()[0];
+                        videoTrack.onended = function () {
+                            console.log("Screen sharing has been turned off");
+                            setIsScreenShare(false)
+                            setMyScreenShareStream(null)
+                            socket.emit("screen-share-stop", { meetingId, userId: userSelector?.userId })
+                        };
                         Promise.all(Object?.keys(participantsDetails)?.map((participantId: any, i: number) => {
                             console.log("sending-screen-share-stream")
                             handelOpponentStreamCall(`${participantId}-screen-share`, stream, myScreenPeer)
@@ -171,6 +181,10 @@ const Room = () => {
                         console.log("sending-media-stream")
                         console.log(stream)
                         console.log({ video, audio })
+                        // const tracks = myStream.getTracks()
+                        // tracks?.map((track , i)=>{
+                        //     track?.stop()
+                        // })
                         socket.emit(`sending-stream`, { type: "sending-media-stream", opponentId: userSelector?.userId, sendingTo: participantId, meetingId });
                         handelOpponentStreamCall(participantId, stream, myPeer)
                         setMyStream(stream)
@@ -367,6 +381,15 @@ const Room = () => {
                     handelSendingMediaStream(data?.opponentId, data?.screenShareStreamId)
                 }
                 break;
+            case "screen-share-stop":
+                if (!isJoinMeetPage) {
+                    setOpponentScreenShareStrem((prev: any) => {
+                        const temp = prev;
+                        delete prev[`${data?.userId}-screen-share`]
+                        return temp;
+                    })
+                }
+                break;
             case "emoji-reactions":
                 if (!isJoinMeetPage) {
                     console.log()
@@ -419,7 +442,7 @@ const Room = () => {
             {isJoinMeetPage ?
                 <JoinMeetingRequest handleJoinMeet={handleJoinMeet} />
                 :
-                <div className='w-[100hv - 50px] h-[100vw] overflow-hidden flex flex-col'>
+                <div className='w-full h-screen flex flex-col'>
                     <MeetingRoom myVideoRef={myVideoRef} />
                 </div>
             }

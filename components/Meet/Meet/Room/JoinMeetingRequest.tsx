@@ -35,11 +35,12 @@ const JoinMeetingRequest = ({ handleJoinMeet }: any) => {
       },
       onError(err: any) {
         toast?.error(err?.response?.data?.message)
-        if( err?.response?.data?.message == "You don't have a access for his meeting"){
+        if (err?.response?.data?.message == "You don't have a access for his meeting") {
           router.push("/")
         }
       },
-      enabled: Boolean(meetingId)
+      enabled: Boolean(meetingId),
+      keepPreviousData : true
     }
   )
 
@@ -51,15 +52,15 @@ const JoinMeetingRequest = ({ handleJoinMeet }: any) => {
 
   return (
     <>
-      <div className='h-full w-full flex justify-center items-center'>
+      <div className='p-2 h-screen w-full grid grid-cols-1 sm:grid-cols-2 place-content-center'>
 
         {/* left side */}
-        <ul className='w-1/2  flex items-center justify-center flex-col'>
+        <ul className='w-full flex items-center justify-center flex-col'>
           <VideoStreamer />
         </ul>
 
         {/* right side */}
-        <ul className='ml-2 w-1/2 flex items-start justify-center flex-col'>
+        <ul className='pl-2 w-full  flex items-start justify-center flex-col'>
           {!isLoading && <ul className=''>
             <li >
               <h1 className='my-2 font-bold text-2xl'>
@@ -71,18 +72,18 @@ const JoinMeetingRequest = ({ handleJoinMeet }: any) => {
             </li>
             <li className=''>
               <p className='text-gray-500 my-2 text-base'>
-                {data?.data?.[0]?.meetingStatus === "Completed" || data?.data?.[0]?.meetingStatus === "Not Started" ? "Meeting started at : " : "Meeting timings : "}
-                {timeDiffWithCurrentDate(data?.data?.[0]?.meetingDate)} by {data?.data?.[0]?.createrName}
+                <span className='text-slate-700'>{data?.data?.[0]?.meetingStatus === "Completed" || data?.data?.[0]?.meetingStatus === "Not Started" ? "Meeting started at : " : "Meeting timings : "}</span>
+                {data?.data?.[0]?.meetingDate ? `${timeDiffWithCurrentDate(data?.data?.[0]?.meetingDate)} by ${data?.data?.[0]?.createrName}` : ""}
               </p>
-              <p className='text-gray-500 my-2 text-base'>Meeting Length : {data?.data?.[0]?.meetingLength + " "+ data?.data?.[0]?.meetingLengthPararmeter}</p>
-              <p className='text-gray-500 my-2 text-base'>Total participants : {data?.data?.[0]?.participantsCount}</p>
-              <p className='text-gray-500 my-2 text-base'>Meeting status : <span className={` ${
+              <p className='text-gray-500 my-2 text-base'><span className='text-slate-700'>Meeting Length :</span> {(data?.data?.[0]?.meetingLength && data?.data?.[0]?.meetingLengthPararmeter) ? (data?.data?.[0]?.meetingLength + " " + data?.data?.[0]?.meetingLengthPararmeter) : ""}</p>
+              <p className='text-gray-500 my-2 text-base'><span className='text-slate-700'>Total participants :</span> {data?.data?.[0]?.participantsCount}</p>
+              <p className='text-gray-500 my-2 text-base'><span className='text-slate-700'>Meeting status :</span> <span className={` ${
                 // @ts-ignore
                 data?.data?.[0]?.meetingStatus && meetingStatusStyle?.[data?.data?.[0]?.meetingStatus]
                 } `}>{data?.data?.[0]?.meetingStatus}</span></p>
             </li>
-            <li className='my-2'>
-              {data?.data?.[0]?.meetingStatus === "On Going" && <button className='p-2 px-4 border bg-purple-700 text-white rounded-lg font-bold text-base'
+            <li className='my-2 w-full '>
+              {data?.data?.[0]?.meetingStatus === "On Going" && <button className='p-2 px-4 bg-gradient-to-r from-purple-400 from-10% via-purple-700 via-80% to-purple-900 text-white rounded-lg font-bold text-base ml-auto'
                 onClick={() => {
                   handleJoinMeet()
                   // router?.push(`/meet/room?id=${meetingId}`)

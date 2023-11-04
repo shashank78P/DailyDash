@@ -12,7 +12,7 @@ const MeetinTopSection = () => {
     const { setOpenInvitePeople, openInvitePeople, meetingDetails, setShowParticipants, showParticipants, participantsDetails, absentParticipantsDetails } = useContext<streamContextDto>(MediaContext)
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
 
-
+console.log(meetingDetails)
     return (
         <>
             { openInvitePeople && <InvitePeopleToMeet />}
@@ -41,10 +41,10 @@ const MeetinTopSection = () => {
                                 }}
                             >
                                 <div></div>
-                                <div>On-Call Participants</div>
+                                <div className='truncate'>Participants</div>
                                 <div className='ml-2 p-1 px-1.5 bg-green-200 text-green-700 text-sm rounded-lg'>{Object.keys(participantsDetails)?.length ? Object.keys(participantsDetails)?.length + 1 : 1}</div>
                             </div>
-                            <div className='flex  justify-start items-center cursor-pointer mr-2'
+                            { meetingDetails?.whoCanJoin === "MANUALLY_ADDED" && <div className='flex  justify-start items-center cursor-pointer mr-2'
                                 onClick={() => {
                                     if (showParticipants === "Absent Participants") {
                                         setShowParticipants("")
@@ -54,11 +54,11 @@ const MeetinTopSection = () => {
                                 }}
                             >
                                 <div></div>
-                                <div>Absent Participants</div>
+                                <div>Absentees</div>
                                 <div className='ml-2 p-1 px-1.5 bg-red-200 text-red-700 text-sm rounded-lg'>{absentParticipantsDetails.length ?? 0}</div>
-                            </div>
+                            </div>}
                         </li>
-                        { meetingDetails?.createdBy === userSelector?.userId && <li>
+                        { meetingDetails?.createdBy === userSelector?.userId && meetingDetails?.whoCanJoin === "MANUALLY_ADDED" && <li>
                             <div className='flex  justify-start items-center cursor-pointer '
                                 onClick={()=>{
                                     setOpenInvitePeople(true)
@@ -67,7 +67,7 @@ const MeetinTopSection = () => {
                                 <div className='mr-2 p-2 bg-purple-200 text-purple-700  rounded-lg'>
                                     <PlusIco height={12} width={12} color='green' />
                                 </div>
-                                <div>Invite Participant</div>
+                                <div>Invite</div>
                             </div>
                         </li>}
                     </ul>

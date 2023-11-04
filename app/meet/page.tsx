@@ -9,7 +9,7 @@ const page = () => {
     return (
         <>
             <MeetState>
-                <div className='w-full'>
+                <div className='w-full h-screen'>
                     <TopBarAction />
                     <ScheduledMeeting />
                 </div>

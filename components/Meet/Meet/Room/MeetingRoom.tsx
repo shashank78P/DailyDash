@@ -6,15 +6,15 @@ import { streamContextDto } from '../../types'
 import MediaContext from '../State/MediaContext'
 import Message from './Message'
 
-const MeetingRoom = ({myVideoRef} : { myVideoRef : any }) => {
+const MeetingRoom = ({ myVideoRef }: { myVideoRef: any }) => {
     // @ts-ignore
-    const { myStream , opponentScreenShareStream, isShowChat, participantsDetails, pinnedParticipants, showParticipants } = useContext<streamContextDto>(MediaContext)
-    useEffect(()=>{
-        if(myVideoRef?.current){
+    const { myStream, isScreenShare, opponentScreenShareStream , pinnedType, isShowChat, participantsDetails, pinnedParticipants, showParticipants } = useContext<streamContextDto>(MediaContext)
+    useEffect(() => {
+        if (myVideoRef?.current) {
             myVideoRef.current.srcObject = myStream
             console.log(myVideoRef?.current?.srcObject)
         }
-    },[myStream])
+    }, [myStream])
 
     function returnStyleForPinnedCard() {
         if (pinnedParticipants.length == 1 || Object.keys(participantsDetails).length == 1) {
@@ -38,14 +38,18 @@ const MeetingRoom = ({myVideoRef} : { myVideoRef : any }) => {
             </div>
             {isShowChat && <Message />}
             {/* meeting participants card */}
-            <video width={200} height={200} id="video" ref={myVideoRef} autoPlay/>
-            <div className={`${pinnedParticipants.length !== 0 || Object.keys(participantsDetails).length < 5 ? returnStyleForPinnedCard() : " grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 "} w-full h-full overflow-y-scroll gap-2 grid-flow-dense p-2 relative`}>
-                <MeetingActionBtns />
+            {!false && <video width={200} height={200} id="video" ref={myVideoRef} autoPlay />}
+            <MeetingActionBtns />
+            <div className={`${pinnedParticipants.length !== 0 || Object.keys(participantsDetails).length < 5 ? returnStyleForPinnedCard() : " grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 "} w-full h-full overflow-scroll gap-2 grid-flow-dense p-2 relative`}>
+                {
+                    // isScreenShare &&  <ParticipantCard participant={participant} key={participant?.participantId} isScreenShare={isScreenShare} />
+                }
                 {
                     Object.values(participantsDetails)?.map((participant: any, i: number) => {
                         if (pinnedParticipants.length !== 0 && pinnedParticipants.includes(participant?.participantId)) {
+                            const isScreenShare = pinnedType?.[participant?.participantId] === "screen-share"
                             return (
-                                <ParticipantCard participant={participant} key={participant?.participantId} isScreenShare={false} />
+                                <ParticipantCard participant={participant} key={participant?.participantId} isScreenShare={isScreenShare} />
                             )
                         }
                         else if (pinnedParticipants.length == 0) {

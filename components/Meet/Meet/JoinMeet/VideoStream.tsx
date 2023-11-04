@@ -62,19 +62,28 @@ const VideoStreamer = () => {
     }, [Navigator])
 
     const MediaController = (isVideoOn: boolean, isAudioOn: boolean) => {
-        mediaAction(isVideoOn, isAudioOn).then((stream) => {
-            console.log(stream);
-            setMyStream(stream)
-        })
-            .catch((err) => {
-                console.error("Error accessing media devices: ", err);
-            });
+        console.log({ isAudioOn, isVideoOn })
+        if (isAudioOn || isVideoOn) {
+            mediaAction(isVideoOn, isAudioOn).then((stream) => {
+                console.log(stream);
+                setMyStream(stream)
+            })
+                .catch((err) => {
+                    console.error("Error accessing media devices: ", err);
+                });
+        } else {
+            const tracks = myStream.getTracks()
+            tracks?.map((track, i) => {
+                track?.stop()
+            })
+            setMyStream(null)
+        }
     }
 
     return (
         <>
             <li>
-                <video ref={videoRef} className='min-w-[200px] min-h-[250px] bg-slate-400' autoPlay controls />
+                <video ref={videoRef} className='min-w-[200px] min-h-[250px] bg-slate-400' autoPlay />
             </li>
             <li className='flex justify-center items-center'>
                 {video &&
@@ -82,9 +91,9 @@ const VideoStreamer = () => {
                         onClick={() => {
                             console.log("tying to off video ")
                             setVideo(false)
-                            if (audio) {
-                                MediaController(false, audio)
-                            }
+                            // if (audio) {
+                            MediaController(false, audio)
+                            // }
                         }}
                     >
                         <VideoICameraIco height={30} width={30} />
@@ -113,9 +122,9 @@ const VideoStreamer = () => {
                     <div className='m-2 border border-slate-500 cursor-pointer rounded-full p-2'
                         onClick={() => {
                             setAudio(false)
-                            if (video) {
-                                MediaController(video, false)
-                            }
+                            // if (video) {
+                            MediaController(video, false)
+                            // }
                         }}
                     >
                         <VoiceMikeIco height={25} width={25} />

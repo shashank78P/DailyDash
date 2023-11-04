@@ -28,6 +28,7 @@ const MedaiState = ({ children }: Props) => {
     const [openInvitePeople, setOpenInvitePeople] = useState<Boolean>(false)
     const [isJoinMeetPage, setIsJoinMeetPage] = useState(true)
     const [pinnedParticipants, setPinnedParticipants] = useState<Array<String>>([])
+    const [pinnedType, setpinnedType] = useState<any>({})
     const [showPinSection, setShowPinSection] = useState<String>('')
     const [showParticipants, setShowParticipants] = useState<String>('')
     const [Navigator, setNavigator] = useState<any>()
@@ -96,6 +97,7 @@ const MedaiState = ({ children }: Props) => {
                 isShowChat, setIsShowChat,
                 messages, setMessages,
                 isScreenShare, setIsScreenShare,
+                pinnedType, setpinnedType
             }}>
                 {
                     children

@@ -102,14 +102,14 @@ const ImagePostForm = () => {
                     <ul>{...files}</ul>
                     {/* <FileIcons acceptedFiles={acceptedFiles} /> */}
 
-                    {isDragAccept && <p>Drop it like it's hot!</p>}
+                    {isDragAccept && <p>Drop it like its hot!</p>}
                     {isDragReject && <p>File type not supported!</p>}
                     {!isDragActive && <p>Drag files here or click to browse</p>}
                     <h1>{isDragReject && 'border-red-500' || isDragAccept && 'border-green-500' || isDragActive && 'bg-green-500' || isFileDialogActive && 'border-yellow-500'}</h1>
                     {
                         acceptedFiles.map((image, i) => {
                             return (
-                                <img src={URL.createObjectURL(image)} alt="" />
+                                <img src={URL.createObjectURL(image)} alt="" key={i} />
                             )
                         }
                         )

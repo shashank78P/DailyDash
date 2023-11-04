@@ -8,19 +8,27 @@ import MediaContext from '../State/MediaContext';
 
 const ParticipantCard = ({ participant, key, isScreenShare }: { participant: any, key: string, isScreenShare: boolean }) => {
     // @ts-ignore
-    const { opponentScreenShareStream, meetingId, opponentNonMediaStreamStream, opponentStream, setShowPinSection, showPinSection, pinnedParticipants, setPinnedParticipants } = useContext<streamContextDto>(MediaContext)
-    function returnImgeContainer(container: any) {
+    const { opponentScreenShareStream, pinnedType, setpinnedType, meetingId, opponentNonMediaStreamStream, opponentStream, setShowPinSection, showPinSection, pinnedParticipants, setPinnedParticipants } = useContext<streamContextDto>(MediaContext)
+    function returnImgeContainer(name: string, userPic: string, container: any) {
         let imgTag = document.createElement("img")
-        imgTag.setAttribute("alt", participant?.name)
-        imgTag.setAttribute("src", participant?.userPic)
+        imgTag.setAttribute("alt", name)
+        imgTag.setAttribute("src", userPic)
         imgTag.setAttribute("draggable", "false")
         imgTag.setAttribute("class", "w-full h-full object-cover rounded-full overflow-hidden select-none")
-        if(container){
+        if (container) {
             container.classList.remove("w-full", "h-full");
             container.classList.add("w-[150px]", "h-[150px]");
             container.innerHTML = "";
             container.appendChild(imgTag)
         }
+    }
+
+    function returnAudioContainer(stream: MediaStream, container: any) {
+        let audioTag = document.createElement("audio")
+        audioTag.srcObject = stream;
+        audioTag.setAttribute("autoPlay", "true")
+        audioTag.setAttribute("class", "disable")
+        container.appendChild(audioTag)
     }
 
     useEffect(() => {
@@ -34,19 +42,17 @@ const ParticipantCard = ({ participant, key, isScreenShare }: { participant: any
             ) {
                 let stream: MediaStream = opponentStream[participant?.participantId]
                 let track = stream.getTracks()
+
+                // checking for only audio 
                 if (track?.length == 1 && track?.[0]?.kind == "audio") {
-                    returnImgeContainer(container)
-                    let audioTag = document.createElement("audio")
-                    audioTag.srcObject = opponentStream[participant?.participantId]
-                    audioTag.setAttribute("autoPlay", "true")
-                    audioTag.setAttribute("class", "disable")
-                    container.appendChild(audioTag)
+                    returnImgeContainer(participant?.name, participant?.userPic, container)
+                    returnAudioContainer(opponentStream[participant?.participantId], container)
                 } else {
                     let videoTag = document.createElement("video")
                     if (isScreenShare) {
                         console.log("videoTag.srcObject - screen share")
-                        console.log(opponentScreenShareStream[`${participant?.participantId}-screen-share`])
-                        console.log(opponentScreenShareStream[`${participant?.participantId}-screen-share`]?.getTracks())
+                        // console.log(opponentScreenShareStream[`${participant?.participantId}-screen-share`])
+                        // console.log(opponentScreenShareStream[`${participant?.participantId}-screen-share`]?.getTracks())
                         videoTag.srcObject = opponentScreenShareStream[`${participant?.participantId}-screen-share`]
                     } else {
                         console.log("videoTag.srcObject")
@@ -61,22 +67,32 @@ const ParticipantCard = ({ participant, key, isScreenShare }: { participant: any
                     container.appendChild(videoTag)
                 }
             } else {
-                returnImgeContainer(container)
+                returnImgeContainer(participant?.name, participant?.userPic,container)
             }
         }
-    }, [participant, meetingId, opponentNonMediaStreamStream, opponentStream, key])
+    }, [participant, meetingId, opponentNonMediaStreamStream, opponentStream, key, opponentScreenShareStream])
 
 
-    function handelPinParticipant(participantId: string) {
+    function handelPinParticipant(participantId: string, type: string) {
         console.log(pinnedParticipants.length)
         console.log(!pinnedParticipants.includes(participantId))
         if (pinnedParticipants.length < 4 && !pinnedParticipants.includes(participantId)) {
             setPinnedParticipants((prev: Array<String>) => [...prev, participantId])
+            const temp: any = {}
+            temp[participantId] = type;
+            setpinnedType((prev: any) => {
+                return { ...prev, ...temp }
+            })
         }
     }
-    function handelUnPinParticipant(participantId: string) {
+    function handelUnPinParticipant(participantId: string, type: string) {
         if (pinnedParticipants.includes(participantId)) {
             setPinnedParticipants((prev: Array<String>) => prev.filter((id) => id !== participantId))
+            setpinnedType((prev: any) => {
+                const temp = prev;
+                delete temp[participantId]
+                return temp
+            })
         }
     }
 
@@ -126,14 +142,14 @@ const ParticipantCard = ({ participant, key, isScreenShare }: { participant: any
                         {pinnedParticipants.length < 4 && !pinnedParticipants.includes(participant?.participantId) && <li className="p-2 bg-[#94A3B8] bg-opacity-80 ml-2 rounded-full cursor-pointer"
                             onClick={() => {
                                 console.log("pinned participants")
-                                handelPinParticipant(participant?.participantId)
+                                handelPinParticipant(participant?.participantId, isScreenShare ? "screen-share" : "normal")
                             }}
                         >
                             <PinIco height={15} width={15} />
                         </li>}
                         {pinnedParticipants.includes(participant?.participantId) && <li className="p-2 bg-[#94A3B8] bg-opacity-80 ml-2 rounded-full cursor-pointer"
                             onClick={() => {
-                                handelUnPinParticipant(participant?.participantId)
+                                handelUnPinParticipant(participant?.participantId, isScreenShare ? "screen-share" : "normal")
                             }}
                         >
                             <UnPinIco height={15} width={15} />

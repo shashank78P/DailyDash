@@ -39,7 +39,7 @@ const Message = () => {
                 // style={{
                 // overflowY: "scroll"
                 // }}
-                containerWidth={300} containerHeight={400} containerMinWidth={300} containerMinHeight={200} containerMaxWidth={500} containerMaxHeight={700}
+                containerWidth={200} containerHeight={400} containerMinWidth={200} containerMinHeight={200} containerMaxWidth={500} containerMaxHeight={700}
             >
                 <div className='w-full h-full bg-white rounded-lg shadow-2xl flex flex-col p-0 overflow-hidden'>
                     <ul className=' w-full mb-1 bg-purple-100 sticky top-0 p-2'>

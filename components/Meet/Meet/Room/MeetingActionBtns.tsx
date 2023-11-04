@@ -31,153 +31,179 @@ const MeetingActionBtns = () => {
 
     return (
         <>
-            <ul className='flex flex-col justify-center items-center fixed bottom-2 z-50 inset-x-1/2'>
-                {isReaction && <ul className='w-full flex flex-col'>
-                    <ul className='w-full flex justify-evenly items-center mb-2'>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "🤑" })
-                            }}
-                        >🤑</li>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "😇" })
-                            }}
-                        >😇</li>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "😅" })
-                            }}
-                        >😅</li>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "😆" })
-                            }}
-                        >😆</li>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "😜" })
-                            }}
-                        >😜</li>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "😘" })
-                            }}
-                        >😘</li>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "👋" })
-                            }}
-                        >👋</li>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "👍" })
-                            }}
-                        >👍</li>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "🤝" })
-                            }}
-                        >🤝</li>
-                    </ul>
-                    <ul className='w-full flex justify-evenly items-center mb-2'>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "👊" })
-                            }}
-                        >👊</li>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "🫶" })
-                            }}
-                        >🫶</li>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "👌" })
-                            }}
-                        >👌</li>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "🏆" })
-                            }}
-                        >🏆</li>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "🎉" })
-                            }}
-                        >🎉</li>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "🔥" })
-                            }}
-                        >🔥</li>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "❤️" })
-                            }}
-                        >❤️</li>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "💔" })
-                            }}
-                        >💔</li>
-                        <li className={`text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 mr-2 rounded-full`}
-                            onClick={() => {
-                                socket.emit("meeting-emoji-reactions", { meetingId, emoji: "💯" })
-                            }}
-                        >💯</li>
-                    </ul>
+            <ul className='w-auto h-auto flex flex-col justify-center items-center ml-[25px] fixed z-50 bottom-[60px] inset-x-1/2 '>
+                {isReaction && <ul className='w-[200px] sm:w-[500px] sm:grid-cols-6 place-content-center h-full grid grid-cols-3 bg-white-200'>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "🤑" })
+                        }}
+                    >🤑</li>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "😇" })
+                        }}
+                    >😇</li>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "😅" })
+                        }}
+                    >😅</li>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "😆" })
+                        }}
+                    >😆</li>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "😜" })
+                        }}
+                    >😜</li>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "😘" })
+                        }}
+                    >😘</li>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "👋" })
+                        }}
+                    >👋</li>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "👍" })
+                        }}
+                    >👍</li>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "🤝" })
+                        }}
+                    >🤝</li>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "👊" })
+                        }}
+                    >👊</li>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "🫶" })
+                        }}
+                    >🫶</li>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "👌" })
+                        }}
+                    >👌</li>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "🏆" })
+                        }}
+                    >🏆</li>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "🎉" })
+                        }}
+                    >🎉</li>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "🔥" })
+                        }}
+                    >🔥</li>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "❤️" })
+                        }}
+                    >❤️</li>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "💔" })
+                        }}
+                    >💔</li>
+                    <li className={`w-[50px] h-[50px] grid place-content-center text-xl p-2 cursor-pointer hover:bg-slate-500 bg-[#94A3B8] bg-opacity-80 m-2 rounded-full`}
+                        onClick={() => {
+                            socket.emit("meeting-emoji-reactions", { meetingId, emoji: "💯" })
+                        }}
+                    >💯</li>
                 </ul>}
                 <ul className='flex justify-evenly items-center'>
                     <li
-                        className={`p-2  ${isScreenShare ? " bg-slate-500 " : " bg-[#94A3B8] "}  bg-opacity-80 mr-2 flex items-center justify-center rounded-full cursor-pointer`}
+                        className={`p-2  ${isScreenShare ? " bg-slate-500 " : " bg-[#94A3B8] "}  bg-opacity-80 mr-1 sm:mr-2 flex items-center justify-center rounded-full cursor-pointer`}
                         onClick={() => {
                             setIsScreenShare((prev: boolean) => !prev)
                         }}
                     >
-                        <ScreenShareIco height={25} width={25} color={"#F4F4F5"} />
+                        <span className='block sm:hidden'>
+                            <ScreenShareIco height={20} width={20} color={"#F4F4F5"} />
+                        </span>
+                        <span className='hidden sm:block'>
+                            <ScreenShareIco height={25} width={25} color={"#F4F4F5"} />
+                        </span>
                     </li>
                     {audio && <li
-                        className='p-2 bg-[#94A3B8] bg-opacity-80 mr-2 flex items-center justify-center rounded-full cursor-pointer'
+                        className='p-2 bg-[#94A3B8] bg-opacity-80 mr-1 sm:mr-2 flex items-center justify-center rounded-full cursor-pointer'
                         onClick={() => {
                             setAudio(false)
                         }}
                     >
-                        <VoiceMikeIco height={25} width={25} color={"#F4F4F5"} />
+                        <span className='block sm:hidden'>
+                            <VoiceMikeIco height={20} width={20} color={"#F4F4F5"} />
+                        </span>
+                        <span className='hidden sm:block'>
+                            <VoiceMikeIco height={25} width={25} color={"#F4F4F5"} />
+                        </span>
                     </li>}
                     {!audio && <li
-                        className='p-2 bg-[#94A3B8] bg-opacity-80 mr-2 flex items-center justify-center rounded-full cursor-pointer'
+                        className='p-2 bg-[#94A3B8] bg-opacity-80 mr-1 sm:mr-2 flex items-center justify-center rounded-full cursor-pointer'
                         onClick={() => {
                             setAudio(true)
                         }}
                     >
-                        <UnMuteIco height={25} width={25} color={"#F4F4F5"} />
+                        <span className='block sm:hidden'>
+                            <UnMuteIco height={20} width={20} color={"#F4F4F5"} />
+                        </span>
+                        <span className='hidden sm:block'>
+                            <UnMuteIco height={25} width={25} color={"#F4F4F5"} />
+                        </span>
                     </li>}
                     {video && <li
-                        className='p-2 bg-[#94A3B8] bg-opacity-80 mr-2 flex items-center justify-center rounded-full cursor-pointer'
+                        className='p-2 bg-[#94A3B8] bg-opacity-80 mr-1 sm:mr-2 flex items-center justify-center rounded-full cursor-pointer'
                         onClick={() => {
                             setVideo(false)
                         }}
                     >
-                        <VideoICameraIco height={25} width={25} color={"#F4F4F5"} />
+                        <span className='block sm:hidden'>
+                            <VideoICameraIco height={20} width={20} color={"#F4F4F5"} />
+                        </span>
+                        <span className='hidden sm:block'>
+                            <VideoICameraIco height={25} width={25} color={"#F4F4F5"} />
+                        </span>
                     </li>}
                     {!video && <li
-                        className='p-2 bg-[#94A3B8] bg-opacity-80 mr-2 flex items-center justify-center rounded-full cursor-pointer'
+                        className='p-2 bg-[#94A3B8] bg-opacity-80 mr-1 sm:mr-2 flex items-center justify-center rounded-full cursor-pointer'
                         onClick={() => {
                             setVideo(true)
                         }}
                     >
-                        <VideoSlashIco height={25} width={25} color={"#F4F4F5"} />
+                        <span className='block sm:hidden'>
+                            <ScreenShareIco height={20} width={20} color={"#F4F4F5"} />
+                        </span>
+                        <span className='hidden sm:block'>
+                            <VideoSlashIco height={25} width={25} color={"#F4F4F5"} />
+                        </span>
                     </li>}
                     <li
-                        className='py-3 px-4 bg-[#FF0000] mr-2 flex items-center justify-center rounded-xl cursor-pointer'
+                        className={` p-2 sm:py-3 sm:px-4 bg-[#FF0000] mr-1 sm:mr-2 flex items-center justify-center rounded-xl cursor-pointer`}
                         onClick={() => {
                             handelLeaveMeeting()
                         }}
                     >
-                        <CallEndIco height={30} width={35} color={"#F4F4F5"} />
+                        <span className='block sm:hidden'>
+                            <CallEndIco height={25} width={25} color={"#F4F4F5"} />
+                        </span>
+                        <span className='hidden sm:block'>
+                            <CallEndIco height={30} width={35} color={"#F4F4F5"} />
+                        </span>
                     </li>
-                    <li className={` p-2 ${isMyHandRaise ? " bg-slate-500 " : " bg-[#94A3B8] "} bg-opacity-80 mr-2 flex items-center justify-center rounded-full cursor-pointer`}
+                    <li className={` p-2 ${isMyHandRaise ? " bg-slate-500 " : " bg-[#94A3B8] "} bg-opacity-80 mr-1 sm:mr-2 flex items-center justify-center rounded-full cursor-pointer`}
                         onClick={() => {
                             if (isMyHandRaise) {
                                 socket.emit("is-raise-my-hand", { meetingId, isRaiseMyHand: false })
@@ -189,23 +215,38 @@ const MeetingActionBtns = () => {
                         }}
                     >
                         <Badge badgeContent={<Typography style={{ color: `${(HandRaisedUser.length == 0) ? "transparent" : "#7e22ce"}`, fontWeight: "700", marginLeft: "5px" }}>{HandRaisedUser.length}</Typography>} >
-                            <RaiseHandIco height={25} width={25} color={"#F4F4F5"} />
+                            <span className='block sm:hidden'>
+                                <RaiseHandIco height={20} width={20} color={"#F4F4F5"} />
+                            </span>
+                            <span className='hidden sm:block'>
+                                <RaiseHandIco height={25} width={25} color={"#F4F4F5"} />
+                            </span>
                         </Badge>
                     </li>
-                    <li className={`p-2 ${isReaction ? " bg-slate-500 " : " bg-[#94A3B8] "} bg-opacity-80 mr-2 flex items-center justify-center rounded-full cursor-pointer`}
+                    <li className={`p-2 ${isReaction ? " bg-slate-500 " : " bg-[#94A3B8] "} bg-opacity-80 mr-1 sm:mr-2 flex items-center justify-center rounded-full cursor-pointer`}
                         onClick={() => {
                             setIsReaction((prev: boolean) => !prev)
                         }}
                     >
-                        <SmilyFace height={25} width={25} color={"#F4F4F5"} />
+                        <span className='block sm:hidden'>
+                            <SmilyFace height={20} width={20} color={"#F4F4F5"} />
+                        </span>
+                        <span className='hidden sm:block'>
+                            <SmilyFace height={25} width={25} color={"#F4F4F5"} />
+                        </span>
                     </li>
                     <li
-                        className={`p-2  ${isShowChat ? " bg-slate-500 " : " bg-[#94A3B8] "} bg-opacity-80 mr-2 flex items-center justify-center rounded-full cursor-pointer`}
+                        className={`p-2  ${isShowChat ? " bg-slate-500 " : " bg-[#94A3B8] "} bg-opacity-80 mr-1 sm:mr-2 flex items-center justify-center rounded-full cursor-pointer`}
                         onClick={() => {
                             setIsShowChat((prev: boolean) => !prev)
                         }}
                     >
-                        <MessageIco height={25} width={25} color={"#F4F4F5"} />
+                        <span className='block sm:hidden'>
+                            <MessageIco height={20} width={20} color={"#F4F4F5"} />
+                        </span>
+                        <span className='hidden sm:block'>
+                            <MessageIco height={25} width={25} color={"#F4F4F5"} />
+                        </span>
                     </li>
                 </ul>
             </ul>

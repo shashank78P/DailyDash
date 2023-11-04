@@ -51,7 +51,7 @@ const ListView = ({ refetch, data , deleteFile }: { refetch: Function, data: any
                                                         {
                                                             Array?.isArray(bookMarkData?.hashTags) && bookMarkData?.hashTags?.map((pri: any, i: number) => {
                                                                 return (
-                                                                    <span className='my-1 truncate text-blue-500 '>{pri}</span>
+                                                                    <span key={i} className='my-1 truncate text-blue-500 '>{pri}</span>
                                                                 );
                                                             })
                                                         }

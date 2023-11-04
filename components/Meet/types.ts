@@ -20,6 +20,8 @@ export interface streamContextDto {
     setOpponentNonMediaStreamStream: any,
     pinnedParticipants: Array<String>,
     setPinnedParticipants: any,
+    pinnedType : any, 
+    setpinnedType:Function,
     showPinSection: String,
     setShowPinSection: any,
     showParticipants: String,
