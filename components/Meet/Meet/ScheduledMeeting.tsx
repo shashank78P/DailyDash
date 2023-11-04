@@ -34,7 +34,7 @@ const ScheduledMeeting = () => {
             {
                 show && <InnerPage />
             }
-            <PaginationTopSection setStatus={setStatus} status={status} setRows={setRows} setSearch={setSearch} search={search} rows={rows} isStatus={true} />
+            <PaginationTopSection setStatus={setStatus} status={status} setRows={setRows} setSearch={setSearch} search={search} rows={rows} isStatus={true} statusList={["All" , "Not Started", "On Going", "Completed"]} statuslabel='Status'/>
             <div className='w-[100% - 70px] overflow-x-scroll'>
                 <table className='w-full overflow-x-scroll my-2'>
                     <thead className='border border-transparent border-b-slate-50 border-b-1 mb-2'>
@@ -69,7 +69,7 @@ const ScheduledMeeting = () => {
                                     </td>
                                     <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500'>{ele?.meetingDate?.slice(0, 10)}</td>
                                     <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500'>{getTimeWithAMorPM(ele?.meetingDate)}</td>
-                                    <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500'>{ele?.whoCanJoin?.replaceAll("_"," ")}</td>
+                                    <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500'>{ele?.whoCanJoin?.replaceAll("_", " ")}</td>
                                     {/* <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500'>{`${process.env.FRONT_END_URL}/meet/room?id=${ele?._id}`}</td> */}
                                     <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500'>{ele?.meetingLength} {ele?.meetingLengthPararmeter}</td>
                                     <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500'>{ele?.description}</td>

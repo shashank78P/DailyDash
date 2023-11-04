@@ -102,12 +102,10 @@ function getHumanReadableDateDiff(dateDiff: number): getHumanReadableDateDiffDto
 export function timeDiffWithCurrentDate(date: Date) {
     let today: any = new Date()
     let givenDate: any = new Date(date)
-    console.log(givenDate, today)
 
-    if (today > givenDate) {
+    if (today >= givenDate) {
         let dateDiff: number = Math.abs(givenDate - today)
         const result = getHumanReadableDateDiff(dateDiff)
-        console.log(result)
         if (result?.years > 0) {
             return `${Math.abs(result?.years)} years ago`
         }
@@ -135,7 +133,7 @@ export function timeDiffWithCurrentDate(date: Date) {
     }
     else {
         const { givenDate, givenMonth, givenHours, givenMinute, givenSecond, givenYear } = ExtractDateParamenters(new Date(date))
-        return `${givenDate} / ${givenMonth} / ${givenYear} - ${getTimeWithAMorPM(date?.toString())}`
+        return `${givenDate}/${givenMonth}/${givenYear}-${getTimeWithAMorPM(date?.toString())}`
     }
 
 }
@@ -144,13 +142,9 @@ export function isGivenDateTimeIsInLimit(date: Date, meetingLength: { min?: numb
     let currentDate = new Date()
     let givenDate = new Date(date)
 
-    console.log({ meetingLength, givenDate, currentDate })
     if (givenDate <= currentDate) {
         if (meetingLength?.min) {
             givenDate.setMinutes(Number(givenDate.getMinutes()) + 45)
-            console.log(givenDate?.getMinutes())
-            console.log(meetingLength?.min)
-            console.log({ givenDate })
         }
         else if (meetingLength?.hr) {
             givenDate.setHours(givenDate.getHours() + meetingLength?.hr)
@@ -162,7 +156,6 @@ export function isGivenDateTimeIsInLimit(date: Date, meetingLength: { min?: numb
         else {
             return false
         }
-        console.log({ givenDate, currentDate })
         if (givenDate <= currentDate) {
             return true
         }

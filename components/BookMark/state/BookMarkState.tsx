@@ -4,8 +4,8 @@ interface Props {
     children: ReactNode
 }
 const BookMarkState = ({ children }: Props) => {
-    const [show, setShow] = useState<boolean>(false)
-    const [isCardView, setIsCardView] = useState<boolean>(true)
+    const [showInnerPage, setShowInnerPage] = useState<boolean>(false)
+    const [isCardView, setIsCardView] = useState<boolean>(false)
     const [isEdit, setIsEdit] = useState<boolean>(false)
     const [openFilter, setOpenFilter] = useState<boolean>(false)
     const [selectedTab, setSelectedTab] = useState<string>("Quick Access");
@@ -13,9 +13,13 @@ const BookMarkState = ({ children }: Props) => {
     const [search, setSearch] = useState<string | null>("")
     const [selected, setSelected] = useState<any>(null);
     const [selectedId, setSelectedId] = useState<string | null>(null);
-    const [rows, setRows] = useState<string | number | null>("")
-    const [page, setPage] = useState<string | number | null>("")
+    const [rows, setRows] = useState<string | number | null>(10)
+    const [page, setPage] = useState<string | number | null>(0)
     const [status, setStatus] = useState<string | null>("All")
+    const [sortBy, setSortBy] = useState<string>("createdAt")
+    const [sortOrder, setSortOrder] = useState<number>(-1)
+    const [fromDate, setFromDate] = useState()
+    const [toDate, setToDate] = useState()
 
     function handelSelectAndEdit(data: any) {
         setIsEdit(true)
@@ -23,7 +27,7 @@ const BookMarkState = ({ children }: Props) => {
     }
     return (
         <BookMarkContext.Provider value={{
-            show, setShow,
+            showInnerPage, setShowInnerPage,
             isEdit, setIsEdit,
             isCardView, setIsCardView,
             selectedTab, setSelectedTab,
@@ -35,7 +39,11 @@ const BookMarkState = ({ children }: Props) => {
             status, setStatus,
             openFilter, setOpenFilter,
             handelSelectAndEdit,
-            selected , setSelected
+            selected, setSelected,
+            sortBy, setSortBy,
+            sortOrder, setSortOrder,
+            fromDate, setFromDate,
+            toDate, setToDate,
         }}>
             {children}
         </BookMarkContext.Provider>

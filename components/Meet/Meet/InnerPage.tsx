@@ -44,7 +44,7 @@ const InnerPage = () => {
 
     return (
         <>
-            <Slider show={show} handelEdit={handelEdit} title={selected?.title} handelClose={handelClose} isShowEdit={["Completed", "On Going"].includes(selected?.meetingStatus)} >
+            <Slider show={show} handelEdit={handelEdit} title={selected?.title} handelClose={handelClose} isShowEdit={!["Completed", "On Going"].includes(selected?.meetingStatus)} isShowPic={false} >
                 {/* rows */}
                 <div className='my-2 items-center'>
                     <div className='flex items-center'>

@@ -10,15 +10,18 @@ interface DragAndDropFileInputDto {
     setPreView: Function,
     isShowError: boolean,
     setFiles: Function,
+    accept: any,
     preView?: Array<String>,
 }
+
+//accept : { 'image': ['image/jpg', 'image/jpeg'] }
 
 interface fileAcceptError {
     message: string[],
     fileName: string,
 }
 
-const DragAndDropFileInput = ({ maxFiles, multiple, maxSize, minSize, setPreView, isShowError, setFiles }: DragAndDropFileInputDto) => {
+const DragAndDropFileInput = ({ maxFiles, multiple, maxSize, minSize, setPreView, isShowError, setFiles ,accept}: DragAndDropFileInputDto) => {
     // function readFile(file: any) {
     //     const reader = new FileReader();
 
@@ -30,7 +33,7 @@ const DragAndDropFileInput = ({ maxFiles, multiple, maxSize, minSize, setPreView
     // }
 
     const { acceptedFiles, fileRejections, getInputProps, getRootProps, isDragAccept, isDragActive, isDragReject, isFileDialogActive, isFocused } = useDropzone({
-        accept: { 'image': ['image/jpg', 'image/jpeg'] },
+        accept: accept,
         maxFiles, multiple, maxSize, minSize
         // validator:
     });
@@ -69,9 +72,6 @@ const DragAndDropFileInput = ({ maxFiles, multiple, maxSize, minSize, setPreView
             {file.name} - {file.size}
         </li>
     )
-
-    console.log(acceptedFiles)
-    console.log(fileRejections)
 
     const dropzoneClasses = `
     border-2 border-dashed border-slate-500 p-4 text-center
