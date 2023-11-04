@@ -18,7 +18,7 @@ const Room = () => {
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const meetingSelector = useSelector((state: any) => state?.meetingSliceReducer);
     const param = useSearchParams();
-    const myVideoRef = useRef<HTMLVideoElement>(null)
+    const myVideoRef = useRef<HTMLVideoElement>();
     // @ts-ignore
     const { opponentScreenShareStream, setOpponentScreenShareStrem, setMyScreenShareStream, myScreenShareStream, isScreenShare, setIsScreenShare, setMessages, messages, setHandRaisedUser, HandRaisedUser, Navigator, setNavigator, pinnedParticipants, setAbsentParticipantsDetails, meetingId, setMeetingId, opponentNonMediaStreamStream, setOpponentNonMediaStreamStream, participantsDetails, setParticipantsDetails, opponentStream, setOpponentStream, isJoinMeetPage, setIsJoinMeetPage, MediaActions, myStream, setMyStream, video, setVideo, audio, setAudio } = useContext<streamContextDto>(MediaContext)
 

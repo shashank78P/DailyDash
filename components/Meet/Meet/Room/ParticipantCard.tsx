@@ -6,9 +6,9 @@ import React, { useContext, useEffect } from 'react'
 import { streamContextDto } from '../../types';
 import MediaContext from '../State/MediaContext';
 
-const ParticipantCard = ({ participant, key, isScreenShare }: { participant: any, key: string, isScreenShare: boolean }) => {
+const ParticipantCard = ({ participant, key, isParticpantsScreenShare, isMycard }: { participant: any, key: string, isParticpantsScreenShare: boolean, isMycard: boolean }) => {
     // @ts-ignore
-    const { opponentScreenShareStream, pinnedType, setpinnedType, meetingId, opponentNonMediaStreamStream, opponentStream, setShowPinSection, showPinSection, pinnedParticipants, setPinnedParticipants } = useContext<streamContextDto>(MediaContext)
+    const { opponentScreenShareStream , video , audio , myStream, myScreenShareStream, pinnedType, setpinnedType, meetingId, opponentNonMediaStreamStream, opponentStream, setShowPinSection, showPinSection, pinnedParticipants, setPinnedParticipants } = useContext<streamContextDto>(MediaContext)
     function returnImgeContainer(name: string, userPic: string, container: any) {
         let imgTag = document.createElement("img")
         imgTag.setAttribute("alt", name)
@@ -24,50 +24,79 @@ const ParticipantCard = ({ participant, key, isScreenShare }: { participant: any
     }
 
     function returnAudioContainer(stream: MediaStream, container: any) {
-        let audioTag = document.createElement("audio")
-        audioTag.srcObject = stream;
-        audioTag.setAttribute("autoPlay", "true")
-        audioTag.setAttribute("class", "disable")
-        container.appendChild(audioTag)
+        if(stream && container){
+            let audioTag = document.createElement("audio")
+            audioTag.srcObject = stream;
+            audioTag.setAttribute("autoPlay", "true")
+            audioTag.setAttribute("class", "disable")
+            container.appendChild(audioTag)
+        }
+    }
+
+    function returnVideoContainer(stream: MediaStream, container: any) {
+        if(container && stream){
+            let videoTag = document.createElement("video")
+            videoTag.setAttribute("autoPlay", "true")
+            videoTag.setAttribute("class", "w-full h-full aspect-video object-cover select-none pointer-events-none ")
+            container.classList.add("w-full", "h-full");
+            container.classList.remove("w-[150px]", "h-[150px]");
+            container.innerHTML = "";
+            container.appendChild(videoTag)
+            videoTag.srcObject = stream
+        }
     }
 
     useEffect(() => {
-        if (participant?.participantId && meetingId && opponentStream && opponentNonMediaStreamStream) {
-            const id = isScreenShare ? `${participant?.participantId}-screen-share-${meetingId}` : `${participant?.participantId}-${meetingId}`
+        if (isMycard) {
+            const id = isParticpantsScreenShare ? `${participant?.participantId}-screen-share-${meetingId}` : `${participant?.participantId}-${meetingId}`
+            let container: any = document.getElementById(id)
+            if (video || audio|| isParticpantsScreenShare) {
+                let stream: MediaStream = myStream
+                let track = stream?.getTracks()
+                // checking for only audio 
+                if (track && track?.length == 1 && track?.[0]?.kind == "audio") {
+                    returnImgeContainer(participant?.userName, participant?.userPic, container)
+                    returnAudioContainer(myStream, container)
+                } else {
+                    if (isParticpantsScreenShare) {
+                        console.log("videoTag.srcObject - screen share")
+                        returnVideoContainer(myScreenShareStream, container)
+                    } else {
+                        console.log("videoTag.srcObject")
+                        returnVideoContainer(myStream, container)
+                    }
+                }
+            } else {
+                returnImgeContainer(participant?.userName, participant?.userPic, container)
+            }
+        }
+        else if (participant?.participantId && meetingId && opponentStream && opponentNonMediaStreamStream) {
+            const id = isParticpantsScreenShare ? `${participant?.participantId}-screen-share-${meetingId}` : `${participant?.participantId}-${meetingId}`
             let container: any = document.getElementById(id)
             if (
                 Array.isArray(opponentNonMediaStreamStream) &&
                 !opponentNonMediaStreamStream?.includes(participant?.participantId) &&
-                Object.keys(opponentStream).includes(participant?.participantId) || isScreenShare
+                Object.keys(opponentStream).includes(participant?.participantId) || isParticpantsScreenShare
             ) {
                 let stream: MediaStream = opponentStream[participant?.participantId]
-                let track = stream.getTracks()
+                let track = stream?.getTracks()
 
                 // checking for only audio 
-                if (track?.length == 1 && track?.[0]?.kind == "audio") {
-                    returnImgeContainer(participant?.name, participant?.userPic, container)
+                if (track && track?.length == 1 && track?.[0]?.kind == "audio") {
+                    returnImgeContainer(participant?.userName, participant?.userPic, container)
                     returnAudioContainer(opponentStream[participant?.participantId], container)
                 } else {
-                    let videoTag = document.createElement("video")
-                    if (isScreenShare) {
+
+                    if (isParticpantsScreenShare) {
                         console.log("videoTag.srcObject - screen share")
-                        // console.log(opponentScreenShareStream[`${participant?.participantId}-screen-share`])
-                        // console.log(opponentScreenShareStream[`${participant?.participantId}-screen-share`]?.getTracks())
-                        videoTag.srcObject = opponentScreenShareStream[`${participant?.participantId}-screen-share`]
+                        returnVideoContainer(opponentScreenShareStream[`${participant?.participantId}-screen-share`], container)
                     } else {
                         console.log("videoTag.srcObject")
-                        console.log(opponentStream[participant?.participantId])
-                        videoTag.srcObject = opponentStream[participant?.participantId]
+                        returnVideoContainer(opponentStream[participant?.participantId], container)
                     }
-                    videoTag.setAttribute("autoPlay", "true")
-                    videoTag.setAttribute("class", "w-full h-full aspect-video object-cover select-none pointer-events-none ")
-                    container.classList.add("w-full", "h-full");
-                    container.classList.remove("w-[150px]", "h-[150px]");
-                    container.innerHTML = "";
-                    container.appendChild(videoTag)
                 }
             } else {
-                returnImgeContainer(participant?.name, participant?.userPic,container)
+                returnImgeContainer(participant?.userName, participant?.userPic, container)
             }
         }
     }, [participant, meetingId, opponentNonMediaStreamStream, opponentStream, key, opponentScreenShareStream])
@@ -111,7 +140,7 @@ const ParticipantCard = ({ participant, key, isScreenShare }: { participant: any
                         participant?.audio && <audio src={participant?.audio} autoPlay loop muted></audio>
                     }
                     <img
-                        alt={participant?.name} src={participant?.userPic}
+                        alt={participant?.userName} src={participant?.userPic}
                         // min-w-[${size}px] max-w-[${size}px] min-h-[${size}px] max-h-[${size}px]
                         className={`w-full h-full object-cover rounded-full overflow-hidden select-none`}
                         // width={size} height={size}
@@ -142,14 +171,14 @@ const ParticipantCard = ({ participant, key, isScreenShare }: { participant: any
                         {pinnedParticipants.length < 4 && !pinnedParticipants.includes(participant?.participantId) && <li className="p-2 bg-[#94A3B8] bg-opacity-80 ml-2 rounded-full cursor-pointer"
                             onClick={() => {
                                 console.log("pinned participants")
-                                handelPinParticipant(participant?.participantId, isScreenShare ? "screen-share" : "normal")
+                                handelPinParticipant(participant?.participantId, isParticpantsScreenShare ? "screen-share" : "normal")
                             }}
                         >
                             <PinIco height={15} width={15} />
                         </li>}
                         {pinnedParticipants.includes(participant?.participantId) && <li className="p-2 bg-[#94A3B8] bg-opacity-80 ml-2 rounded-full cursor-pointer"
                             onClick={() => {
-                                handelUnPinParticipant(participant?.participantId, isScreenShare ? "screen-share" : "normal")
+                                handelUnPinParticipant(participant?.participantId, isParticpantsScreenShare ? "screen-share" : "normal")
                             }}
                         >
                             <UnPinIco height={15} width={15} />
@@ -159,7 +188,7 @@ const ParticipantCard = ({ participant, key, isScreenShare }: { participant: any
                         </li>
                     </ul>
                 </ul>
-                <ul className=' w-full h-full flex items-center justify-center' id={!isScreenShare ? `${participant?.participantId}-${meetingId}` : `${participant?.participantId}-screen-share-${meetingId}`}>
+                <ul className=' w-full h-full flex items-center justify-center' id={!isParticpantsScreenShare ? `${participant?.participantId}-${meetingId}` : `${participant?.participantId}-screen-share-${meetingId}`}>
                     {/* {getContent(participant, 150)} */}
                 </ul>
             </div>

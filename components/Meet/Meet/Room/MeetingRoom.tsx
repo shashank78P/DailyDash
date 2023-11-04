@@ -5,10 +5,12 @@ import React, { useContext, useEffect, useRef } from 'react'
 import { streamContextDto } from '../../types'
 import MediaContext from '../State/MediaContext'
 import Message from './Message'
+import { useSelector } from 'react-redux'
 
 const MeetingRoom = ({ myVideoRef }: { myVideoRef: any }) => {
+    const userSelector = useSelector((state: any) => state?.userSliceReducer);
     // @ts-ignore
-    const { myStream, isScreenShare, opponentScreenShareStream , pinnedType, isShowChat, participantsDetails, pinnedParticipants, showParticipants } = useContext<streamContextDto>(MediaContext)
+    const { myStream, isScreenShare, opponentScreenShareStream, pinnedType, isShowChat, participantsDetails, pinnedParticipants, showParticipants } = useContext<streamContextDto>(MediaContext)
     useEffect(() => {
         if (myVideoRef?.current) {
             myVideoRef.current.srcObject = myStream
@@ -31,6 +33,48 @@ const MeetingRoom = ({ myVideoRef }: { myVideoRef: any }) => {
         }
     }
 
+    function returnMineCard() {
+        if (pinnedParticipants?.length !== 0) {
+            if(pinnedParticipants?.includes(userSelector?.userId)){
+                if (pinnedType?.[userSelector?.userId] === "screen-share") {
+                    return (<ParticipantCard participant={{
+                        userName: `${userSelector?.firstName ?? ""} ${userSelector?.lastName ?? ""} (You)`,
+                        participantId: userSelector?.userId,
+                        userPic: userSelector?.profilePic
+                    }} key={userSelector?.userId} isParticpantsScreenShare={true} isMycard={true} />)
+                }
+                else {
+                    return (
+                        <ParticipantCard participant={{
+                            userName: `${userSelector?.firstName ?? ""} ${userSelector?.lastName ?? ""} (You)`,
+                            participantId: userSelector?.userId,
+                            userPic: userSelector?.profilePic
+                        }} key={userSelector?.userId} isParticpantsScreenShare={false} isMycard={true} />
+                    )
+                }
+            }
+        } else {
+            return (
+                <>
+                    {
+                        <ParticipantCard participant={{
+                            userName: `${userSelector?.firstName ?? ""} ${userSelector?.lastName ?? ""} (You)`,
+                            participantId: userSelector?.userId,
+                            userPic: userSelector?.profilePic
+                        }} key={userSelector?.userId} isParticpantsScreenShare={false} isMycard={true} />
+                    }
+                    {
+                        isScreenShare && <ParticipantCard participant={{
+                            userName: `${userSelector?.firstName ?? ""} ${userSelector?.lastName ?? ""} (You)`,
+                            participantId: userSelector?.userId,
+                            userPic: userSelector?.profilePic
+                        }} key={userSelector?.userId} isParticpantsScreenShare={true} isMycard={true} />
+                    }
+                </>
+            )
+        }
+    }
+
     return (
         <>
             <MeetinTopSection />
@@ -38,18 +82,20 @@ const MeetingRoom = ({ myVideoRef }: { myVideoRef: any }) => {
             </div>
             {isShowChat && <Message />}
             {/* meeting participants card */}
-            {!false && <video width={200} height={200} id="video" ref={myVideoRef} autoPlay />}
+            {/* don't remove this video tag */}
+            {<video width={0} height={0} id="video" ref={myVideoRef} className=''/>}
             <MeetingActionBtns />
             <div className={`${pinnedParticipants.length !== 0 || Object.keys(participantsDetails).length < 5 ? returnStyleForPinnedCard() : " grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 "} w-full h-full overflow-scroll gap-2 grid-flow-dense p-2 relative`}>
                 {
-                    // isScreenShare &&  <ParticipantCard participant={participant} key={participant?.participantId} isScreenShare={isScreenShare} />
+                    returnMineCard()
                 }
                 {
+                    // for pinned particpantts
                     Object.values(participantsDetails)?.map((participant: any, i: number) => {
                         if (pinnedParticipants.length !== 0 && pinnedParticipants.includes(participant?.participantId)) {
-                            const isScreenShare = pinnedType?.[participant?.participantId] === "screen-share"
+                            const isParticipantsScreenShare = pinnedType?.[participant?.participantId] === "screen-share"
                             return (
-                                <ParticipantCard participant={participant} key={participant?.participantId} isScreenShare={isScreenShare} />
+                                <ParticipantCard participant={participant} key={participant?.participantId} isParticpantsScreenShare={isParticipantsScreenShare} isMycard={false} />
                             )
                         }
                         else if (pinnedParticipants.length == 0) {
@@ -57,13 +103,13 @@ const MeetingRoom = ({ myVideoRef }: { myVideoRef: any }) => {
                                 console.log("setting card of screen share")
                                 return (
                                     <>
-                                        <ParticipantCard participant={participant} key={`${participant?.participantId}-screen-share`} isScreenShare={true} />
-                                        <ParticipantCard participant={participant} key={participant?.participantId} isScreenShare={false} />
+                                        <ParticipantCard participant={participant} key={`${participant?.participantId}-screen-share`} isParticpantsScreenShare={true} isMycard={false} />
+                                        <ParticipantCard participant={participant} key={participant?.participantId} isParticpantsScreenShare={false} isMycard={false} />
                                     </>
                                 )
                             } else {
                                 return (
-                                    <ParticipantCard participant={participant} key={participant?.participantId} isScreenShare={false} />
+                                    <ParticipantCard participant={participant} key={participant?.participantId} isParticpantsScreenShare={false} isMycard={false} />
                                 )
                             }
                         }
