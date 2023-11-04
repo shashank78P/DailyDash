@@ -35,7 +35,7 @@ const ChatOptions = ({ setSelectedTab, selectedTab, unReadMsg }: { setSelectedTa
                         <UsersGroup width={20} height={20} />
                     </Badge>
                 </li>
-                <li className={`p-2 flex justify-center flex-grow items-center ${selectedTab == "call" && "border-0 border-b-2 border-purple-700 cursor-pointer"}`}
+                {/* <li className={`p-2 flex justify-center flex-grow items-center ${selectedTab == "call" && "border-0 border-b-2 border-purple-700 cursor-pointer"}`}
                     onClick={() => {
                         setSelectedTab("call")
                     }}
@@ -43,7 +43,7 @@ const ChatOptions = ({ setSelectedTab, selectedTab, unReadMsg }: { setSelectedTa
                     <Badge badgeContent={<Typography style={{ color: "#7e22ce", fontWeight: "900", marginLeft: "5px" }}>4</Typography>} >
                         <CallIco width={20} height={20} />
                     </Badge>
-                </li>
+                </li> */}
             </ul>
         </>
     )

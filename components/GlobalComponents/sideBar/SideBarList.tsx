@@ -51,7 +51,7 @@ const SideBarList = () => {
 
     return (
         <>
-            <ul className='min-h-screen w-[50px] md:w-[50px] flex flex-col justify-between items-center text-c_black bg-white'>
+            <ul className='max-h-screen h-screen w-[50px] flex flex-col justify-between items-center text-c_black bg-white overflow-y-scroll'>
                 <li className='mb-2 '>
                     <ul className='w-full flex flex-col justify-around'>
                         <li className={`w-full  p-2 my-2  ${pathname === '/' && "bg-purple-500 text-white rounded-md ease-in"}`}
@@ -104,14 +104,14 @@ const SideBarList = () => {
                                 {/* <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>BookMark</span> */}
                             </Link>
                         </li>
-                        <li className={`p-2 my-2 flex items-center  ${pathname === '/calendar' && "bg-purple-500 text-white rounded-md ease-in"}`}
+                        {/* <li className={`p-2 my-2 flex items-center  ${pathname === '/calendar' && "bg-purple-500 text-white rounded-md ease-in"}`}
                             onClick={() => {
                                 ChangeRouter("calendar")
                             }}
                         >
                             <Link href={'/calendar'} className='flex items-center'>
                                 <CalendarIco width={25} height={25} color={pathname === '/calendar' ? "white" : "#202124"} />
-                                {/* <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Calendar</span> */}
+                                <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Calendar</span>
                             </Link>
                         </li>
                         <li className={`p-2 my-2 flex items-center  ${pathname === '/note' && "bg-purple-500 text-white rounded-md ease-in"}`}
@@ -121,7 +121,7 @@ const SideBarList = () => {
                         >
                             <Link href={'/note'} className='flex items-center'>
                                 <NoteIco width={25} height={25} color={pathname === '/note' ? "white" : "#202124"} />
-                                {/* <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Note</span> */}
+                                <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Note</span>
                             </Link>
                         </li>
                         <li className={`p-2 my-2 flex items-center  ${pathname === '/dynamic-form' && "bg-purple-500 text-white rounded-md ease-in"}`}
@@ -131,9 +131,9 @@ const SideBarList = () => {
                         >
                             <Link href={'/dynamic-form'} className='flex items-center'>
                                 <DynamicForm width={25} height={25} color={pathname === '/dynamic-form' ? "white" : "#202124"} />
-                                {/* <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Dynamic Form</span> */}
+                                <span className='ml-2 sm:hidden text-base truncate text-ellipsis'>Dynamic Form</span>
                             </Link>
-                        </li>
+                        </li> */}
                     </ul>
                 </li >
                 <li className='my-2 '>

@@ -97,7 +97,7 @@ const ChatActions = ({ selectedChat, socket }: ChatActionsDto) => {
                 >
                     <CameraIco width={25} height={25} />
                 </li>
-                <li className='grow flex items-center relative'>
+                <li className=' flex flex-1 items-center relative'>
                     <textarea
                         placeholder='Type here to message...'
                         style={
@@ -106,13 +106,13 @@ const ChatActions = ({ selectedChat, socket }: ChatActionsDto) => {
                                 "resize": "none"
                             }
                         }
-                        className='min-w-[200px] md:w-full border p-2 text-base rounded-md placeholder:text-base'
+                        className='w-full border p-2 text-base rounded-md placeholder:text-base'
                         value={message}
                         onChange={(e) => {
                             setMessage(e?.target?.value);
                         }}
                     />
-                    <span className='cursor-pointer relative ml-2'
+                    <span className='cursor-pointer relative ml-1'
                         onClick={() => {
                             setIsEmojiOpen(!isEmojiOpen)
                         }}
@@ -129,12 +129,12 @@ const ChatActions = ({ selectedChat, socket }: ChatActionsDto) => {
                     </div>}
                 </li>
                 <li
-                    className='m-2 cursor-pointer'
+                    className='m-2 cursor-pointer bg-purple-500 p-2 rounded-lg grid place-content-center'
                     onClick={(e) => {
                         sendMessage()
                     }}
                 >
-                    <Send width={25} height={25} color='#7e22ce' />
+                    <Send width={25} height={25} color='white' />
                 </li>
             </ul>
         </>

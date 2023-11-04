@@ -88,69 +88,71 @@ const Page = () => {
 
     return (
         <>
-            <div className='min-w-[800px] w-[100vw - 50px] overflow-x-scroll md:overflow-hidden h-screen flex justify-start items-start  grid-cols-2'>
-                {ThreeDotActionResult == "CreateGroup" && <NewGroup
-                    setThreeDotActionResult={setThreeDotActionResult}
-                    ThreeDotActionResult={ThreeDotActionResult}
-                />}
-                {ThreeDotActionResult == "AddUser" && <NewContact
-                    setThreeDotActionResult={setThreeDotActionResult}
-                    ThreeDotActionResult={ThreeDotActionResult}
-                    setSelectedChat={setSelectedChat}
-                />}
-                {ThreeDotIsOpen && <ThreeDotAction open={ThreeDotIsOpen} setOpen={setThreeDotIsOpen} setThreeDotActionResult={setThreeDotActionResult} />}
-                <div className='h-full w-[300px] md:w-[400px] '>
-                    <div className=' h-[120px] flex flex-col justify-evenly items-center'>
-                        <ChatLeftTopNav
-                            open={ThreeDotIsOpen}
-                            setOpen={setThreeDotIsOpen}
-                        />
-                        <ChatOptions
-                            setSelectedTab={setSelectedTab}
-                            selectedTab={selectedTab}
-                            unReadMsg={unReadMsg}
-                        />
+            <div className='w-full overflow-x-scroll h-full'>
+                <div className='min-w-[800px] w-full bg-white overflow-x-scroll md:overflow-hidden h-full flex justify-start items-start '>
+                    {ThreeDotActionResult == "CreateGroup" && <NewGroup
+                        setThreeDotActionResult={setThreeDotActionResult}
+                        ThreeDotActionResult={ThreeDotActionResult}
+                    />}
+                    {ThreeDotActionResult == "AddUser" && <NewContact
+                        setThreeDotActionResult={setThreeDotActionResult}
+                        ThreeDotActionResult={ThreeDotActionResult}
+                        setSelectedChat={setSelectedChat}
+                    />}
+                    {ThreeDotIsOpen && <ThreeDotAction open={ThreeDotIsOpen} setOpen={setThreeDotIsOpen} setThreeDotActionResult={setThreeDotActionResult} />}
+                    <div className='h-full w-[300px] md:w-[400px] '>
+                        <div className=' h-[120px] flex flex-col justify-evenly items-center'>
+                            <ChatLeftTopNav
+                                open={ThreeDotIsOpen}
+                                setOpen={setThreeDotIsOpen}
+                            />
+                            <ChatOptions
+                                setSelectedTab={setSelectedTab}
+                                selectedTab={selectedTab}
+                                unReadMsg={unReadMsg}
+                            />
+                        </div>
+                        <div className='h-[50%] overflow-y-scroll' style={{ "height": "calc( 100% - 120px )" }}>
+                            {selectedTab == "chat" && <ChatUserList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} />}
+                            {selectedTab == "group_chat" && <ChatGroupList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} refetchUnReadMessages={refetchUnReadMessages} />}
+                            {/* {selectedTab == "call" && <CallList />} */}
+                        </div>
                     </div>
-                    <div className='h-[50%] overflow-y-scroll' style={{ "height": "calc( 100% - 120px )" }}>
-                        {selectedTab == "chat" && <ChatUserList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} />}
-                        {selectedTab == "group_chat" && <ChatGroupList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} refetchUnReadMessages={refetchUnReadMessages} />}
-                        {selectedTab == "call" && <CallList />}
-                    </div>
-                </div>
-                <div className={`h-[100%] flex chatActions w-full min-w-[400px] border flex-col justify-between items-start 
+                    <div className={`h-[100%] flex chatActions w-full min-w-[400px] border flex-col justify-between items-start 
                     ${selectedChat?.opponentId == "" && " backgroundeImage "}
                 `}>
-                    {selectedChat.opponentId != "" &&
-                        (!isViewProfile) && <>
-                            <ChatTopNav
-                                selectedChat={selectedChat}
-                                setIsViewProfile={setIsViewProfile}
-                            />
-                            <div className='grow w-full max-h-full overflow-y-scroll'>
-                                <ChatMessage
+                        {selectedChat.opponentId != "" &&
+                            (!isViewProfile) && <>
+                                <ChatTopNav
+                                    selectedChat={selectedChat}
+                                    setIsViewProfile={setIsViewProfile}
+                                />
+                                <div className='grow w-full max-h-full overflow-y-scroll'>
+                                    <ChatMessage
+                                        selectedChat={selectedChat}
+                                        socket={socket}
+                                        refetch={refetchUnReadMessages}
+                                        setRefetchList={setRefetchList}
+                                    // isViewProfile= {isViewProfile}
+                                    />
+                                </div>
+                                <ChatActions
                                     selectedChat={selectedChat}
                                     socket={socket}
-                                    refetch={refetchUnReadMessages}
-                                    setRefetchList={setRefetchList}
-                                // isViewProfile= {isViewProfile}
                                 />
-                            </div>
-                            <ChatActions
-                                selectedChat={selectedChat}
-                                socket={socket}
-                            />
-                        </>
-                    }
-                    {
-                        selectedChat.opponentId != "" && isViewProfile && <>
-                            <Profile
-                                setIsViewProfile={setIsViewProfile}
-                                selectedChat={selectedChat}
-                                setSelectedChat={setSelectedChat}
-                                setRefetchList={setRefetchList}
-                            />
-                        </>
-                    }
+                            </>
+                        }
+                        {
+                            selectedChat.opponentId != "" && isViewProfile && <>
+                                <Profile
+                                    setIsViewProfile={setIsViewProfile}
+                                    selectedChat={selectedChat}
+                                    setSelectedChat={setSelectedChat}
+                                    setRefetchList={setRefetchList}
+                                />
+                            </>
+                        }
+                    </div>
                 </div>
             </div>
         </>

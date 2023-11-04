@@ -118,10 +118,10 @@ const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, 
                                         <div className={`w-full mb-2 flex ${userSelector?.userId == ele?.from ? " justify-end" : " justify-start "} items-center`}>
                                             <ul className={`min-w-[100px] border p-2 rounded ${userSelector?.userId == ele?.from ? " bg-purple-300 " : " bg-purple-100 "}`}>
                                                 {/* {userSelector?.userId !== ele?.from && <li className='text-xs my-1 text-slate-600 '>~{ele?.sender}</li>} */}
-                                                <li className='pl-2'>
+                                                <li className='pl-2 w-full'>
                                                     {
                                                         ele.messageType === "TEXT" ?
-                                                            <div id={i.toString()}>{ele?.message}</div>
+                                                            <div className="w-full" id={i.toString()}>{ele?.message}</div>
                                                             :
                                                             getFileMessage(ele?.file)
                                                     }
@@ -152,12 +152,12 @@ const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, 
                                                         </>
                                                         :
                                                         <div className={`w-full mb-2 flex ${userSelector?.userId == chat?.from ? " justify-end" : " justify-start "} items-center`}>
-                                                            <ul className={`min-w-[100px] border p-2 rounded ${userSelector?.userId == chat?.from ? " bg-purple-300 " : " bg-purple-100 "}`}>
+                                                            <ul className={`min-w-[100px] h-auto border p-2 rounded ${userSelector?.userId == chat?.from ? " bg-purple-300 " : " bg-purple-100 "}`}>
                                                                 {userSelector?.userId !== chat?.from && <li className='text-xs my-1 text-slate-600 '>~{chat?.sender}</li>}
-                                                                <li className='pl-2'>
+                                                                <li className='pl-2 w-full'>
                                                                     {
                                                                         chat.messageType === "TEXT" ?
-                                                                            <div id={j.toString()}>{chat?.message}</div>
+                                                                            <div id={j.toString()} className='w-full break-words'>{chat?.message}</div>
                                                                             :
                                                                             getFileMessage(chat?.file)
                                                                     }

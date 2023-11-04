@@ -35,15 +35,15 @@ const Tab = (props: { tabData: any, key: number }) => {
         if (title === "Bookmark") {
             return <BookMark width={20} height={20} color={''} />
         }
-        if (title === "Note") {
-            return <NoteIco width={20} height={20} color={''} />
-        }
-        if (title === "Calendar") {
-            return <CalendarIco width={20} height={20} color={''} />
-        }
-        if (title === "Dynamic Form") {
-            return <DynamicForm width={20} height={20} color={''} />
-        }
+        // if (title === "Note") {
+        //     return <NoteIco width={20} height={20} color={''} />
+        // }
+        // if (title === "Calendar") {
+        //     return <CalendarIco width={20} height={20} color={''} />
+        // }
+        // if (title === "Dynamic Form") {
+        //     return <DynamicForm width={20} height={20} color={''} />
+        // }
     }
     useEffect(() => {
         if (tabData?.route === "/") {
@@ -61,15 +61,15 @@ const Tab = (props: { tabData: any, key: number }) => {
         if (tabData?.route === "/bookmark") {
             setValue("Bookmark")
         }
-        if (tabData?.route === "/calendar") {
-            setValue("Calendar")
-        }
-        if (tabData?.route === "/note") {
-            setValue("Note")
-        }
-        if (tabData?.route === "/dynamic-form") {
-            setValue("Dynamic Form")
-        }
+        // if (tabData?.route === "/calendar") {
+        //     setValue("Calendar")
+        // }
+        // if (tabData?.route === "/note") {
+        //     setValue("Note")
+        // }
+        // if (tabData?.route === "/dynamic-form") {
+        //     setValue("Dynamic Form")
+        // }
     }, [props])
 
     return (

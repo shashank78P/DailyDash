@@ -62,7 +62,7 @@ const ChatUserList = ({ selectedChat, setSelectedChat ,refetchList}: ChatUserLis
                                             type : "INDIVIDUAL"
                                         })
                                     }}
-                                    className='w-full h-full flex justify-start items-center p-2 hover:bg-slate-100 border-b-slate-100 border-b-2'
+                                    className={`w-full h-full flex justify-start items-center p-2 ${ selectedChat?.opponentId == ele?.opponentId && "bg-purple-100"} border-b-slate-100 border-b-2`}
                                 >
                                     <li >
                                         <img src={ele?.opponentPic || "images/DefaultUser2.png"} alt="" className='w-[50px] h-[50px] min-w-[50px] border rounded-full bg-slate-100 object-fit aspect-square' />
@@ -70,7 +70,7 @@ const ChatUserList = ({ selectedChat, setSelectedChat ,refetchList}: ChatUserLis
                                     <li className='w-full h-16 flex justify-between items-start ml-2'>
                                         <ul className='w-full flex flex-col justify-evenly h-16'>
                                             <li className='flex justify-between items-start'>
-                                                <span className='text-lg font-medium'>{ele?.opponentName}</span>
+                                                <span className='text-base text-c_black font-medium'>{ele?.opponentName}</span>
                                                 <span className='text-xs font-light text-slate-600'>{FormateDate1(ele?.messageCreatedAt)}</span>
                                             </li>
                                             <li className='flex justify-between items-start truncate'>

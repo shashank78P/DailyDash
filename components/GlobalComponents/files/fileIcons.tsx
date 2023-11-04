@@ -70,7 +70,7 @@ const FileIcons = ({ acceptedFiles, link }: { acceptedFiles: string, link: strin
                                     </div>
                                 </a>
                             </MenuItem>
-                            <MenuItem key={"share"} onClick={handleClose}>
+                            {/* <MenuItem key={"share"} onClick={handleClose}>
                                 <div className='m-2 flex justify-evenly'>
                                     <span className='mr-2'>
                                         <ShareIco width={20} height={20} />
@@ -85,7 +85,7 @@ const FileIcons = ({ acceptedFiles, link }: { acceptedFiles: string, link: strin
                                     </span>
                                     Delete
                                 </div>
-                            </MenuItem>
+                            </MenuItem> */}
                         </Menu>
                     </li>
                 </ul>

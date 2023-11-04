@@ -35,13 +35,13 @@ const ChatTopNav = ({ selectedChat, setIsViewProfile }: ChatTopNavDto) => {
             </li>
             <li>
                 <ul className='flex '>
-                    <li className='ml-3'
+                    {/* <li className='ml-3'
                         onClick={() => {
                             
                         }}
                     >
                         <CallIco width={25} height={25} />
-                    </li>
+                    </li> */}
                     <li className='ml-3'>
                         <VideoICameraIco width={25} height={25} />
                     </li>

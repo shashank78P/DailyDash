@@ -43,13 +43,13 @@ export default function RootLayout({
               <ReactQueryProvider>
                 <AuthMe />
                 <body className={inter.className}>
-                  <div className='flex w-[100vw] justify-center items-center'>
+                  <div className='flex w-[100vw] h-screen max-h-screen justify-center items-center overflow-hidden'>
                     <ToastContainer />
                     <div className='w-[50px]'>
                       {!restriction_SideBar__Tab.includes(pathname) && <SideBar />}
                     </div>
                     {/* <div className='flex w-full flex-col'> */}
-                    <div className='w-full  h-screen flex flex-col justify-between '>
+                    <div className='h-full flex flex-col justify-between' style={{"width" : "calc(100% - 50px)"}}>
                       {children}
                       {!restriction_SideBar__Tab.includes(pathname) && !restriction__Tab.includes(pathname) && <TabSection />}
                     </div>
