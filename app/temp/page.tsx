@@ -3,6 +3,7 @@ import Doc_viewer from '@/components/GlobalComponents/files/DocViewer';
 import FileIcons from '@/components/GlobalComponents/files/fileIcons';
 import UploadIcon from '@/components/assets/UploadIcon';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone'
 
@@ -28,9 +29,9 @@ const ImagePostForm = () => {
     const { acceptedFiles, fileRejections, getInputProps, getRootProps, isDragAccept, isDragActive, isDragReject, isFileDialogActive, isFocused } = useDropzone({
         // accept: { "*/*"},
         maxFiles: 10,
-        multiple : true,
-        maxSize:1000,
-        minSize:500
+        multiple: true,
+        maxSize: 1000,
+        minSize: 500
         // validator:
     });
 
@@ -64,11 +65,25 @@ const ImagePostForm = () => {
     const dropzoneClasses = `
     border-2 border-dashed border-gray-400 p-4 m-4 text-center
     ${isDragReject ? 'bg-red-200 border-red-500' : isDragActive ? 'bg-slate-200 border-slate-500' : 'bg-slate-100 border-slate-400'}`;
-    console.log(fileId)
+
+    const router = useRouter();
+    const [yourState, setYourState] = useState(0);
+
+    useEffect(() => {
+        // Update query parameters without refreshing the page
+        return router.replace(`/temp?num=${yourState}`);
+    }, [yourState, router]);
 
     return (
         <>
             <div>
+                <button
+                    onClick={() => {
+                        setYourState(Math.random() * 10)
+                    }}
+                >rand</button>
+                <h1>{yourState}</h1>
+
                 {/* <VideoRecord /> */}
                 {/* <div className='w-[200px]'>
                     <FileIcons acceptedFiles={'audio/wav'} />
@@ -87,7 +102,7 @@ const ImagePostForm = () => {
                 )}
             /> */}
 
-                <section>
+                {/* <section>
                     <div {...getRootProps({
                         className: `{ ${dropzoneClasses} w-full h-52 border border-2 flex justify-center items-center}}`
                     })}>
@@ -100,7 +115,7 @@ const ImagePostForm = () => {
                     </div>
                     <h1>Accepte file</h1>
                     <ul>{...files}</ul>
-                    {/* <FileIcons acceptedFiles={acceptedFiles} /> */}
+                    {/* <FileIcons acceptedFiles={acceptedFiles} />
 
                     {isDragAccept && <p>Drop it like its hot!</p>}
                     {isDragReject && <p>File type not supported!</p>}
@@ -114,8 +129,8 @@ const ImagePostForm = () => {
                         }
                         )
                     }
-                    {/* <Doc_viewer /> */}
-                </section>
+                     <Doc_viewer />
+                </section> */}
             </div>
         </>
     );

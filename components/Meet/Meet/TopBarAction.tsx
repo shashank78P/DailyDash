@@ -11,7 +11,7 @@ export interface meetingDto {
 
 const TopBarAction = () => {
 
-    const { setCreateMeeting, selectedTab, setSelectedTab, createMeeting, isEdit, selected } = useContext<MeetingContext>(MeetContext)
+    const { setCreateMeeting, handelClearSelectedData, selectedId, setIsEdit, setSelectedTab, createMeeting, isEdit, selected } = useContext<MeetingContext>(MeetContext)
     return (
         <>
             {
@@ -29,7 +29,18 @@ const TopBarAction = () => {
                     participantsEmail: [],
                     title: "",
                     whoCanJoin: ""
-                }} />
+                }}
+                    props={{
+                        isMeetingRoute: true,
+                        callBackTOGetMeetingId: () => { },
+                        createMeeting ,
+                        handelClearSelectedData,
+                        setCreateMeeting,
+                        selectedId : selectedId,
+                        isEdit,
+                        setIsEdit
+                    }}
+                />
             }
             <ul className='w-full flex justify-between items-center bg-slate-50 py-2 mb-2'>
                 <li>

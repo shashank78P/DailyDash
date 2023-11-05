@@ -11,16 +11,16 @@ import { FormateDate1 } from '@/components/GlobalComponents/FormateDate1'
 import { SocketContext } from '@/components/context/SocketContext'
 
 
-const ChatUserList = ({ selectedChat, setSelectedChat ,refetchList}: ChatUserListDto) => {
+const ChatUserList = ({ selectedChat, setSelectedChat, refetchList,isViewProfile ,chatLeftSearch}: ChatUserListDto) => {
 
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
-    const {socket}: any = useContext(SocketContext);
-    const {data, error, isLoading , refetch : refetchUSerList} = useQuery(['userList',refetchList], ()=>{
-        return api.get("/chats/getAllInitiatedChatUserList")
+    const { socket }: any = useContext(SocketContext);
+    const { data, error, isLoading, refetch: refetchUSerList } = useQuery(['userList',chatLeftSearch, refetchList , isViewProfile], () => {
+        return api.get(`/chats/getAllInitiatedChatUserList?search=${chatLeftSearch}`)
     },
-    {
-     refetchOnMount : true   
-    });
+        {
+            refetchOnMount: true
+        });
 
     socket?.on(`${userSelector?.userId}ChatNotification`, (msg: any) => {
         refetchUSerList()
@@ -45,24 +45,31 @@ const ChatUserList = ({ selectedChat, setSelectedChat ,refetchList}: ChatUserLis
                     hasMore={true}
                     loader={<div className='m-2'><Oval height={20} width={20} color='#7e22ce' /></div>}
                     scrollableTarget="id"
-                    // inverse={true}
+                // inverse={true}
 
                 >
                     {
                         Array.isArray(data?.data) && data?.data?.map((ele: any, i: number) => {
                             return (
                                 <ul
-                                key={i}
+                                    key={i}
                                     onClick={() => {
+                                        localStorage.setItem("selectedChat", JSON.stringify({
+                                            opponentId: ele?.opponentId,
+                                            opponentPic: ele?.opponentPic,
+                                            opponentName: ele?.opponentName,
+                                            belongsTo: ele?.belongsTo,
+                                            type: "INDIVIDUAL"
+                                        }))
                                         setSelectedChat({
-                                            opponentId:ele?.opponentId,
-                                            opponentPic : ele?.opponentPic,
-                                            opponentName : ele?.opponentName,
-                                            belongsTo : ele?.belongsTo,
-                                            type : "INDIVIDUAL"
+                                            opponentId: ele?.opponentId,
+                                            opponentPic: ele?.opponentPic,
+                                            opponentName: ele?.opponentName,
+                                            belongsTo: ele?.belongsTo,
+                                            type: "INDIVIDUAL"
                                         })
                                     }}
-                                    className={`w-full h-full flex justify-start items-center p-2 ${ selectedChat?.opponentId == ele?.opponentId && "bg-purple-100"} border-b-slate-100 border-b-2`}
+                                    className={`w-full h-full flex justify-start items-center p-2 ${selectedChat?.opponentId == ele?.opponentId && "bg-purple-100"} border-b-slate-100 border-b-2`}
                                 >
                                     <li >
                                         <img src={ele?.opponentPic || "images/DefaultUser2.png"} alt="" className='w-[50px] h-[50px] min-w-[50px] border rounded-full bg-slate-100 object-fit aspect-square' />

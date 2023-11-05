@@ -7,10 +7,13 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { toast } from 'react-toastify'
 import { Oval } from "react-loader-spinner"
 import FileIcons from '@/components/GlobalComponents/files/fileIcons'
-const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, setRefetchList }: ChatMessageDto) => {
+import CrossIco from '@/components/assets/CrossIco'
+const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, setRefetchList, setIsSearch, isSearch }: ChatMessageDto) => {
     const [limit, setLimit] = useState(50)
     const [skip, setSkip] = useState(0)
     const [messages, setMessages] = useState<Array<any>>([]);
+    const [searchMessages, setSearchMessages] = useState<Array<any>>([]);
+    const [search, setSearch] = useState<string>("");
     const [socketMsg, setSocketMsg] = useState<Array<any>>([]);
     const [previousBelongsTo, setPreviousBelongsTo] = useState<string | null>(null);
 
@@ -26,12 +29,17 @@ const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, 
         }
     )
 
-    const { data, isLoading, refetch: refetchChat } = useQuery(["chat", skip, selectedChat], () => {
-        return api.get(`/chats/getAllchat?belongsTo=${selectedChat?.belongsTo}&limit=${limit}&skip=${skip}`)
+    const { data, isLoading, refetch: refetchChat } = useQuery(["chat", skip, selectedChat, search], () => {
+        return api.get(`/chats/getAllchat?belongsTo=${selectedChat?.belongsTo}&limit=${limit}&skip=${skip}&search=${search}`)
     },
         {
             onSuccess({ data }: any) {
-                setMessages([...messages, ...data?.chats]);
+                console.log({ isSearch, search })
+                if (!(isSearch && search)) {
+                    setMessages([...messages, ...data?.chats]);
+                } else {
+                    setSearchMessages([...searchMessages, ...data?.chats]);
+                }
                 setSocketMsg([])
                 refetchChatsNotification()
             },
@@ -89,8 +97,61 @@ const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, 
         )
     }
 
+    function getMessage(chat: any, j: number) {
+        return (
+            <>
+                {
+                    <>
+                        {
+                            chat?.event?.type ?
+                                <>
+                                    <div className='w-full p-1 bg-purple-100 text-center text-slate-600 text-sm rounded-md my-2'>
+                                        {/* {userSelector?.userId !== chat?.from ? `~${chat?.sender}: ` : "~you: "} */}
+                                        {chat?.event?.message}
+                                    </div>
+                                </>
+                                :
+                                <div className={`w-full mb-2 flex ${userSelector?.userId == chat?.from ? " justify-end" : " justify-start "} items-center`}>
+                                    <ul className={`min-w-[100px] h-auto border p-2 rounded ${userSelector?.userId == chat?.from ? " bg-purple-300 " : " bg-purple-100 "}`}>
+                                        {userSelector?.userId !== chat?.from && <li className='text-xs my-1 text-slate-600 '>~{chat?.sender}</li>}
+                                        <li className='pl-2 w-full'>
+                                            {
+                                                chat.messageType === "TEXT" ?
+                                                    <div id={j.toString()} className='w-full break-words'>{chat?.message}</div>
+                                                    :
+                                                    getFileMessage(chat?.file)
+                                            }
+                                        </li>
+                                        <li className='text-end text-xs my-1 text-slate-600 '>{getTime(chat?.createdAt)}</li>
+                                    </ul>
+                                </div>
+                        }
+                    </>
+                }
+            </>
+        )
+    }
+
     return (
-        <div className=' w-[100%] h-[100%] flex flex-col-reverse overflow-y-scroll p-2 px-4' id="chat">
+        <div className=' w-[100%] h-[100%] flex flex-col-reverse overflow-y-scroll p-2 px-4 relative' id="chat">
+            {isSearch && <ul className='border flex justify-between items-center fixed top-20 right-0 rounded-lg overflow-hidden bg-purple-50'>
+                <li>
+                    <input
+                        type="text"
+                        name="" id=""
+                        className=' p-2 text-xs bg-transparent'
+                        onChange={(e) => {
+                            setSearch(e?.target?.value)
+                        }} />
+                </li>
+                <li
+                    onClick={() => {
+                        setIsSearch(false)
+                    }}
+                >
+                    <CrossIco height={20} width={20} color='red' />
+                </li>
+            </ul>}
             <InfiniteScroll
                 dataLength={messages.length || 10}
                 next={() => {
@@ -107,66 +168,86 @@ const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, 
                         return (
                             <>
                                 {
-                                    ele?.event?.type ?
-                                        <>
-                                            <div className='w-full p-1 bg-purple-100 text-center text-slate-600 rounded-md my-2 text-sm'>
-                                                {/* {userSelector?.userId !== ele?.from ? `~${ele?.sender}: ` : "~you: "} */}
-                                                {ele?.event?.message}
-                                            </div>
-                                        </>
-                                        :
-                                        <div className={`w-full mb-2 flex ${userSelector?.userId == ele?.from ? " justify-end" : " justify-start "} items-center`}>
-                                            <ul className={`min-w-[100px] border p-2 rounded ${userSelector?.userId == ele?.from ? " bg-purple-300 " : " bg-purple-100 "}`}>
-                                                {/* {userSelector?.userId !== ele?.from && <li className='text-xs my-1 text-slate-600 '>~{ele?.sender}</li>} */}
-                                                <li className='pl-2 w-full'>
-                                                    {
-                                                        ele.messageType === "TEXT" ?
-                                                            <div className="w-full" id={i.toString()}>{ele?.message}</div>
-                                                            :
-                                                            getFileMessage(ele?.file)
-                                                    }
-                                                </li>
-                                                <li className='text-end text-xs my-1 text-slate-600 '>{getTime(ele?.createdAt)}</li>
-                                            </ul>
-                                        </div>
+                                    // ele?.event?.type ?
+                                    //     <>
+                                    //         <div className='w-full p-1 bg-purple-100 text-center text-slate-600 rounded-md my-2 text-sm'>
+                                    //             {/* {userSelector?.userId !== ele?.from ? `~${ele?.sender}: ` : "~you: "} */}
+                                    //             {ele?.event?.message}
+                                    //         </div>
+                                    //     </>
+                                    //     :
+                                    //     <div className={`w-full mb-2 flex ${userSelector?.userId == ele?.from ? " justify-end" : " justify-start "} items-center`}>
+                                    //         <ul className={`min-w-[100px] border p-2 rounded ${userSelector?.userId == ele?.from ? " bg-purple-300 " : " bg-purple-100 "}`}>
+                                    //             {/* {userSelector?.userId !== ele?.from && <li className='text-xs my-1 text-slate-600 '>~{ele?.sender}</li>} */}
+                                    //             <li className='pl-2 w-full'>
+                                    //                 {
+                                    //                     ele.messageType === "TEXT" ?
+                                    //                         <div className="w-full  break-words" id={i.toString()}>{ele?.message}</div>
+                                    //                         :
+                                    //                         getFileMessage(ele?.file)
+                                    //                 }
+                                    //             </li>
+                                    //             <li className='text-end text-xs my-1 text-slate-600 '>{getTime(ele?.createdAt)}</li>
+                                    //         </ul>
+                                    //     </div>
+                                    getMessage(ele, i)
                                 }
                             </>
                         )
                     })
                 }
                 {
-                    messages?.map((ele: any, i) => {
+                    !(isSearch && search) && messages?.map((ele: any, i) => {
                         return (
                             <>
                                 {
                                     ele?.chats?.map((chat: any, j: number) => {
                                         return (
-                                            <>
-                                                {
-                                                    chat?.event?.type ?
-                                                        <>
-                                                            <div className='w-full p-1 bg-purple-100 text-center text-slate-600 text-sm rounded-md my-2'>
-                                                                {/* {userSelector?.userId !== chat?.from ? `~${chat?.sender}: ` : "~you: "} */}
-                                                                {chat?.event?.message}
-                                                            </div>
-                                                        </>
-                                                        :
-                                                        <div className={`w-full mb-2 flex ${userSelector?.userId == chat?.from ? " justify-end" : " justify-start "} items-center`}>
-                                                            <ul className={`min-w-[100px] h-auto border p-2 rounded ${userSelector?.userId == chat?.from ? " bg-purple-300 " : " bg-purple-100 "}`}>
-                                                                {userSelector?.userId !== chat?.from && <li className='text-xs my-1 text-slate-600 '>~{chat?.sender}</li>}
-                                                                <li className='pl-2 w-full'>
-                                                                    {
-                                                                        chat.messageType === "TEXT" ?
-                                                                            <div id={j.toString()} className='w-full break-words'>{chat?.message}</div>
-                                                                            :
-                                                                            getFileMessage(chat?.file)
-                                                                    }
-                                                                </li>
-                                                                <li className='text-end text-xs my-1 text-slate-600 '>{getTime(chat?.createdAt)}</li>
-                                                            </ul>
-                                                        </div>
-                                                }
-                                            </>
+                                            // <>
+                                            //     {
+                                            //         chat?.event?.type ?
+                                            //             <>
+                                            //                 <div className='w-full p-1 bg-purple-100 text-center text-slate-600 text-sm rounded-md my-2'>
+                                            //                     {/* {userSelector?.userId !== chat?.from ? `~${chat?.sender}: ` : "~you: "} */}
+                                            //                     {chat?.event?.message}
+                                            //                 </div>
+                                            //             </>
+                                            //             :
+                                            //             <div className={`w-full mb-2 flex ${userSelector?.userId == chat?.from ? " justify-end" : " justify-start "} items-center`}>
+                                            //                 <ul className={`min-w-[100px] h-auto border p-2 rounded ${userSelector?.userId == chat?.from ? " bg-purple-300 " : " bg-purple-100 "}`}>
+                                            //                     {userSelector?.userId !== chat?.from && <li className='text-xs my-1 text-slate-600 '>~{chat?.sender}</li>}
+                                            //                     <li className='pl-2 w-full'>
+                                            //                         {
+                                            //                             chat.messageType === "TEXT" ?
+                                            //                                 <div id={j.toString()} className='w-full break-words'>{chat?.message}</div>
+                                            //                                 :
+                                            //                                 getFileMessage(chat?.file)
+                                            //                         }
+                                            //                     </li>
+                                            //                     <li className='text-end text-xs my-1 text-slate-600 '>{getTime(chat?.createdAt)}</li>
+                                            //                 </ul>
+                                            //             </div>
+                                            //     }
+                                            // </>
+                                            getMessage(chat, j)
+                                        )
+                                    })
+                                }
+                                {ele?._id && <div className='text-center my-2'>
+                                    <span>{ele?._id?.date + " / " + ele?._id?.month + " / " + ele?._id?.year}</span>
+                                </div>}
+                            </>
+                        )
+                    })
+                }
+                {
+                    (isSearch && search) && searchMessages?.map((ele: any, i) => {
+                        return (
+                            <>
+                                {
+                                    ele?.chats?.map((chat: any, j: number) => {
+                                        return (
+                                            getMessage(chat, j)
                                         )
                                     })
                                 }

@@ -39,7 +39,7 @@ const Profile = ({ setIsViewProfile, selectedChat, setRefetchList ,setSelectedCh
 
     return (
         <>
-            <div className='w-full overflow-x-scroll h-full bg-red-100'>
+            <div className='w-full overflow-x-scroll h-full '>
                 {options === "Add Members" && <AddUser setOptions={setOptions} selectedChat={selectedChat} />}
                 <div
                     className='w-[40px] h-[40px] rounded-full ml-2 cursor-pointer'

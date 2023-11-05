@@ -19,7 +19,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import io from "socket.io-client";
 
 // /polls
 // const socket = io("ws://localhost:3001");
@@ -29,6 +28,8 @@ const Page = () => {
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const { socket }: any = useContext(SocketContext);
     const [selectedTab, setSelectedTab] = useState<string>("chat");
+    const [isSearch, setIsSearch] = useState<boolean>(false)
+    const [chatLeftSearch, setChatLeftSearch] = useState<string>("");
     const [ThreeDotIsOpen, setThreeDotIsOpen] = useState<boolean>(false);
     const [ThreeDotActionResult, setThreeDotActionResult] = useState<String>("");
     const [isViewProfile, setIsViewProfile] = useState<Boolean>(false)
@@ -41,7 +42,7 @@ const Page = () => {
 
     // chat
     const [selectedChat, setSelectedChat] = useState<selecteChatDto>({ opponentId: "", opponentPic: "", opponentName: "", belongsTo: "", type: "" });
-
+    console.log(chatLeftSearch)
     const { data, isLoading, refetch: refetchUnReadMessages } = useQuery(["getUnReadMessagesCount"], () => {
         return api.get(`/chats/getUnReadMessagesCount`)
     },
@@ -71,20 +72,22 @@ const Page = () => {
         refetchUnReadMessages()
     }, [selectedChat?.belongsTo, refetchList]);
 
-    // QueryObject(
-    //     {
-    //         selectedTab,
-    //         setSelectedTab,
-    //         ThreeDotIsOpen,
-    //         setThreeDotIsOpen,
-    //         ThreeDotActionResult,
-    //         setThreeDotActionResult,
-    //         isViewProfile,
-    //         setIsViewProfile,
-    //         refetchList,
-    //         setRefetchList,
-    //     }
-    // )
+    QueryObject(
+        {
+            selectedTab,
+            setSelectedTab,
+            ThreeDotIsOpen,
+            setThreeDotIsOpen,
+            ThreeDotActionResult,
+            setThreeDotActionResult,
+            isViewProfile,
+            setIsViewProfile,
+            refetchList,
+            setRefetchList,
+            selectedChat,
+            setSelectedChat
+        }
+    )
 
     return (
         <>
@@ -105,6 +108,7 @@ const Page = () => {
                             <ChatLeftTopNav
                                 open={ThreeDotIsOpen}
                                 setOpen={setThreeDotIsOpen}
+                                setChatLeftSearch={setChatLeftSearch}
                             />
                             <ChatOptions
                                 setSelectedTab={setSelectedTab}
@@ -113,8 +117,8 @@ const Page = () => {
                             />
                         </div>
                         <div className='h-[50%] overflow-y-scroll' style={{ "height": "calc( 100% - 120px )" }}>
-                            {selectedTab == "chat" && <ChatUserList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} />}
-                            {selectedTab == "group_chat" && <ChatGroupList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} refetchUnReadMessages={refetchUnReadMessages} />}
+                            {selectedTab == "chat" && <ChatUserList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} isViewProfile={isViewProfile} chatLeftSearch={chatLeftSearch}/>}
+                            {selectedTab == "group_chat" && <ChatGroupList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} refetchUnReadMessages={refetchUnReadMessages} isViewProfile={isViewProfile} chatLeftSearch={chatLeftSearch}/>}
                             {/* {selectedTab == "call" && <CallList />} */}
                         </div>
                     </div>
@@ -126,6 +130,7 @@ const Page = () => {
                                 <ChatTopNav
                                     selectedChat={selectedChat}
                                     setIsViewProfile={setIsViewProfile}
+                                    setIsSearch={setIsSearch}
                                 />
                                 <div className='grow w-full max-h-full overflow-y-scroll'>
                                     <ChatMessage
@@ -133,6 +138,8 @@ const Page = () => {
                                         socket={socket}
                                         refetch={refetchUnReadMessages}
                                         setRefetchList={setRefetchList}
+                                        setIsSearch={setIsSearch}
+                                        isSearch={isSearch}
                                     // isViewProfile= {isViewProfile}
                                     />
                                 </div>

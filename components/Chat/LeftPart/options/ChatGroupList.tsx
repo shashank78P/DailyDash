@@ -11,12 +11,12 @@ import VideoICameraIco from '@/components/assets/VideoICameraIco';
 import VoiceMikeIco from '@/components/assets/VoiceMikeIco';
 import NoteIco from '@/components/assets/NoteIco';
 
-const ChatGroupList = ({ selectedChat, setSelectedChat, refetchList, refetchUnReadMessages }: ChatUserListDto) => {
+const ChatGroupList = ({ selectedChat, setSelectedChat, refetchList, refetchUnReadMessages ,isViewProfile , chatLeftSearch}: ChatUserListDto) => {
     const limit = 50;
     const [skip, setSkip] = useState(0)
     const { socket }: any = useContext(SocketContext);
-    const { data, error, isLoading, refetch } = useQuery(['groupList', refetchList, selectedChat?.belongsTo], () => {
-        return api.get("/chats/getAllInitiatedChatGroupList")
+    const { data, error, isLoading, refetch } = useQuery(['groupList', refetchList, selectedChat?.belongsTo,isViewProfile,chatLeftSearch], () => {
+        return api.get(`/chats/getAllInitiatedChatGroupList?search=${chatLeftSearch}`)
     },
         {
             refetchOnMount: true
@@ -89,6 +89,13 @@ const ChatGroupList = ({ selectedChat, setSelectedChat, refetchList, refetchUnRe
                                 <ul
                                     key={i}
                                     onClick={() => {
+                                        localStorage.setItem("selectedChat", JSON.stringify({
+                                            opponentId: ele?.belongsTo,
+                                            opponentPic: ele?.groupProfilePic,
+                                            opponentName: ele?.groupName,
+                                            belongsTo: ele?.belongsTo,
+                                            type: "GROUP"
+                                        }))
                                         setSelectedChat({
                                             opponentId: ele?.belongsTo,
                                             opponentPic: ele?.groupProfilePic,
@@ -97,7 +104,7 @@ const ChatGroupList = ({ selectedChat, setSelectedChat, refetchList, refetchUnRe
                                             type: "GROUP"
                                         })
                                     }}
-                                    className={`w-full h-full flex justify-start items-center p-2 ${ selectedChat?.opponentId == ele?.belongsTo && "hover:bg-slate-100"} border-b-slate-100 border-b-2 `}
+                                    className={`w-full h-full flex justify-start items-center p-2 ${selectedChat?.belongsTo == ele?.belongsTo && "bg-purple-100"} border-b-slate-100 border-b-2 `}
                                 >
                                     <li >
                                         <img src={ele?.groupProfilePic || "images/DefaultUser2.png"} alt="" className='w-[50px] h-[50px] min-w-[50px] border rounded-full bg-slate-100 object-fit aspect-square' />

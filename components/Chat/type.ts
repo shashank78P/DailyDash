@@ -10,14 +10,18 @@ export type ChatUserListDto = {
     selectedChat: selecteChatDto,
     setSelectedChat: any
     refetchList : any
-    refetchUnReadMessages? : any
+    refetchUnReadMessages? : any,
+    isViewProfile : Boolean,
+    chatLeftSearch:string
 }
 
 export type ChatMessageDto = {
     selectedChat: selecteChatDto,
     socket :any,
     refetch : any
-    setRefetchList: any
+    setRefetchList: any,
+    setIsSearch : Function,
+    isSearch : boolean
 }
 
 

@@ -15,7 +15,7 @@ import InnerPage from './InnerPage'
 
 const ScheduledMeeting = () => {
     const { selected, setSelected, isEdit, setIsEdit, show, setShow, createMeeting, setCreateMeeting, selectedTab, selectedId, setSelectedId, setStatus, status, rows, setRows, page, setPage, setSearch, search } = useContext<MeetingContext>(MeetContext)
-    const { data, isLoading }: { data: any, isLoading: any } = useQuery(["scheduledMeeting", rows, page, search, status, setIsEdit, selected], () => {
+    const { data, isLoading }: { data: any, isLoading: any } = useQuery(["scheduledMeeting", rows, page, search, status, isEdit, createMeeting, selected], () => {
         return api.get(`/meet/get-scheduled-meeting-list-of-mine?limit=${rows}&search=${search}&page=${page}&status=${status}`)
     },
         {

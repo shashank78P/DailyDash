@@ -13,13 +13,11 @@ import { toast } from 'react-toastify'
 const SearchUserToAdd = ({ setOptions, selectedChat }: any) => {
   const limit = 500;
   const userSelector = useSelector((state: any) => state?.userSliceReducer);
-  const socket: any = useContext(SocketContext);
+  const { socket } : any= useContext(SocketContext);
   const defaultUserPic = "images/DefaultUser2.png"
   const [skip, setSkip] = useState<number>(0)
   const [search, setSearch] = useState<string>("")
   const [userList, setUserList] = useState<string[]>([])
-  const [message, setErrorMessage] = useState<string>("")
-  const [newGroupName, setNewGroupName] = useState<string>("")
 
   const { data, isLoading, refetch } = useQuery(["getUserOfMyContact", search], () => {
     return api.get(`/chats/getUserOfMyContactExceptParticularGroup?limit=${limit}&skip=${skip}&search=${search}&belongsTo=${selectedChat?.belongsTo}`)
@@ -28,14 +26,16 @@ const SearchUserToAdd = ({ setOptions, selectedChat }: any) => {
     }
   })
 
-  const { mutate : addUser , isLoading : isAddUserLoading } = useMutation(async (data: any) => {
+  const { mutate: addUser, isLoading: isAddUserLoading } = useMutation(async (data: any) => {
     return api.post("/chats/AddUserToGroup", data)
   }, {
     onSuccess({ data }) {
-      socket.emit("GROUP", { event: { type: "JOIN", message: `${ userList.toString() } is added by ${data?.name}` }, messageType: "TEXT", belongsTo: selectedChat?.belongsTo, to: selectedChat?.opponentId, userId: userSelector?.userId });
+      console.log(data)
+      socket.emit("GROUP", { event: { type: "JOIN", message: `${userList.toString()} is added by ${data?.name}` }, messageType: "TEXT", belongsTo: selectedChat?.belongsTo, to: selectedChat?.opponentId, userId: userSelector?.userId });
       setOptions("")
     },
     onError(err) {
+      console.log(err)
       toast.error("Not added sucessfully")
     }
   })
@@ -121,15 +121,15 @@ const SearchUserToAdd = ({ setOptions, selectedChat }: any) => {
               setOptions("")
             }}
           >Cancel</button>
-          { isAddUserLoading ? 
-            <Oval color='#7e22ce' height={20} width={20} secondaryColor='#7e22ce'/>
-          : 
-          <button
-            className='mx-2 p-2 px-4 rounded-lg text-white border border-blue-700 bg-blue-700 text-base'
-            onClick={() => {
-              addUser({ users : checked , belongsTo : selectedChat?.belongsTo})
-            }}
-          >Add</button>}
+          {isAddUserLoading ?
+            <Oval color='#7e22ce' height={20} width={20} secondaryColor='#7e22ce' />
+            :
+            <button
+              className='mx-2 p-2 px-4 rounded-lg text-white border border-blue-700 bg-blue-700 text-base'
+              onClick={() => {
+                addUser({ users: checked, belongsTo: selectedChat?.belongsTo })
+              }}
+            >Add</button>}
         </div>
       </InfiniteScroll>
     </div>
