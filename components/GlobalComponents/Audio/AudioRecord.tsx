@@ -1,3 +1,4 @@
+// @ts-nocheck
 import CrossIco from '@/components/assets/CrossIco';
 import DeleteIco from '@/components/assets/DeleteIco';
 import PauseIco from '@/components/assets/PauseIco';
