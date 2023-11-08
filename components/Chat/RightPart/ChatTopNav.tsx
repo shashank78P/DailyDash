@@ -12,12 +12,13 @@ import CreateMeeting from './CreateMeeting'
 type ChatTopNavDto = {
     selectedChat: selecteChatDto,
     setIsViewProfile: any,
-    setIsSearch: Function
+    setIsSearch: Function,
+    createMeeting : boolean, 
+    setCreateMeeting : Function,
 }
 
-const ChatTopNav = ({ selectedChat, setIsViewProfile, setIsSearch }: ChatTopNavDto) => {
+const ChatTopNav = ({ selectedChat, setIsViewProfile, setIsSearch ,createMeeting, setCreateMeeting}: ChatTopNavDto) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [createMeeting, setCreateMeeting] = useState<boolean>(false);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -28,7 +29,6 @@ const ChatTopNav = ({ selectedChat, setIsViewProfile, setIsSearch }: ChatTopNavD
     };
     return (
         <>
-            { createMeeting && <CreateMeeting createMeeting={createMeeting} opponentId={selectedChat?.belongsTo} setCreateMeeting={setCreateMeeting} />}
             <ul className='w-full h-[70px] flex justify-start items-center p-2  border-b-slate-100 border-b-2 cursor-pointer'
             >
                 <li

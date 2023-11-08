@@ -14,7 +14,8 @@ const QueryObject = ({ selectedTab,
     refetchList,
     setRefetchList,
     selectedChat,
-    setSelectedChat
+    setSelectedChat,
+    isSearch, setIsSearch
 }: any) => {
 
     const router = useSearchParams()
@@ -43,18 +44,21 @@ const QueryObject = ({ selectedTab,
         if (Boolean(refetchList)) {
             constructQueryString = constructQueryString + `&refetchList=${refetchList}`
         }
+        if (Boolean(isSearch)) {
+            constructQueryString = constructQueryString + `&isSearch=${isSearch}`
+        }
         router2.replace(`/chat?${constructQueryString}`);
-    }, [selectedChat?.opponentId, selectedChat?.belongsTo, router2, ThreeDotIsOpen, ThreeDotActionResult, isViewProfile, refetchList ,selectedTab]);
+    }, [selectedChat?.opponentId, selectedChat?.belongsTo, router2, ThreeDotIsOpen, ThreeDotActionResult, isViewProfile, refetchList ,selectedTab , isSearch]);
 
     useEffect(() => {
         router.forEach((value, key) => {
             console.log({ key, value })
-            let prevSelectedChat = localStorage.getItem("selectedChat")
-            if (prevSelectedChat) {
-                prevSelectedChat = JSON.parse(prevSelectedChat)
-                setSelectedChat(prevSelectedChat)
-            }
-            console.log({ prevSelectedChat })
+            // let prevSelectedChat = localStorage.getItem("selectedChat")
+            // if (prevSelectedChat) {
+            //     prevSelectedChat = JSON.parse(prevSelectedChat)
+            //     setSelectedChat(prevSelectedChat)
+            // }
+            // console.log({ prevSelectedChat })
             switch (key) {
                 case "selectedTab":
                     setSelectedTab(value);
@@ -70,6 +74,9 @@ const QueryObject = ({ selectedTab,
                     break;
                 case "refetchList":
                     setRefetchList(Boolean(value))
+                    break;
+                case "isSearch":
+                    setIsSearch(Boolean(value))
                     break;
                 case "opponentId":
                     setSelectedChat((prev: any) => { return { ...prev, opponentId: value } })

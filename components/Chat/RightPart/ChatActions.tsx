@@ -11,6 +11,7 @@ import apiFromData from '@/components/lib/apiFormData'
 import SmilyFace from '@/components/assets/SmilyFace'
 import Picker from '@emoji-mart/react'
 import data from '@emoji-mart/data'
+import AudioRecord from '@/components/GlobalComponents/Audio/AudioRecord'
 
 const ChatActions = ({ selectedChat, socket }: ChatActionsDto) => {
     const [message, setMessage] = useState<string>("");
@@ -48,18 +49,18 @@ const ChatActions = ({ selectedChat, socket }: ChatActionsDto) => {
 
     function sendMessage() {
         if (selectedChat?.type == "INDIVIDUAL") {
-            socket.emit("INDIVIDUAL", { message, messageType: "TEXT", belongsTo: selectedChat?.belongsTo, to: selectedChat?.opponentId, userId: userSelector?.userId });
+            socket?.emit("INDIVIDUAL", { message, messageType: "TEXT", belongsTo: selectedChat?.belongsTo, to: selectedChat?.opponentId, userId: userSelector?.userId });
         }
         else if (selectedChat?.type == "GROUP") {
-            socket.emit("GROUP", { message, messageType: "TEXT", belongsTo: selectedChat?.belongsTo, to: selectedChat?.opponentId, userId: userSelector?.userId });
+            socket?.emit("GROUP", { message, messageType: "TEXT", belongsTo: selectedChat?.belongsTo, to: selectedChat?.opponentId, userId: userSelector?.userId });
         }
         setMessage("");
     }
 
     return (
         <>
-            {/* {isOpen && <AudioRecord isOpen={isOpen} setIsOpen={setIsOpen} sendFile={sendFile} />}
-            {isVideoOpen && <VideoRecord isOpen={isVideoOpen} setIsOpen={setIsVideoOpen} sendFile={sendFile} />} */}
+            {isOpen && <AudioRecord isOpen={isOpen} setIsOpen={setIsOpen} sendFile={sendFile} />}
+            {/* {isVideoOpen && <VideoRecord isOpen={isVideoOpen} setIsOpen={setIsVideoOpen} sendFile={sendFile} />} */}
             <ul className='w-full flex justify-between items-center'>
                 <input
                     type="file"

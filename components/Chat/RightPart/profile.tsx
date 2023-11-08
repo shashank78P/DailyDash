@@ -18,21 +18,21 @@ import { useSelector } from 'react-redux'
 import { SocketContext } from '@/components/context/SocketContext'
 import { toast } from 'react-toastify'
 
-const Profile = ({ setIsViewProfile, selectedChat, setRefetchList ,setSelectedChat}: any) => {
+const Profile = ({ setIsViewProfile, selectedChat, setRefetchList, setSelectedChat, setCreateMeeting, setIsSearch }: any) => {
     const [role, setRole] = useState("MEMBER")
     const [options, setOptions] = useState("")
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
-    const {socket}: any = useContext(SocketContext);
+    const { socket }: any = useContext(SocketContext);
 
     const { mutate: leaveGroup, isLoading: isLeaveGroupLoading } = useMutation(async (data: any) => {
         return api.delete(`/chats/leaveGroup?belongsTo=${data?.belongsTo}`)
     }, {
         onSuccess({ data }) {
             socket.emit("GROUP", { event: { type: "LEAVE", message: `${data?.name} left a group` }, messageType: "TEXT", belongsTo: selectedChat?.belongsTo, to: selectedChat?.opponentId, userId: userSelector?.userId });
-            setSelectedChat({opponentId: "", opponentPic: "", opponentName: "", belongsTo: "", type: "" })
+            setSelectedChat({ opponentId: "", opponentPic: "", opponentName: "", belongsTo: "", type: "" })
             toast.success("Group Left sucessfully")
         },
-        onError(err : any) {
+        onError(err: any) {
             toast.error(err?.response?.data?.message)
         }
     })
@@ -53,11 +53,15 @@ const Profile = ({ setIsViewProfile, selectedChat, setRefetchList ,setSelectedCh
 
                 {/* action */}
                 <ul className='p-2 w-full flex items-center justify-evenly m-auto'>
-                    <li className='p-4 flex items-center justify-center flex-col cursor-pointer'>
+                    {/* <li className='p-4 flex items-center justify-center flex-col cursor-pointer'>
                         <CallIco height={25} width={25} color='#7e22ce' />
                         <span className='text-sm pt-2 text-purple-700'>Call</span>
-                    </li>
-                    <li className='p-4 flex items-center justify-center flex-col cursor-pointer'>
+                    </li> */}
+                    <li className='p-4 flex items-center justify-center flex-col cursor-pointer'
+                        onClick={() => {
+                            setCreateMeeting(true)
+                        }}
+                    >
                         <VideoICameraIco height={25} width={25} color='#7e22ce' />
                         <span className='text-sm pt-2 text-purple-700'>Video call</span>
                     </li>
@@ -69,25 +73,37 @@ const Profile = ({ setIsViewProfile, selectedChat, setRefetchList ,setSelectedCh
                         <UserPlusIco height={25} width={25} color='#7e22ce' />
                         <span className='text-sm pt-2 text-purple-700'>Add members</span>
                     </li>}
-                    <li className='p-4 flex items-center justify-center flex-col cursor-pointer'>
+                    <li className='p-4 flex items-center justify-center flex-col cursor-pointer'
+                        onClick={() => {
+                            setIsViewProfile(false)
+                            setIsSearch(true)
+                        }}
+                    >
                         <SearchIco height={25} width={25} color='#7e22ce' />
                         <span className='text-sm pt-2 text-purple-700'>Search</span>
                     </li>
-                    <li className='p-4 flex items-center justify-center flex-col cursor-pointer'>
+                    {/* <li className='p-4 flex items-center justify-center flex-col cursor-pointer'>
                         <SettingsIco height={25} width={25} color='#7e22ce' />
                         <span className='text-sm pt-2 text-purple-700'>Settings</span>
-                    </li>
-                    <li className='p-4 flex items-center justify-center flex-col cursor-pointer'>
+                    </li> */}
+                    {/* <li className='p-4 flex items-center justify-center flex-col cursor-pointer'
+                        onClick={()=>{
+                            deleteGroup({
+                                belongsTo : selectedChat?.belongsTo,
+                                type : selectedChat?.type
+                            })
+                        }}
+                    >
                         <DeleteIco height={25} width={25} color='#7e22ce' />
                         <span className='text-sm pt-2 text-purple-700'>Delete</span>
-                    </li>
+                    </li> */}
                 </ul>
                 <ChatSettings />
                 {selectedChat?.type == "GROUP" && <GroupMembersList selectedChat={selectedChat} role={role} options={options} />}
                 {selectedChat?.type == "GROUP" && <div className='w-full bg-red-50 flex items-center p-2 cursor-pointer'
                     onClick={() => {
                         leaveGroup({
-                            belongsTo : selectedChat?.belongsTo
+                            belongsTo: selectedChat?.belongsTo
                         })
                     }}
                 >

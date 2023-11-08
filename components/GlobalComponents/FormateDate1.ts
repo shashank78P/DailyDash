@@ -30,7 +30,7 @@ export function getTimeWithAMorPM(date: string): string {
     if (hour >= 12 && hour < 24) {
         AM_PM = "PM"
     }
-    return `${hour % 12}:${minute}:${second} ${AM_PM}`
+    return `${String(hour % 12).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')} ${String(AM_PM).padStart(2, '0')}`
 }
 
 export function FormateDate1(date: Date) {
@@ -63,6 +63,11 @@ export function ExtractDateParamenters(date: Date): ExtractDateParamentersDto {
     let givenMonth = date.getMonth() + 1
     let givenYear = date.getFullYear()
     return { givenDate, givenMonth, givenYear, givenHours, givenMinute, givenSecond }
+}
+
+export const getTime = (createdAt: string) => {
+    let date = new Date(createdAt)
+    return `${String(date?.getHours()).padStart(2, '0')}:${String(date?.getMinutes()).padStart(2, '0')}`
 }
 
 // yyyy-mm-ddThr:min
@@ -144,14 +149,14 @@ export function isGivenDateTimeIsInLimit(date: Date, meetingLength: { min?: numb
 
     if (givenDate <= currentDate) {
         if (meetingLength?.min) {
-            givenDate.setMinutes(Number(givenDate.getMinutes()) + 45)
+            String(givenDate.setMinutes(Number(givenDate.getMinutes()) + 45)).padStart(2, '0')
         }
         else if (meetingLength?.hr) {
-            givenDate.setHours(givenDate.getHours() + meetingLength?.hr)
+            String(givenDate.setHours(givenDate.getHours() + meetingLength?.hr)).padStart(2, '0')
         }
 
         else if (meetingLength?.day) {
-            givenDate.setDate(givenDate.getDate() + meetingLength?.day)
+            String(givenDate.setDate(givenDate.getDate() + meetingLength?.day)).padStart(2, '0')
         }
         else {
             return false

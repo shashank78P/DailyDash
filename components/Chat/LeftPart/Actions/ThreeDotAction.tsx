@@ -44,12 +44,12 @@ const ThreeDotAction = ({ setOpen, open, setThreeDotActionResult }: ThreeDotActi
                         <ListItemText primary={"New Group"} style={{ "marginLeft": "10px" }} />
                     </ListItemButton>
                 </ListItem>
-                <ListItem disableGutters key={"Settings"}>
+                {/* <ListItem disableGutters key={"Settings"}>
                     <ListItemButton onClick={() => { console.log("dfsf") }}>
                         <SettingsIco width={20} height={20} color={'black'} />
                         <ListItemText primary={"Settings"} style={{ "marginLeft": "10px" }} />
                     </ListItemButton>
-                </ListItem>
+                </ListItem> */}
             </List>
         </Dialog>
     )

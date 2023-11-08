@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 import { Oval } from "react-loader-spinner"
 import FileIcons from '@/components/GlobalComponents/files/fileIcons'
 import CrossIco from '@/components/assets/CrossIco'
+import { getTime } from '@/components/GlobalComponents/FormateDate1'
 const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, setRefetchList, setIsSearch, isSearch }: ChatMessageDto) => {
     const [limit, setLimit] = useState(50)
     const [skip, setSkip] = useState(0)
@@ -24,6 +25,7 @@ const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, 
         {
             onSuccess() {
                 refetchChatsNotification()
+                setRefetchList((prev: boolean) => !prev)
             },
             refetchOnMount: true
         }
@@ -53,21 +55,36 @@ const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, 
 
     useEffect(() => {
 
-        if (previousBelongsTo) {
-            socket?.off(previousBelongsTo);
-        }
+        if (selectedChat?.belongsTo && socket) {
+            if (previousBelongsTo) {
+                socket?.off(previousBelongsTo);
+            }
 
-        if (selectedChat?.belongsTo) {
             socket?.on(selectedChat?.belongsTo, (msg: any) => {
-                setSocketMsg((prevMsg) => [msg, ...prevMsg]);
+                console.log("setting socket message")
+                setSocketMsg((prevMsg) => {
+                    if(prevMsg?.[0]?._id !== msg?._id){
+                        return [msg, ...prevMsg]
+                    }
+                    else{
+                        return prevMsg
+                    }
+                }
+                );
                 reSetReadMesssages()
             });
+            refetchChatsNotification()
+
+            setPreviousBelongsTo(selectedChat?.belongsTo);
+
+            return () => {
+                console.log("setting socket message off")
+                socket?.off(selectedChat?.belongsTo, (msg: any) => {
+                });
+            }
         }
-        refetchChatsNotification()
 
-        setPreviousBelongsTo(selectedChat?.belongsTo);
-
-    }, [selectedChat?.belongsTo])
+    }, [selectedChat?.belongsTo, socket])
     useEffect(() => {
         if (previousBelongsTo != null && previousBelongsTo != selectedChat?.belongsTo) {
             setMessages([]);
@@ -75,7 +92,7 @@ const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, 
             setSocketMsg([])
             refetchChat()
         }
-    }, [selectedChat?.belongsTo])
+    }, [selectedChat?.belongsTo, socket])
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
 
     function getPreviousChat() {
@@ -84,11 +101,7 @@ const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, 
         }
     }
 
-
-    const getTime = (createdAt: string) => {
-        let date = new Date(createdAt)
-        return `${date?.getHours()}:${date?.getMinutes()}`
-    }
+    console.log(socketMsg)
 
     const getFileMessage = (file: any) => {
         file = file?.[0]
@@ -116,7 +129,7 @@ const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, 
                                         {userSelector?.userId !== chat?.from && <li className='text-xs my-1 text-slate-600 '>~{chat?.sender}</li>}
                                         <li className='pl-2 w-full'>
                                             {
-                                                chat.messageType === "TEXT" ?
+                                                chat?.messageType === "TEXT" ?
                                                     <div id={j.toString()} className='w-full break-words'>{chat?.message}</div>
                                                     :
                                                     getFileMessage(chat?.file)

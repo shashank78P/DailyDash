@@ -11,15 +11,31 @@ import { FormateDate1 } from '@/components/GlobalComponents/FormateDate1'
 import { SocketContext } from '@/components/context/SocketContext'
 
 
-const ChatUserList = ({ selectedChat, setSelectedChat, refetchList,isViewProfile ,chatLeftSearch}: ChatUserListDto) => {
+const ChatUserList = ({ selectedChat, setSelectedChat, refetchList, isViewProfile, chatLeftSearch }: ChatUserListDto) => {
 
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const { socket }: any = useContext(SocketContext);
-    const { data, error, isLoading, refetch: refetchUSerList } = useQuery(['userList',chatLeftSearch, refetchList , isViewProfile], () => {
+    const { data, error, isLoading, refetch: refetchUSerList } = useQuery(['userList', chatLeftSearch, refetchList, isViewProfile], () => {
         return api.get(`/chats/getAllInitiatedChatUserList?search=${chatLeftSearch}`)
     },
         {
-            refetchOnMount: true
+            refetchOnMount: true,
+            onSuccess({ data }) {
+                if (Array.isArray(data)) {
+                    data?.map((ele, i) => {
+                        if (selectedChat?.belongsTo === ele?.belongsTo) {
+                            setSelectedChat({
+                                opponentId: ele?.opponentId,
+                                opponentPic: ele?.opponentPic,
+                                opponentName: ele?.opponentName,
+                                belongsTo: ele?.belongsTo,
+                                type: "INDIVIDUAL"
+                            })
+                        }
+                    })
+                }
+            },
+            keepPreviousData : true
         });
 
     socket?.on(`${userSelector?.userId}ChatNotification`, (msg: any) => {
@@ -54,13 +70,13 @@ const ChatUserList = ({ selectedChat, setSelectedChat, refetchList,isViewProfile
                                 <ul
                                     key={i}
                                     onClick={() => {
-                                        localStorage.setItem("selectedChat", JSON.stringify({
-                                            opponentId: ele?.opponentId,
-                                            opponentPic: ele?.opponentPic,
-                                            opponentName: ele?.opponentName,
-                                            belongsTo: ele?.belongsTo,
-                                            type: "INDIVIDUAL"
-                                        }))
+                                        // localStorage.setItem("selectedChat", JSON.stringify({
+                                        //     opponentId: ele?.opponentId,
+                                        //     opponentPic: ele?.opponentPic,
+                                        //     opponentName: ele?.opponentName,
+                                        //     belongsTo: ele?.belongsTo,
+                                        //     type: "INDIVIDUAL"
+                                        // }))
                                         setSelectedChat({
                                             opponentId: ele?.opponentId,
                                             opponentPic: ele?.opponentPic,
@@ -81,7 +97,7 @@ const ChatUserList = ({ selectedChat, setSelectedChat, refetchList,isViewProfile
                                                 <span className='text-xs font-light text-slate-600'>{FormateDate1(ele?.messageCreatedAt)}</span>
                                             </li>
                                             <li className='flex justify-between items-start truncate'>
-                                                <span className='truncate w-48 text-sm font-normal text-slate-600'>{ele?.messageSentBy == userSelector?.userId && 'you: '}{ele?.message || ele?.eventMessage}</span>
+                                                <span className='truncate w-48 text-sm font-normal text-slate-600'>{ele?.messageSentBy == userSelector?.userId && 'you: '}{ele?.message || ele?.eventMessage || ele?.fileId && "File uploaded" }</span>
                                                 {ele?.unReadMessageCount !== 0 && <div className='text-base font-semibold text-white px-2 rounded-full bg-purple-500'>{ele?.unReadMessageCount > 100 ? "100+" : ele?.unReadMessageCount}</div>}
                                             </li>
                                         </ul>

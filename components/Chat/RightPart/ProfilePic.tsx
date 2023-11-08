@@ -31,7 +31,7 @@ const ProfilePic = ({ setRole, role, selectedChat ,setRefetchList }: any) => {
         setAbout("")
         setName("")
     },[selectedChat?.belongsTo])
-    const { data, isLoading, refetch } = useQuery(["profile", selectedChat?.belongsTo], () => {
+    const { data, isLoading, refetch } = useQuery(["profile", selectedChat?.belongsTo,selectedChat?.type], () => {
         return api.get(`chats/getProfileDetails?belongsTo=${selectedChat?.belongsTo}&type=${selectedChat?.type}`)
     }
         , {
@@ -47,6 +47,7 @@ const ProfilePic = ({ setRole, role, selectedChat ,setRefetchList }: any) => {
             onError(err) {
             },
             refetchOnMount: true,
+            enabled : Boolean(selectedChat?.belongsTo) && Boolean(selectedChat?.type)
         });
 
     const { mutate: postForGroup } = useMutation((data: any) => {

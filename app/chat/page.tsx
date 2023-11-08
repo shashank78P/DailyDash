@@ -11,6 +11,7 @@ import QueryObject from '@/components/Chat/QueryObject'
 import ChatActions from '@/components/Chat/RightPart/ChatActions'
 import ChatMessage from '@/components/Chat/RightPart/ChatMessage'
 import ChatTopNav from '@/components/Chat/RightPart/ChatTopNav'
+import CreateMeeting from '@/components/Chat/RightPart/CreateMeeting'
 import Profile from '@/components/Chat/RightPart/profile'
 import { selecteChatDto } from '@/components/Chat/type'
 import { SocketContext } from '@/components/context/SocketContext'
@@ -34,6 +35,7 @@ const Page = () => {
     const [ThreeDotActionResult, setThreeDotActionResult] = useState<String>("");
     const [isViewProfile, setIsViewProfile] = useState<Boolean>(false)
     const [refetchList, setRefetchList] = useState<Boolean>(false)
+    const [createMeeting, setCreateMeeting] = useState<boolean>(false);
 
     const [unReadMsg, setUnReadMsg] = useState({
         chat: 0,
@@ -85,7 +87,8 @@ const Page = () => {
             refetchList,
             setRefetchList,
             selectedChat,
-            setSelectedChat
+            setSelectedChat,
+            isSearch, setIsSearch
         }
     )
 
@@ -117,20 +120,23 @@ const Page = () => {
                             />
                         </div>
                         <div className='h-[50%] overflow-y-scroll' style={{ "height": "calc( 100% - 120px )" }}>
-                            {selectedTab == "chat" && <ChatUserList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} isViewProfile={isViewProfile} chatLeftSearch={chatLeftSearch}/>}
-                            {selectedTab == "group_chat" && <ChatGroupList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} refetchUnReadMessages={refetchUnReadMessages} isViewProfile={isViewProfile} chatLeftSearch={chatLeftSearch}/>}
+                            {selectedTab == "chat" && <ChatUserList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} isViewProfile={isViewProfile} chatLeftSearch={chatLeftSearch} />}
+                            {selectedTab == "group_chat" && <ChatGroupList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} refetchUnReadMessages={refetchUnReadMessages} isViewProfile={isViewProfile} chatLeftSearch={chatLeftSearch} />}
                             {/* {selectedTab == "call" && <CallList />} */}
                         </div>
                     </div>
                     <div className={`h-[100%] flex chatActions w-full min-w-[400px] border flex-col justify-between items-start 
                     ${selectedChat?.opponentId == "" && " backgroundeImage "}
                 `}>
+                        {createMeeting && <CreateMeeting createMeeting={createMeeting} opponentId={selectedChat?.belongsTo} setCreateMeeting={setCreateMeeting} selectedChat={selectedChat} />}
                         {selectedChat.opponentId != "" &&
                             (!isViewProfile) && <>
                                 <ChatTopNav
                                     selectedChat={selectedChat}
                                     setIsViewProfile={setIsViewProfile}
                                     setIsSearch={setIsSearch}
+                                    createMeeting={createMeeting}
+                                    setCreateMeeting={setCreateMeeting}
                                 />
                                 <div className='grow w-full max-h-full overflow-y-scroll'>
                                     <ChatMessage
@@ -150,12 +156,14 @@ const Page = () => {
                             </>
                         }
                         {
-                            selectedChat.opponentId != "" && isViewProfile && <>
+                            selectedChat.opponentId !="" && isViewProfile && <>
                                 <Profile
                                     setIsViewProfile={setIsViewProfile}
                                     selectedChat={selectedChat}
                                     setSelectedChat={setSelectedChat}
                                     setRefetchList={setRefetchList}
+                                    setCreateMeeting={setCreateMeeting}
+                                    setIsSearch={setIsSearch}
                                 />
                             </>
                         }

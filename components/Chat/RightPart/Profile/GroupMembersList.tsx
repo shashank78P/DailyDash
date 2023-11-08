@@ -96,9 +96,9 @@ const GroupMembersList = ({ selectedChat, role, options }: GroupMembersListDto) 
             <InfiniteScroll
                 dataLength={data?.data?.total || 10}
                 next={() => {
-                    // setSkip(prev => prev + 50)
+                    setSkip(prev => prev + 50)
                 }}
-                hasMore={true}
+                hasMore={skip + 50 < data?.data?.total}
                 loader={<div className='m-2'><Oval height={20} width={20} color='#7e22ce' /></div>}
                 scrollableTarget="GroupMembersList"
             // inverse={true}

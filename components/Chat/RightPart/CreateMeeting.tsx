@@ -2,6 +2,7 @@ import CreateMeetingForm from '@/components/Meet/Meet/CreateMeetingForm'
 import MeetContext from '@/components/Meet/Meet/State/MeetContext'
 import { MeetingContext } from '@/components/Meet/types'
 import CrossIco from '@/components/assets/CrossIco'
+import { SocketContext } from '@/components/context/SocketContext'
 import api from '@/components/lib/api'
 import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { useRouter } from 'next/router'
@@ -9,6 +10,7 @@ import { format } from 'path'
 import React, { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
 import { TagsInput } from 'react-tag-input-component'
 import { toast } from 'react-toastify'
 
@@ -21,15 +23,18 @@ type createMeetingFormDto = {
     meetingDate: Date | string
 }
 
-const CreateMeeting = ({ opponentId, createMeeting, setCreateMeeting }: { opponentId: string, setCreateMeeting: Function, createMeeting: boolean }) => {
+const CreateMeeting = ({ opponentId, createMeeting, setCreateMeeting, selectedChat }: { selectedChat: any, opponentId: string, setCreateMeeting: Function, createMeeting: boolean }) => {
     const [selectedEmail, setSelectedEmail] = useState<string[]>([])
+    const userSelector = useSelector((state: any) => state?.userSliceReducer);
+    const { socket }: any = useContext(SocketContext);
     const [whoCanJoin, setWhoCanJoin] = useState("MANUALLY_ADDED")
-    const { } = useQuery(["opponentEmail",opponentId], () => {
+    console.log(selectedChat)
+    const { } = useQuery(["opponentEmail", opponentId], () => {
         return api.get(`chats/getAllopponentEmail?id=${opponentId}`)
     },
         {
-            onSuccess({ data } : {data : Array<string>}) {
-                if(Array.isArray(data)){
+            onSuccess({ data }: { data: Array<string> }) {
+                if (Array.isArray(data)) {
                     setValue("participantsEmail", data)
                     setSelectedEmail(data)
                     setValue("whoCanJoin", "MANUALLY_ADDED")
@@ -48,6 +53,13 @@ const CreateMeeting = ({ opponentId, createMeeting, setCreateMeeting }: { oppone
                 toast.success("Created SucessFully")
                 // router?.push(`/meet/room?id=${data?.[0]?._id}`)
                 handelClose()
+                const message = `${userSelector?.firstName ?? " "} ${userSelector?.lastName ?? " "} created meeting link`
+                if (selectedChat?.type == "INDIVIDUAL" && data?.[0]?._id) {
+                    socket.emit("INDIVIDUAL", { event: { type: "CREATED", message: message }, messageType: "MEET", meetId: data?.[0]?._id, belongsTo: selectedChat?.belongsTo, to: selectedChat?.opponentId, userId: userSelector?.userId });
+                }
+                else if (selectedChat?.type == "GROUP" && data?.[0]?._id) {
+                    socket.emit("GROUP", { event: { type: "CREATED", message: message }, messageType: "MEET", meetId: data?.[0]?._id, belongsTo: selectedChat?.belongsTo, to: selectedChat?.belongsTo, userId: userSelector?.userId });
+                }
             },
             onError(err: any) {
                 toast.error(err?.response?.data?.message)
@@ -160,7 +172,7 @@ const CreateMeeting = ({ opponentId, createMeeting, setCreateMeeting }: { oppone
                             )}
                         </div>
                         {whoCanJoin === "MANUALLY_ADDED" && <div
-                            className='flex flex-col mb-4'
+                            className='flex flex-col mb-4 text-sm'
                         >
                             <label className='text-lg mb-1 '>Add users email:</label>
                             <TagsInput

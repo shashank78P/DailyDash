@@ -30,16 +30,6 @@ const TopBarAction = () => {
                     title: "",
                     whoCanJoin: ""
                 }}
-                    props={{
-                        isMeetingRoute: true,
-                        callBackTOGetMeetingId: () => { },
-                        createMeeting ,
-                        handelClearSelectedData,
-                        setCreateMeeting,
-                        selectedId : selectedId,
-                        isEdit,
-                        setIsEdit
-                    }}
                 />
             }
             <ul className='w-full flex justify-between items-center bg-slate-50 py-2 mb-2'>
