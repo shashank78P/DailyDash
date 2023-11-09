@@ -35,8 +35,8 @@ const ScheduledMeeting = () => {
                 show && <InnerPage />
             }
             <PaginationTopSection setStatus={setStatus} status={status} setRows={setRows} setSearch={setSearch} search={search} rows={rows} isStatus={true} statusList={["All" , "Not Started", "On Going", "Completed"]} statuslabel='Status'/>
-            <div className='w-[100% - 70px] overflow-x-scroll'>
-                <table className='w-full overflow-x-scroll my-2'>
+            <div className='w-[100% - 70px] h-full '>
+                <table className='w-full h-auto overflow-x-scroll my-2'>
                     <thead className='border border-transparent border-b-slate-50 border-b-1 mb-2'>
                         <tr className='bg-slate-50'>
                             <th className='p-2 w-auto min-w-min max-w-[100px] font-medium text-slate-700 text-center border border-x-0 border-t-0 border-b-1 truncate'>SI No.</th>
@@ -52,16 +52,16 @@ const ScheduledMeeting = () => {
                             <th className='p-2 w-auto min-w-min max-w-[100px] font-medium text-slate-700 text-center border border-x-0 border-t-0 border-b-1 truncate'>Open</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className=''>
                         {
                             data?.data?.data?.map((ele: any, i: number) => {
                                 return (<tr className={` ${(i % 2 !== 0) && "bg-slate-50"} `} key={i}>
                                     <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500'>{i + 1}</td>
                                     <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500'>{ele?.title}</td>
                                     <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500'>
-                                        <span className='w-full  flex justify-center items-center'>
+                                        <span className='w-auto min-w-min max-w-[100px] flex justify-center items-center'>
                                             <span><UserPic userId={ele?.createdBy} width={30} height={30} /></span>
-                                            <span className=' ml-2 text-slate-500'>{ele?.createrName}</span>
+                                            <span className=' ml-2 text-slate-500 truncate'>{ele?.createrName}</span>
                                         </span>
                                     </td>
                                     <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500'>

@@ -1,3 +1,4 @@
+import QueryObject from "../QueryObject";
 import BookMarkContext from "./BookMarkContext";
 import React, { ReactNode, useState } from 'react'
 interface Props {
@@ -25,6 +26,24 @@ const BookMarkState = ({ children }: Props) => {
         setIsEdit(true)
         setSelected(data)
     }
+
+    QueryObject({
+        showInnerPage, setShowInnerPage,
+        isEdit, setIsEdit,
+        isCardView, setIsCardView,
+        createBookMark, setCreateBookMark,
+        selectedId, setSelectedId,
+        search, setSearch,
+        rows, setRows,
+        page, setPage,
+        status, setStatus,
+        openFilter, setOpenFilter,
+        selected, setSelected,
+        sortBy, setSortBy,
+        sortOrder, setSortOrder,
+        fromDate, setFromDate,
+        toDate, setToDate,
+    })
     return (
         <BookMarkContext.Provider value={{
             showInnerPage, setShowInnerPage,
@@ -38,12 +57,12 @@ const BookMarkState = ({ children }: Props) => {
             page, setPage,
             status, setStatus,
             openFilter, setOpenFilter,
-            handelSelectAndEdit,
             selected, setSelected,
             sortBy, setSortBy,
             sortOrder, setSortOrder,
             fromDate, setFromDate,
             toDate, setToDate,
+            handelSelectAndEdit,
         }}>
             {children}
         </BookMarkContext.Provider>

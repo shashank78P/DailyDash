@@ -8,7 +8,7 @@ import MeetContext from './State/MeetContext'
 import Slider from '@/components/GlobalComponents/Slider'
 
 const InnerPage = () => {
-    const { selected, setSelected,handelClearSelectedData, isEdit, setIsEdit, show, setShow, createMeeting, setCreateMeeting, selectedId, setSelectedId } = useContext<MeetingContext>(MeetContext)
+    const {  setSelected,handelClearSelectedData, isEdit, setIsEdit, show, setShow, createMeeting, setCreateMeeting, selectedId, setSelectedId } = useContext<MeetingContext>(MeetContext)
 
     const { data: participantsDetails, isLoading: isParticipantsDetailsLoading } = useQuery(["addedparticipantsDetails", selectedId], () => {
         return api.get(`/meet/get-added-participants?meetingId=${selectedId}`)
@@ -17,7 +17,21 @@ const InnerPage = () => {
             keepPreviousData: true,
             refetchOnWindowFocus: false,
             refetchOnMount: true,
-            enabled: show,
+            enabled: (show && Boolean(selectedId)),
+            onSuccess: (data) => {
+                console.log(data)
+            }
+        }
+    )
+    
+    const { data: selected, isLoading } = useQuery(["get-individual-meeting-details", selectedId], () => {
+        return api.get(`/meet/get-individual-meeting-details?meetingId=${selectedId}`)
+    },
+        {
+            keepPreviousData: true,
+            refetchOnWindowFocus: false,
+            refetchOnMount: true,
+            enabled: (show && Boolean(selectedId)),
             onSuccess: (data) => {
                 console.log(data)
             }
@@ -38,63 +52,63 @@ const InnerPage = () => {
             return participant?.email
         })
         const participantsEmail = [...pEmail, ...InvitedEmail]
-        setSelected({ ...selected, participantsEmail })
+        setSelected({ ...selected?.data, participantsEmail })
         setIsEdit(true)
     }
 
     return (
         <>
-            <Slider show={show} handelEdit={handelEdit} title={selected?.title} handelClose={handelClose} isShowEdit={!["Completed", "On Going"].includes(selected?.meetingStatus)} isShowPic={false} >
+            <Slider show={show} handelEdit={handelEdit} title={selected?.data?.title} handelClose={handelClose} isShowEdit={!["Completed", "On Going"].includes(selected?.data?.meetingStatus)} isShowPic={false} >
                 {/* rows */}
                 <div className='my-2 items-center'>
                     <div className='flex items-center'>
                         <div className='text-base w-1/3 font-medium mr-2 text-slate-900 '>Title: </div>
-                        <div className='text-sm w-full text-slate-700 font-light'>{selected?.title}</div>
+                        <div className='text-sm w-full text-slate-700 font-light'>{selected?.data?.title}</div>
                     </div>
                     <div className='my-3 items-center flex'>
                         <div className='text-base w-1/3 font-medium mr-2 text-slate-900'>Created By: </div>
                         <div className='text-sm w-full text-slate-700 font-light'>
                             <span className=' flex justify-start items-center'>
-                                <span><UserPic userId={selected?.createdBy} width={30} height={30} /></span>
-                                <span className=' ml-2'>{selected?.createrName}</span>
+                                <span><UserPic userId={selected?.data?.createdBy} width={30} height={30} /></span>
+                                <span className=' ml-2'>{selected?.data?.createrName}</span>
                             </span>
                         </div>
                     </div>
                     <div className='my-3 justify-start items-center flex'>
                         <div className={`text-base w-1/3 font-medium mr-2 text-slate-900 `}>Status: </div>
                         <div className={`text-sm w-full text-slate-700 font-light`}>{
-                            <span className={`${meetingStatusStyle?.[selected?.meetingStatus]}`}>
-                                {selected?.meetingStatus}
+                            <span className={`${meetingStatusStyle?.[selected?.data?.meetingStatus]}`}>
+                                {selected?.data?.meetingStatus}
                             </span>
                         }</div>
                     </div>
                     <div className='my-2 items-center flex'>
                         <div className='text-base w-1/3 font-medium mr-2 text-slate-900'>Meeting Date: </div>
-                        <div className='text-sm w-full text-slate-700 font-light'>{selected?.meetingDate?.slice(0, 10)}</div>
+                        <div className='text-sm w-full text-slate-700 font-light'>{selected?.data?.meetingDate?.slice(0, 10)}</div>
                     </div>
                     <div className='my-2 items-center flex'>
                         <div className='text-base w-1/3 font-medium mr-2 text-slate-900'>Meeting Time: </div>
-                        <div className='text-sm w-full text-slate-700 font-light'>{getTimeWithAMorPM(selected?.meetingDate)}</div>
+                        <div className='text-sm w-full text-slate-700 font-light'>{getTimeWithAMorPM(selected?.data?.meetingDate)}</div>
                     </div>
                     <div className='my-2 items-center flex'>
                         <div className='text-base w-1/3 font-medium mr-2 text-slate-900'>Meeting Length: </div>
-                        <div className='text-sm w-full text-slate-700 font-light'>{selected?.meetingLength} {selected?.meetingLengthPararmeter}</div>
+                        <div className='text-sm w-full text-slate-700 font-light'>{selected?.data?.meetingLength} {selected?.data?.meetingLengthPararmeter}</div>
                     </div>
                     <div className='my-2 items-center flex'>
                         <div className='text-base w-1/3 font-medium mr-2 text-slate-900'>Who can join: </div>
-                        <div className='text-sm w-full text-slate-700 font-light'>{selected?.whoCanJoin?.replaceAll("_", " ")}</div>
+                        <div className='text-sm w-full text-slate-700 font-light'>{selected?.data?.whoCanJoin?.replaceAll("_", " ")}</div>
                     </div>
                     <div className='my-2 items-center flex'>
                         <div className='text-base w-1/3 font-medium mr-2 text-slate-900'>Participants count: </div>
-                        <div className='text-sm w-full text-slate-700 font-light'>{selected?.participantsCount}</div>
+                        <div className='text-sm w-full text-slate-700 font-light'>{selected?.data?.participantsCount}</div>
                     </div>
                     <div className='my-2 items-center flex'>
                         <div className='text-base w-1/3 font-medium mr-2 text-slate-900'>Link: </div>
-                        <div className='text-sm w-full text-slate-700 font-light'>{`${process.env.NEXT_FRONT_END_URL}/meet/room?id=${selected?.meetingId}`}</div>
+                        <div className='text-sm w-full text-slate-700 font-light'>{`${process.env.NEXT_FRONT_END_URL}/meet/room?id=${selected?.data?.meetingId}`}</div>
                     </div>
                     <div className='my-2 items-center flex'>
                         <div className='text-base w-1/3 font-medium mr-2 text-slate-900'>Description: </div>
-                        <div className='text-sm w-full text-slate-700 font-light'>{selected?.description}</div>
+                        <div className='text-sm w-full text-slate-700 font-light'>{selected?.data?.description}</div>
                     </div>
                 </div>
                 <div className=' my-2 '>
