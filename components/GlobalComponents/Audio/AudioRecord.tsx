@@ -26,16 +26,15 @@ type AudioRecordDto = {
 }
 
 const AudioRecord = ({ isOpen, setIsOpen, sendFile }: AudioRecordDto) => {
-    const [isPlay, setIsPlay] = useState(false);
-    const [isStarted, setIsStarted] = useState(false);
     const videoRef = useRef<HTMLVideoElement>();
-    const [myStream, startRecording,mediaUrl ,setMediaUrl, stopRecording , status , pauseRecording , resumeRecording] = UseMediaController();
+    const [myStream, startRecording, mediaUrl, setMediaUrl, stopRecording, status, pauseRecording, resumeRecording, clearBlobUrl, MuteAudio, unMuteAudio, isAudioMuted, setIsAudioMuted,isPlay, setIsPlay
+        ,isStarted, setIsStarted] = UseMediaController();
 
-    useEffect(()=>{
-        if(myStream && videoRef.current){
+    useEffect(() => {
+        if (myStream && videoRef.current) {
             videoRef.current.srcObject = myStream
         }
-    },[myStream])
+    }, [myStream])
 
     const { mutate: postAudio, isLoading } = useMutation((data: any) => {
         return api.post("/file-system/upload-Audio-base64-data", data)
@@ -56,7 +55,7 @@ const AudioRecord = ({ isOpen, setIsOpen, sendFile }: AudioRecordDto) => {
 
     async function postAudioFromMediaUrl() {
         await Promise.all(
-            mediaUrl?.map(async (url : any, i : number) => {
+            mediaUrl?.map(async (url: any, i: number) => {
                 const response = await fetch(url);
                 const blob = await response.blob();
                 let reader = new FileReader()
@@ -86,39 +85,11 @@ const AudioRecord = ({ isOpen, setIsOpen, sendFile }: AudioRecordDto) => {
                             </span>
                             <DialogTitle style={{ fontWeight: "700" }}>Audio Recorder</DialogTitle>
                             <DialogContent>
-                                <h1>{status}</h1>
-                                <button
-                                onClick={()=>{
-                                    startRecording(false , true)
-                                }}
-                                >Start</button>
-                                <br />
-                                <button
-                                onClick={()=>{
-                                    stopRecording(false , true)
-                                }}
-                                >Stop</button>
-                                <br />
-                                <button
-                                onClick={()=>{
-                                    pauseRecording(false , true)
-                                }}
-                                >Pause</button>
-                                <br />
-                                <button
-                                onClick={()=>{
-                                    resumeRecording()
-                                }}
-                                >Resume</button>
-                                <br />
-                                
-
-                                <video ref={videoRef} width={200} height={200} autoPlay/>
-                                {/* {
-                                    ["recording", "stopping", "stopped", "paused"].includes(status) &&
+                                {
+                                    ["started", "stopping", "stopped", "paused"].includes(status) &&
                                     <div className='my-2 text-purple-700 text-sm text-center flex items-center justify-center'>
 
-                                        {status === "recording" && <div className='w-4 h-4  rounded-full mr-2 p-[1px] border-2 border-red-500 flex items-center justify-center'>
+                                        {status === "started" && <div className='w-4 h-4  rounded-full mr-2 p-[1px] border-2 border-red-500 flex items-center justify-center'>
                                             <div className='bg-red-500 w-2 h-2 rounded-full'>
                                             </div>
                                         </div>}
@@ -131,8 +102,8 @@ const AudioRecord = ({ isOpen, setIsOpen, sendFile }: AudioRecordDto) => {
                                             <span className='m-2 cursor-pointer border bg-purple-700 p-2 rounded-full'
                                                 onClick={() => {
                                                     if (!isStarted) {
-                                                        setIsStarted(true)
-                                                        startRecording()
+                                                        // setIsStarted(true)
+                                                        startRecording(false, true)
                                                     } else {
                                                         resumeRecording()
                                                     }
@@ -147,7 +118,7 @@ const AudioRecord = ({ isOpen, setIsOpen, sendFile }: AudioRecordDto) => {
                                             <span className='m-2 cursor-pointer border bg-purple-700 p-2 rounded-full'
                                                 onClick={() => {
                                                     pauseRecording()
-                                                    setIsPlay(false)
+                                                    // setIsPlay(false)
                                                 }}
                                             >
                                                 <PauseIco width={20} height={20} color='white' />
@@ -157,10 +128,7 @@ const AudioRecord = ({ isOpen, setIsOpen, sendFile }: AudioRecordDto) => {
                                         <div className=' flex flex-col items-center justify-center'>
                                             <span className='m-2 cursor-pointer border bg-purple-700 p-2 rounded-full'
                                                 onClick={async () => {
-                                                    setIsStarted(false)
-                                                    setIsPlay(false)
                                                     stopRecording()
-                                                    setMediaUrl([...mediaUrl, mediaBlobUrl])
                                                 }}
                                             >
                                                 <SaveIco width={20} height={20} color='white' />
@@ -170,10 +138,7 @@ const AudioRecord = ({ isOpen, setIsOpen, sendFile }: AudioRecordDto) => {
                                         <div className=' flex flex-col items-center justify-center'>
                                             <span className='m-2 cursor-pointer border bg-purple-700 p-2 rounded-full'
                                                 onClick={() => {
-                                                    setIsStarted(false)
-                                                    setIsPlay(false)
                                                     clearBlobUrl()
-                                                    setMediaUrl([])
                                                 }}
                                             >
                                                 <ResetIco width={20} height={20} color='white' />
@@ -203,7 +168,7 @@ const AudioRecord = ({ isOpen, setIsOpen, sendFile }: AudioRecordDto) => {
                                             </div>
                                         )
                                     })
-                                } */}
+                                }
                             </DialogContent>
                             <div className='w-full flex mr-2 items-center justify-end'>
                                 {!isLoading ?
@@ -211,7 +176,7 @@ const AudioRecord = ({ isOpen, setIsOpen, sendFile }: AudioRecordDto) => {
                                         onClick={async () => {
                                             setIsStarted(false)
                                             setIsPlay(false)
-
+                                            postAudioFromMediaUrl()
                                         }}
                                     >
                                         <Send width={20} height={20} color='white' />

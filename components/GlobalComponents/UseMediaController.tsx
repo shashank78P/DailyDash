@@ -8,8 +8,12 @@ import { toast } from 'react-toastify';
 const UseMediaController = () => {
     const [myStream, setMyStream] = useState<MediaStream>();
     const [mediaUrl, setMediaUrl] = useState<any>([]);
+    const [isPlay, setIsPlay] = useState(false);
+    const [isStarted, setIsStarted] = useState(false);
     const [Navigator, setNavigator] = useState<any>();
     const [status, setStatus] = useState<String>("stopped");
+    const [isAudioMuted, setIsAudioMuted] = useState<boolean>(false);
+    const [mediaRecorder, setMediaRecorder] = useState<any>();
 
     useEffect(() => {
         if (typeof window !== 'undefined' && window?.navigator) {
@@ -20,133 +24,164 @@ const UseMediaController = () => {
 
     const stopRecording = async () => {
         try {
+            console.log("stopping")
             if (!myStream) return;
-
             const tracks = myStream?.getTracks()
-            // const stream = myStream.Readable()
-            // const blob = await streamToBlob(myStream)
-            // console.log(blob)
-            // setMediaUrl(blob)
-
-            setStatus("stopped")
             tracks?.map((track, i) => {
                 track.stop()
             })
         } catch (err: any) {
             console.log(err)
-            toast.error(err)
+            toast.error(err?.message)
         }
     }
 
-    const pauseRecording = useCallback((isAudioOff: boolean, isVideoOff: boolean) => {
+    const pauseRecording = () => {
         try {
-            setStatus("paused")
-            if (isAudioOff) {
-                const tracks = myStream?.getAudioTracks()
-                tracks?.map((track, i) => {
-                    track.enabled = false
-                })
+            console.log("pause")
+            if (mediaRecorder) {
+                setStatus("paused")
+                mediaRecorder?.pause()
             }
-            if (isVideoOff) {
-                const tracks = myStream?.getAudioTracks()
-                tracks?.map((track, i) => {
-                    track.enabled = false
-                })
-            }
-
+            setIsPlay(false)
         } catch (err: any) {
             toast.error(err?.message)
         }
-    }, [myStream])
+    }
 
-    const resumeRecording = useCallback((isAudioOff: boolean, isVideoOff: boolean) => {
+    const MuteAudio = () => {
         try {
-            setStatus("resumed")
-            if (isAudioOff) {
-                const tracks = myStream?.getAudioTracks()
-                tracks?.map((track, i) => {
-                    track.enabled = true
-                })
-            }
-            if (isVideoOff) {
-                const tracks = myStream?.getAudioTracks()
-                tracks?.map((track, i) => {
-                    track.enabled = true
-                })
-            }
-        } catch (err: any) {
-            toast.error(err?.message)
-        }
-    }, [myStream])
-
-    const handelCreateBlobUrl = useCallback((isVideoOn: boolean, isAudioOn: boolean, chunk: any[]) => {
-        if (status == "stopped") {
-            const blob = new Blob(chunk, {
-                type: `${isAudioOn && "audio"}${isVideoOn && "video"}/webm;codecs=vp9`,
+            console.log("mute audio")
+            if (!myStream) return;
+            const tracks = myStream?.getTracks()
+            tracks?.map((track: MediaStreamTrack, i) => {
+                if (track?.kind === "audio") {
+                    track.enabled = false;
+                }
             })
-
-            chunk = []
-            const blobUrl = URL.createObjectURL(blob)
-            console.log(blobUrl)
-            setMediaUrl((prev: any[]) => [...prev, blobUrl])
+            setIsAudioMuted(true)
+        } catch (err: any) {
+            console.log(err)
+            toast.error(err?.message)
         }
-        return chunk;
-
-    }, [status])
-
-    const handelOnDataAvailable = useCallback((event: any, chunk: any[]) => {
-        if (event.data.size > 0) {
-            console.log(status)
-            // if (status != "started") {
-
-            // }
-            if (status == "started" || status == "resumed") {
-                chunk.push(event.data)
-            }
-        }
-    }, [status])
-
-    const startRecording = useCallback((isVideoOn: boolean, isAudioOn: boolean) => {
+    }
+    const unMuteAudio = () => {
         try {
+            console.log("un-mute audio")
+            if (!myStream) return;
+            const tracks = myStream?.getTracks()
+            tracks?.map((track: MediaStreamTrack, i) => {
+                console.log(track)
+                if (track?.kind === "audio") {
+                    track.enabled = true;
+                }
+            })
+            setIsAudioMuted(false)
+        } catch (err: any) {
+            console.log(err)
+            toast.error(err?.message)
+        }
+    }
 
-            // @ts-ignore
-            var getUserMedia = Navigator.getUserMedia || Navigator.webkitGetUserMedia || Navigator.mozGetUserMedia;
-            console.log(Navigator)
-            console.log(getUserMedia)
-            getUserMedia({ video: isVideoOn, audio: isAudioOn }, function (stream: MediaStream) {
+    const resumeRecording = () => {
+        try {
+            if (mediaRecorder) {
+                console.log("resume")
+                mediaRecorder?.resume()
+                setStatus("resumed")
+                setIsPlay(true)
+            }
+        } catch (err: any) {
+            toast.error(err?.message)
+        }
+    }
+
+    const handelOnDataAvailable = (event: any, chunk: any[]) => {
+        if (event.data.size > 0) {
+            chunk.push(event.data)
+        }
+    }
+
+    const clearBlobUrl = () => {
+        mediaUrl?.map((mediaBlobUrl: any) => {
+            window.URL.revokeObjectURL(mediaBlobUrl)
+        })
+        setMediaUrl([])
+        setIsStarted(false)
+        setIsPlay(false)
+    }
+
+    const startRecording = useCallback(async (isVideoOn: boolean, isAudioOn: boolean, isFrontCamera?: boolean, recordType?: string) => {
+        try {
+            if (Navigator) {
+                // var getUserMedia = Navigator.getUserMedia || Navigator.webkitGetUserMedia || Navigator.mozGetUserMedia;
+                navigator.mediaDevices.getDisplayMedia
+                // @ts-ignore
+                var getUserMedia = navigator.mediaDevices.getUserMedia || Navigator.webkitGetUserMedia || Navigator.mozGetUserMedia;
+                var stream;
+
+                if (recordType && recordType == "screen") {
+                    stream = await navigator.mediaDevices.getDisplayMedia({ video: true, });
+                } else {
+                    stream = await getUserMedia({ video: isVideoOn ? { facingMode: !isFrontCamera ? 'environment' : 'user' } : isVideoOn, audio: isAudioOn })
+                }
+                if (!stream) return;
                 setMyStream(stream)
+                const tracks = stream.getAudioTracks()
+                if (Array.isArray(tracks)) {
+                    tracks?.map((track, i) => {
+                        track.onmute = (e) => {
+                            console.log("onmute")
+                            console.log(e)
+                            setIsAudioMuted(true);
+                            setIsPlay(false)
+                        }
+                        track.onunmute = (e) => {
+                            console.log("onunmute")
+                            console.log(e)
+                            setIsAudioMuted(false);
+                            setIsPlay(true)
+                        }
+                    })
+                }
                 setStatus("started")
+                setIsStarted(true)
+                setIsPlay(true)
                 const recorder = new MediaRecorder(stream)
+                setMediaRecorder(recorder);
                 let chunk: any = []
                 recorder.ondataavailable = (event) => {
                     handelOnDataAvailable(event, chunk)
                 }
 
-                // recorder.pause()
-
-                // recorder.resume()
-
                 recorder.onstop = () => {
-                    // chunk = handelCreateBlobUrl(isVideoOn , isAudioOn , chunk)
                     const blob = new Blob(chunk, {
-                        type: `${isAudioOn && "audio"}${isVideoOn && "video"}/webm;codecs=vp9`,
+                        type: `${(!isVideoOn && isAudioOn) && "audio"}${isVideoOn && "video"}/webm;codecs=vp9`,
                     })
 
                     chunk = []
                     const blobUrl = URL.createObjectURL(blob)
                     console.log(blobUrl)
                     setMediaUrl((prev: any[]) => [...prev, blobUrl])
+                    setStatus("stopped")
+                    setIsStarted(false)
+                    setIsPlay(false)
                 }
 
                 recorder.start(200)
-            });
+            }
         }
-        catch (err) {
+        catch (err: any) {
+            setStatus("stopped")
+            setIsStarted(false)
+            setIsPlay(false)
+            console.log(err?.message)
             toast.error("Not supported")
         }
-    }, [Navigator, status])
+    }, [Navigator])
 
-    return [myStream, startRecording, mediaUrl, setMediaUrl, stopRecording, status, pauseRecording, resumeRecording]
+    return [myStream, startRecording, mediaUrl, setMediaUrl, stopRecording, status, pauseRecording, resumeRecording, clearBlobUrl, MuteAudio, unMuteAudio, isAudioMuted, setIsAudioMuted, isPlay, setIsPlay
+        , isStarted, setIsStarted]
 
 }
 
