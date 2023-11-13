@@ -14,10 +14,9 @@ import data from '@emoji-mart/data'
 import AudioRecord from '@/components/GlobalComponents/Audio/AudioRecord'
 import VideoRecord from '@/components/GlobalComponents/Video/VideoRecord'
 
-const ChatActions = ({ selectedChat, socket }: ChatActionsDto) => {
+const ChatActions = ({ selectedChat, socket, isEmojiOpen, setIsEmojiOpen }: ChatActionsDto) => {
     const [message, setMessage] = useState<string>("");
     const [isOpen, setIsOpen] = useState(false);
-    const [isEmojiOpen, setIsEmojiOpen] = useState(false);
     const [isVideoOpen, setIsVideoOpen] = useState(false);
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
 
@@ -70,11 +69,8 @@ const ChatActions = ({ selectedChat, socket }: ChatActionsDto) => {
                     hidden
                     multiple
                     onChange={async (e: any) => {
-                        console.log(e?.target?.files)
-                        console.log(e?.target?.files?.length)
                         for (let i = 0; i < e?.target?.files?.length; i++) {
                             var formData = new FormData()
-                            console.log(e?.target?.files?.[i])
                             formData.append("file", e?.target?.files?.[i])
                             await postFile(formData)
                         }

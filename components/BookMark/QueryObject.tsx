@@ -37,6 +37,7 @@ const QueryObject = ({
                 setIsEdit(Boolean(value));
                 break;
             case "isCardView":
+                console.log("isCardView")
                 setIsCardView(Boolean(value));
                 break;
             case "createBookMark":
@@ -74,6 +75,7 @@ const QueryObject = ({
                 break;
         }
     }
+    console.log({isCardView , rows , status})
 
     function setAllBooleanValueToFalse() {
         setShowInnerPage(false)
@@ -82,35 +84,6 @@ const QueryObject = ({
         setOpenFilter(false)
         setCreateBookMark(false)
     }
-
-    useEffect(() => {
-        console.log({ currentRouter, currentRouterIndex })
-        if (currentRouterIndex == 0) {
-            return;
-        }
-        let { route, query } = currentRouter?.[currentRouterIndex - 1];
-        console.log({ route, query })
-
-        if (route != "/bookmark") {
-            return;
-        }
-        console.log("getting data fom redux store")
-        console.log(currentRouterIndex)
-
-        query = query.slice(1);
-        console.log(query)
-        query = query.split("&");
-        console.log(query)
-        setAllBooleanValueToFalse()
-
-        query.map((ele: string, i: number) => {
-            console.log(ele)
-            if (ele != "") {
-                const temp = ele?.split("=");
-                setValue(temp[0], temp[1])
-            }
-        })
-    }, [currentRouter, currentRouterIndex])
 
     useEffect(() => {
         console.log("getting data from url")
@@ -131,6 +104,8 @@ const QueryObject = ({
             constructQueryString = constructQueryString + `&isEdit=${isEdit}`
         }
         if (Boolean(isCardView)) {
+            console.log("isCardView")
+            console.log(isCardView)
             constructQueryString = constructQueryString + `&isCardView=${isCardView}`
         }
         if (Boolean(createBookMark)) {
@@ -174,6 +149,7 @@ const QueryObject = ({
         }))
 
         router2.replace(`/bookmark?${constructQueryString}`);
+        console.log(constructQueryString)
     }, [showInnerPage, isEdit, isCardView, createBookMark, selectedId, search, rows, page, status, openFilter, sortBy, sortOrder, fromDate, toDate]);
     // useEffect(() => {
 
@@ -183,6 +159,35 @@ const QueryObject = ({
     //     isViewProfile,
     //     refetchList
     // ])
+
+    useEffect(() => {
+        console.log({ currentRouter, currentRouterIndex })
+        if (currentRouterIndex == 0) {
+            return;
+        }
+        let { route, query } = currentRouter?.[currentRouterIndex - 1];
+        console.log({ route, query })
+
+        if (route != "/bookmark") {
+            return;
+        }
+        console.log("getting data fom redux store")
+        console.log(currentRouterIndex)
+
+        query = query.slice(1);
+        console.log(query)
+        query = query.split("&");
+        console.log(query)
+        setAllBooleanValueToFalse()
+
+        query.map((ele: string, i: number) => {
+            console.log(ele)
+            if (ele != "") {
+                const temp = ele?.split("=");
+                setValue(temp[0], temp[1])
+            }
+        })
+    }, [currentRouter, currentRouterIndex])
     return (
         <>
 

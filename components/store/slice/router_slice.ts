@@ -41,6 +41,8 @@ const routeSlice = createSlice({
             }
 
             if (state.currentRouter) {
+                console.log(inCommingRoute)
+                console.log(routeIndex -1)
                 state.currentRouter[routeIndex - 1] = inCommingRoute;
                 state.currentRouterIndex = routeIndex;
                 localStorage.setItem('routerDetails', JSON.stringify(state.currentRouter));

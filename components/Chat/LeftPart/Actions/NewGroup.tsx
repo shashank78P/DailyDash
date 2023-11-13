@@ -53,10 +53,8 @@ const NewGroup = ({ setThreeDotActionResult, ThreeDotActionResult }: ThreeDotAct
         }
 
         setChecked(newChecked);
-        console.log(newChecked)
     };
 
-    console.log(checked);
 
     return (
         <>

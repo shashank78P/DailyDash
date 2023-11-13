@@ -6,16 +6,18 @@ import React from 'react'
 type ThreeDotActionDto = {
     setOpen: any,
     open: boolean,
+    chatLeftSearch: string,
     setChatLeftSearch: Function
 }
 
-const ChatLeftTopNav = ({ open, setOpen, setChatLeftSearch  }: ThreeDotActionDto) => {
+const ChatLeftTopNav = ({ open, setOpen, setChatLeftSearch , chatLeftSearch }: ThreeDotActionDto) => {
     return (
         <ul className='w-full p-2 flex justify-between items-center'>
             <li><ChatLogo width={40} height={40} /></li>
             <li className='flex flex-grow justify-start items-center border border-slate-200 p-2 rounded-lg mx-2'>
                 <input
                     type='text'
+                    value={chatLeftSearch}
                     onChange={(e) => {
                         setChatLeftSearch(e?.target?.value)
                     }}

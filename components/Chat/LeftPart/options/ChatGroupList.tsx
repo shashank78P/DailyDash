@@ -15,7 +15,7 @@ const ChatGroupList = ({ selectedChat, setSelectedChat, refetchList, refetchUnRe
     const limit = 50;
     const [skip, setSkip] = useState(0)
     const { socket }: any = useContext(SocketContext);
-    const { data, error, isLoading, refetch } = useQuery(['groupList', refetchList, selectedChat?.belongsTo, isViewProfile, chatLeftSearch], () => {
+    const { data, error, isLoading, refetch } = useQuery(['groupList', refetchList, isViewProfile, chatLeftSearch], () => {
         return api.get(`/chats/getAllInitiatedChatGroupList?search=${chatLeftSearch}`)
     },
         {
@@ -23,11 +23,11 @@ const ChatGroupList = ({ selectedChat, setSelectedChat, refetchList, refetchUnRe
             keepPreviousData : true,
             onSuccess({ data }) {
                 data?.map((ele : any, i : number) => {
-                    if (selectedChat?.belongsTo === ele?.belongsTo) {
+                    if (selectedChat?.belongsTo && selectedChat?.belongsTo == ele?.belongsTo) {
                         setSelectedChat({
-                            opponentId: ele?.opponentId,
-                            opponentPic: ele?.opponentPic,
-                            opponentName: ele?.opponentName,
+                            opponentId: ele?.belongsTo,
+                            opponentPic: ele?.groupProfilePic,
+                            opponentName: ele?.groupName,
                             belongsTo: ele?.belongsTo,
                             type: "GROUP"
                         })
@@ -81,7 +81,6 @@ const ChatGroupList = ({ selectedChat, setSelectedChat, refetchList, refetchUnRe
         setHeight(window.outerHeight - 160)
         addEventListener("resize", () => {
             setHeight(window.outerHeight - 160)
-            // console.log("resize" + window.outerHeight)
         })
     }, [])
     return (
@@ -103,13 +102,6 @@ const ChatGroupList = ({ selectedChat, setSelectedChat, refetchList, refetchUnRe
                                 <ul
                                     key={i}
                                     onClick={() => {
-                                        // localStorage.setItem("selectedChat", JSON.stringify({
-                                        //     opponentId: ele?.belongsTo,
-                                        //     opponentPic: ele?.groupProfilePic,
-                                        //     opponentName: ele?.groupName,
-                                        //     belongsTo: ele?.belongsTo,
-                                        //     type: "GROUP"
-                                        // }))
                                         setSelectedChat({
                                             opponentId: ele?.belongsTo,
                                             opponentPic: ele?.groupProfilePic,

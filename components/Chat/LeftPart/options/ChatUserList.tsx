@@ -46,7 +46,6 @@ const ChatUserList = ({ selectedChat, setSelectedChat, refetchList, isViewProfil
         setHeight(window.outerHeight - 160)
         addEventListener("resize", () => {
             setHeight(window.outerHeight - 160)
-            // console.log("resize" + window.outerHeight)
         })
     }, [])
 
@@ -70,13 +69,6 @@ const ChatUserList = ({ selectedChat, setSelectedChat, refetchList, isViewProfil
                                 <ul
                                     key={i}
                                     onClick={() => {
-                                        // localStorage.setItem("selectedChat", JSON.stringify({
-                                        //     opponentId: ele?.opponentId,
-                                        //     opponentPic: ele?.opponentPic,
-                                        //     opponentName: ele?.opponentName,
-                                        //     belongsTo: ele?.belongsTo,
-                                        //     type: "INDIVIDUAL"
-                                        // }))
                                         setSelectedChat({
                                             opponentId: ele?.opponentId,
                                             opponentPic: ele?.opponentPic,

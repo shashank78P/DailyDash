@@ -28,7 +28,6 @@ const CreateMeeting = ({ opponentId, createMeeting, setCreateMeeting, selectedCh
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const { socket }: any = useContext(SocketContext);
     const [whoCanJoin, setWhoCanJoin] = useState("MANUALLY_ADDED")
-    console.log(selectedChat)
     const { } = useQuery(["opponentEmail", opponentId], () => {
         return api.get(`chats/getAllopponentEmail?id=${opponentId}`)
     },
@@ -49,7 +48,6 @@ const CreateMeeting = ({ opponentId, createMeeting, setCreateMeeting, selectedCh
     },
         {
             onSuccess({ data }) {
-                console.log(data?.[0]?._id)
                 toast.success("Created SucessFully")
                 // router?.push(`/meet/room?id=${data?.[0]?._id}`)
                 handelClose()
@@ -68,7 +66,6 @@ const CreateMeeting = ({ opponentId, createMeeting, setCreateMeeting, selectedCh
     )
 
     const onSubmit = (data: any) => {
-        console.log(data)
         postCreateMeeting(data)
     }
 

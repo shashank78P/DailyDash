@@ -28,5 +28,7 @@ export type ChatMessageDto = {
 
 export type ChatActionsDto = {
     selectedChat: selecteChatDto
-    socket : any
+    socket : any,
+    isEmojiOpen : boolean,
+    setIsEmojiOpen : Function
 } 

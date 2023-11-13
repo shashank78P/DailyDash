@@ -25,6 +25,8 @@ import { toast } from 'react-toastify'
 // const socket = io("ws://localhost:3001");
 // const socket = io("http://localhost:3001/polls",{ auth : { userId : "123" } });
 
+// chatLeftSearch, setChatLeftSearch
+
 const Page = () => {
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const { socket }: any = useContext(SocketContext);
@@ -36,6 +38,7 @@ const Page = () => {
     const [isViewProfile, setIsViewProfile] = useState<Boolean>(false)
     const [refetchList, setRefetchList] = useState<Boolean>(false)
     const [createMeeting, setCreateMeeting] = useState<boolean>(false);
+    const [isEmojiOpen, setIsEmojiOpen] = useState(false);
 
     const [unReadMsg, setUnReadMsg] = useState({
         chat: 0,
@@ -44,7 +47,6 @@ const Page = () => {
 
     // chat
     const [selectedChat, setSelectedChat] = useState<selecteChatDto>({ opponentId: "", opponentPic: "", opponentName: "", belongsTo: "", type: "" });
-    console.log(chatLeftSearch)
     const { data, isLoading, refetch: refetchUnReadMessages } = useQuery(["getUnReadMessagesCount"], () => {
         return api.get(`/chats/getUnReadMessagesCount`)
     },
@@ -67,7 +69,6 @@ const Page = () => {
     });
     socket?.on('connect', () => {
         console.log("connected = " + socket.id);
-        console.log()
     })
 
     useEffect(() => {
@@ -88,7 +89,9 @@ const Page = () => {
             setRefetchList,
             selectedChat,
             setSelectedChat,
-            isSearch, setIsSearch
+            isSearch, setIsSearch,
+            chatLeftSearch, setChatLeftSearch,
+            isEmojiOpen, setIsEmojiOpen
         }
     )
 
@@ -111,8 +114,7 @@ const Page = () => {
                             <ChatLeftTopNav
                                 open={ThreeDotIsOpen}
                                 setOpen={setThreeDotIsOpen}
-                                setChatLeftSearch={setChatLeftSearch}
-                            />
+                                setChatLeftSearch={setChatLeftSearch} chatLeftSearch={chatLeftSearch}                            />
                             <ChatOptions
                                 setSelectedTab={setSelectedTab}
                                 selectedTab={selectedTab}
@@ -152,6 +154,8 @@ const Page = () => {
                                 <ChatActions
                                     selectedChat={selectedChat}
                                     socket={socket}
+                                    isEmojiOpen = {isEmojiOpen}
+                                    setIsEmojiOpen = {setIsEmojiOpen}
                                 />
                             </>
                         }

@@ -36,7 +36,6 @@ const ChatMessage = ({ selectedChat, socket, refetch: refetchChatsNotification, 
     },
         {
             onSuccess({ data }: any) {
-                console.log({ isSearch, search })
                 if (!(isSearch && search)) {
                     setMessages([...messages, ...data?.chats]);
                 } else {
