@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams,useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Oval } from "react-loader-spinner";
 import { useMutation } from "react-query";
 import { toast } from "react-toastify";
 
@@ -49,7 +50,7 @@ const ResetPassword = () => {
             className='flex justify-center items-center h-[100%] backgroundeImage'
         >
             <div className='w-[90%] sm:w-[500px] border border-slate-500  p-5 text-white rounded-md backdrop-blur-md'>
-                <div className='mb-5 font-semibold text-xl sm:text-2xl text-center'>Reset Password</div>
+                <div className='mb-5 font-semibold text-xl sm:text-2xl text-center text-white'>Reset Password</div>
                 <form onSubmit={handleSubmit(onSubmit)} className='mb-5 sm:text-xl'>
                     <div className=''>
                         <div
@@ -59,7 +60,7 @@ const ResetPassword = () => {
                             <input
                                 type='password'
                                 placeholder='Password'
-                                className='bg-transparent full px-1 py-1 border border-transparent border-y-2  border-b-purple-700 placeholder:text-white'
+                                className='bg-transparent full px-1 py-1 border border-transparent border-y-2  border-b-purple-700 placeholder:text-white text-white text-base'
                                 {...register(
                                     "password",
                                     {
@@ -79,7 +80,7 @@ const ResetPassword = () => {
                             <input
                                 type='password'
                                 placeholder='Confirm Password'
-                                className='bg-transparent mt-5 full px-1 py-1 border border-transparent border-y-2  border-b-purple-700 placeholder:text-white'
+                                className='bg-transparent mt-5 full px-1 py-1 border border-transparent border-y-2  border-b-purple-700 placeholder:text-white text-white text-base'
                                 {...register(
                                     "confirmPassword",
                                     { required: "confirm password is required" })}
@@ -99,11 +100,14 @@ const ResetPassword = () => {
                                 <li>At least 8 characters in length, but no more than 32.</li>
                                 </ul> }
                         </div>
-                        <input
-                            className='w-full mt-5 full rounded-md px-2 py-1 bg-purple-700 font-semibold cursor-pointer'
+                        { !isLoading && <input
+                            className='w-full mt-5 full rounded-md p-2 bg-purple-700 font-semibold cursor-pointer text-white'
                             type="Submit"
                             value="Reset Password"
-                        />
+                        />}
+                        {
+                            isLoading && <Oval color='#7e22ce' secondaryColor='#7e22ce' width={20} height={20} />
+                        }
                     </div>
                 </form>
             </div>

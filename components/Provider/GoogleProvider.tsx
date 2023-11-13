@@ -7,7 +7,6 @@ interface Props {
 
 
 const GoogleProvider = ({ children }: Props) => {
-    console.log(process?.env?.GOOGLE_CLIENT_ID);
     return (
         // @ts-ignore
         <GoogleOAuthProvider

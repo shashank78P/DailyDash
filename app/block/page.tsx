@@ -3,6 +3,7 @@ import api from '@/components/lib/api';
 import { useSearchParams , useRouter } from 'next/navigation';
 import React from 'react'
 import { useForm } from 'react-hook-form';
+import { Oval } from 'react-loader-spinner';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
@@ -38,7 +39,7 @@ const Page = () => {
             className='flex justify-center items-center h-[100%] backgroundeImage'
         >
             <div className='w-[90%] sm:w-[500px] border border-slate-500  p-5 text-white rounded-md backdrop-blur-md'>
-                <div className='mb-5 font-semibold text-xl sm:text-2xl text-center'>Block</div>
+                <div className='mb-5 font-semibold text-xl sm:text-2xl text-center text-white'>Block</div>
                 <form onSubmit={handleSubmit(onSubmit)} className='mb-5 sm:text-xl'>
                     <div className=''>
                         <div
@@ -48,7 +49,7 @@ const Page = () => {
                             <input
                                 type='password'
                                 placeholder='Password'
-                                className='bg-transparent full px-1 py-1 border border-transparent border-y-2  border-b-purple-700 placeholder:text-white'
+                                className='bg-transparent full px-1 py-1 border border-transparent border-y-2  border-b-purple-700 placeholder:text-white text-white text-base'
                                 {...register(
                                     "password",
                                     {
@@ -61,11 +62,14 @@ const Page = () => {
                                 </p>
                             )}
                         </div>
-                        <input
-                            className='w-full mt-5 full rounded-md px-2 py-1 bg-red-700 font-medium cursor-pointer'
+                        { !isLoading && <input
+                            className='w-full mt-5 full rounded-md p-2 bg-red-700 font-medium cursor-pointer text-white'
                             type="Submit"
                             value="Confirm"
-                        />
+                        />}
+                        {
+                            isLoading && <Oval color='#7e22ce' secondaryColor='#7e22ce' width={20} height={20} />
+                        }
                     </div>
                 </form>
             </div>

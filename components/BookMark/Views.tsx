@@ -51,6 +51,20 @@ const Views = () => {
             }
         }
     )
+
+    const { mutate: togglePinBookmark } = useMutation((data) => {
+        return api.post(`/book-marks/toggle-pinned-bookmark?_id=${data}`)
+    },
+        {
+            onSuccess({ data }) {
+                toast.success(data)
+                refetch()
+            },
+            onError(err: any) {
+                toast.error(err?.response?.data?.message)
+            }
+        }
+    )
     
     const { mutate: deleteBookMark, isLoading: isDeleteBookMarkLoadingLoading } = useMutation((data: any) => {
         return api.delete(`/book-marks/delete?_id=${data?._id}`)
@@ -69,8 +83,8 @@ const Views = () => {
         <>
             {(createBookMark || (isEdit && selectedId != null)) && <BookMarkForm defaultValue={selected} refetch={refetch} />}
             {showInnerPage && <InnerPage />}
-            {isCardView && <CardView refetch={refetch} data={data}  deleteFile={deleteFile}/>}
-            {!isCardView && <ListView refetch={refetch} data={data} deleteFile={deleteFile} />}
+            {isCardView && <CardView refetch={refetch} data={data}  deleteFile={deleteFile} togglePinBookmark={togglePinBookmark}/>}
+            {!isCardView && <ListView refetch={refetch} data={data} deleteFile={deleteFile} togglePinBookmark={togglePinBookmark}/>}
         </>
     )
 }

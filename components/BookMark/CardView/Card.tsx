@@ -12,10 +12,15 @@ import React, { useContext } from 'react'
 import BookMarkContext from '../state/BookMarkContext'
 import { BookMarkContextDto } from '../types'
 import { timeDiffWithCurrentDate } from '@/components/GlobalComponents/FormateDate1'
+import PinIco from '@/components/assets/PinIco'
+import { useMutation, useQuery } from 'react-query'
+import api from '@/components/lib/api'
+import { toast } from 'react-toastify'
+import UnPinIco from '@/components/assets/UnPinIco'
 
-const Card = ({ bookMarkData, i ,deleteFile}: { bookMarkData: any, i: number , deleteFile : Function}) => {
+const Card = ({ bookMarkData, i, deleteFile , togglePinBookmark }: { bookMarkData: any, i: number, deleteFile: Function , togglePinBookmark : Function}) => {
     const [copyTextToClipboard] = useCopyToClipboard()
-    const {  handelSelectAndEdit, setSelected , setSelectedId, setIsEdit, setShowInnerPage } = useContext<BookMarkContextDto>(BookMarkContext)
+    const { handelSelectAndEdit, setSelected, setSelectedId, setIsEdit, setShowInnerPage } = useContext<BookMarkContextDto>(BookMarkContext)
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -82,18 +87,24 @@ const Card = ({ bookMarkData, i ,deleteFile}: { bookMarkData: any, i: number , d
                                     },
                                 }}
                             >
-                                {/* <MenuItem key={"share"} onClick={handleClose}>
-                                    <div className='m-2 flex justify-evenly'>
+                                <MenuItem key={"share"} onClick={handleClose}>
+                                    <div
+                                        className='m-2 flex justify-evenly items-center'
+                                        onClick={() => {
+                                            togglePinBookmark(bookMarkData?._id)
+                                        }}
+                                    >
                                         <span className='mr-2'>
-                                            <ShareIco width={20} height={20} />
+                                            { !bookMarkData?.pinned && <PinIco width={20} height={20} color='#202124' />}
+                                            { bookMarkData?.pinned && <UnPinIco width={20} height={20} color='#202124' />}
                                         </span>
-                                        Share
+                                        Pin
                                     </div>
-                                </MenuItem> */}
+                                </MenuItem>
                                 <MenuItem key={"delete"} onClick={handleClose}>
-                                    <div className='m-2 flex justify-evenly'
-                                         onClick={()=>{
-                                            deleteFile({fileId : bookMarkData?.fileId, _id : bookMarkData?._id})
+                                    <div className='m-2 flex justify-evenly items-center'
+                                        onClick={() => {
+                                            deleteFile({ fileId: bookMarkData?.fileId, _id: bookMarkData?._id })
                                         }}
                                     >
                                         <span className='mr-2'>

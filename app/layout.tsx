@@ -32,7 +32,7 @@ export default function RootLayout({
 
   console.log(pathname);
   const restriction_SideBar__Tab = ["/login", "/reset-password", "/forget-password", "/block", "/signup"];
-  const restriction__Tab = [ "/trial"];
+  const restriction__Tab = ["/trial"];
   return (
     <html lang="en">
       <title>DailyDash</title>
@@ -45,11 +45,13 @@ export default function RootLayout({
                 <body className={inter.className}>
                   <div className='flex w-[100vw] h-screen max-h-screen justify-center items-center overflow-hidden'>
                     <ToastContainer />
-                    <div className='w-[50px]'>
-                      {!restriction_SideBar__Tab.includes(pathname) && <SideBar />}
-                    </div>
+                    {!restriction_SideBar__Tab.includes(pathname) &&
+                      <div className='w-[50px]'>
+                        <SideBar />
+                      </div>
+                    }
                     {/* <div className='flex w-full flex-col'> */}
-                    <div className='h-full flex flex-col justify-between' style={{"width" : "calc(100% - 50px)"}}>
+                    <div className='h-full flex flex-col justify-between' style={{ "width": `${restriction_SideBar__Tab.includes(pathname) ? " 100% " : "calc(100% - 50px)"}` }}>
                       {children}
                       {!restriction_SideBar__Tab.includes(pathname) && !restriction__Tab.includes(pathname) && <TabSection />}
                     </div>

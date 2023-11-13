@@ -5,7 +5,7 @@ import React from 'react'
 
 const Page = () => {
   return (
-    <div className='w-full '>
+    <div className='w-full h-full overflow-y-scroll'>
         <h1 className='font-bold text-2xl m-2 mt-4 text-purple-700'>My Profile</h1>
         <UserPic />
         <PersonalInfo />

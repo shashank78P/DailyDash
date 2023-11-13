@@ -2,23 +2,24 @@
 import api from '@/components/lib/api';
 import { useRouter } from 'next/navigation';
 import { useForm } from "react-hook-form";
+import { Oval } from 'react-loader-spinner';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 
 type ForgetPasswordType = {
-    email : string
+    email: string
 }
 const ForgetPassword = () => {
     const router = useRouter();
     const { mutate: forgetPassword, isLoading } = useMutation(async (data: any) => await api.post("/log-in-details/forget-password", data));
     const { register, handleSubmit, formState: { errors }, getValues } = useForm<ForgetPasswordType>({});
     const onSubmit = (data: any) => {
-        forgetPassword(data , {
-            onSuccess({data}){
+        forgetPassword(data, {
+            onSuccess({ data }) {
                 toast.success(data);
                 router.replace("/");
             },
-            onError(err : any){
+            onError(err: any) {
                 toast.error(err?.response?.data?.message)
             }
         })
@@ -28,7 +29,7 @@ const ForgetPassword = () => {
             className='flex justify-center items-center h-[100%] backgroundeImage'
         >
             <div className='w-[90%] sm:w-[500px] border border-slate-500  p-5 text-white rounded-md backdrop-blur-md'>
-                <div className='mb-5 font-semibold text-xl sm:text-2xl text-center'>Forget Password</div>
+                <div className='mb-5 font-semibold text-xl sm:text-2xl text-center text-white'>Forget Password</div>
                 <form onSubmit={handleSubmit(onSubmit)} className='mb-5 sm:text-xl'>
                     <div className=''>
                         <div
@@ -38,7 +39,7 @@ const ForgetPassword = () => {
                             <input
                                 type='email'
                                 placeholder='E-mail'
-                                className='bg-transparent full px-1 py-1 border border-transparent border-y-2  border-b-purple-700 placeholder:text-white'
+                                className='bg-transparent full px-1 py-1 border border-transparent border-y-2  border-b-purple-700 placeholder:text-white text-white text-base'
                                 {...register(
                                     "email",
                                     {
@@ -50,11 +51,16 @@ const ForgetPassword = () => {
                                     {errors.email.message}
                                 </p>
                             )}
-                            <input
-                            className='w-full mt-5 full rounded-md px-2 py-1 bg-purple-700 font-semibold cursor-pointer'
-                            type="submit"
-                            value="Send Password re-set mail"
-                        />
+                            {
+                                !isLoading && <input
+                                    className='w-full mt-5 full rounded-md p-2 bg-purple-700 font-semibold cursor-pointer text-white'
+                                    type="submit"
+                                    value="Send Password re-set mail"
+                                />
+                            }
+                            {
+                                isLoading && <Oval color='#7e22ce' secondaryColor='#7e22ce' width={20} height={20} />
+                            }
                         </div>
                     </div>
                 </form>

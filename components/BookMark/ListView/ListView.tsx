@@ -1,23 +1,23 @@
 import PaginationBottonSection from '@/components/GlobalComponents/PaginationBottonSection'
 import OpenIco from '@/components/assets/OpenIco'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import BookMarkContext from '../state/BookMarkContext'
 import { BookMarkContextDto, bookMarkPrioirityStyle } from '../types'
 import { getTimeWithAMorPM } from '@/components/GlobalComponents/FormateDate1'
 import DeleteIco from '@/components/assets/DeleteIco'
 import HorizontalThrreDot from '@/components/assets/HorizontalThrreDot'
 import { IconButton, Menu, MenuItem } from '@mui/material'
+import PinIco from '@/components/assets/PinIco'
+import UnPinIco from '@/components/assets/UnPinIco'
 
-const ListView = ({ refetch, data , deleteFile }: { refetch: Function, data: any ,deleteFile : Function }) => {
+const ListView = ({ refetch, data, deleteFile, togglePinBookmark }: { refetch: Function, data: any, deleteFile: Function, togglePinBookmark: Function }) => {
     const { setPage, isCardView, setSelectedId, rows, page, setShowInnerPage } = useContext<BookMarkContextDto>(BookMarkContext)
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [rowNoMenuClicked, setRowNoMenuClicked] = useState(0)
     const open = Boolean(anchorEl);
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-        // setIsOpen(false)
-    };
     const handleClose = () => {
         setAnchorEl(null);
+        setRowNoMenuClicked(-1);
     };
 
     if (Array.isArray(data?.data?.data) && data?.data?.data?.length > 0) {
@@ -80,44 +80,65 @@ const ListView = ({ refetch, data , deleteFile }: { refetch: Function, data: any
                                                 </td>
                                                 <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500 cursor-pointer'>
                                                     <span className='flex justify-center items-center'>
-                                                        <IconButton
-                                                            aria-label="more"
-                                                            id="long-button"
-                                                            aria-controls={open ? 'long-menu' : undefined}
-                                                            aria-expanded={open ? 'true' : undefined}
-                                                            aria-haspopup="true"
-                                                            onClick={handleClick}
-                                                        >
-                                                            <HorizontalThrreDot height={20} width={20} />
-                                                        </IconButton>
-                                                        <Menu
-                                                            id="long-menu"
-                                                            MenuListProps={{
-                                                                'aria-labelledby': 'long-button',
-                                                            }}
-                                                            anchorEl={anchorEl}
-                                                            open={open}
-                                                            onClose={handleClose}
-                                                            PaperProps={{
-                                                                style: {
-                                                                    // maxHeight: "100px",
-                                                                    // width: '100px',
-                                                                },
-                                                            }}
-                                                        >
-                                                            <MenuItem key={"delete"} onClick={handleClose}>
-                                                                <div className='m-2 flex justify-evenly'
-                                                                 onClick={()=>{
-                                                                    deleteFile({fileId : bookMarkData?.fileId, _id : bookMarkData?._id})
+                                                        <div className='cursor-pointer'>
+                                                            <IconButton
+                                                                aria-label={"more" + i}
+                                                                id={`long-button${i}`}
+                                                                aria-controls={(rowNoMenuClicked == i && open) ? `long-menu${i}` : undefined}
+                                                                aria-expanded={(rowNoMenuClicked == i && open) ? 'true' : undefined}
+                                                                aria-haspopup="true"
+                                                                onClick={
+                                                                    (event: React.MouseEvent<HTMLElement>) => {
+                                                                        setAnchorEl(event.currentTarget);
+                                                                        setRowNoMenuClicked(i);
+                                                                    }
+                                                                }
+                                                            >
+                                                                <HorizontalThrreDot height={20} width={20} />
+                                                            </IconButton>
+                                                            <Menu
+                                                                id={`long-menu${i}`}
+                                                                MenuListProps={{
+                                                                    'aria-labelledby': `long-button${i}`,
                                                                 }}
-                                                                >
-                                                                    <span className='mr-2'>
-                                                                        <DeleteIco width={20} height={20} />
-                                                                    </span>
-                                                                    Delete
-                                                                </div>
-                                                            </MenuItem>
-                                                        </Menu>
+                                                                anchorEl={anchorEl}
+                                                                open={rowNoMenuClicked == i &&  open}
+                                                                onClose={handleClose}
+                                                                PaperProps={{
+                                                                    style: {
+                                                                        // maxHeight: "100px",
+                                                                        // width: '100px',
+                                                                    },
+                                                                }}
+                                                            >
+                                                                <MenuItem key={"share"} onClick={handleClose}>
+                                                                    <div
+                                                                        className='m-2 flex justify-evenly items-center'
+                                                                        onClick={() => {
+                                                                            togglePinBookmark(bookMarkData?._id)
+                                                                        }}
+                                                                    >
+                                                                        <span className='mr-2'>
+                                                                            {!bookMarkData?.pinned && <PinIco width={20} height={20} color='#202124' />}
+                                                                            {bookMarkData?.pinned && <UnPinIco width={20} height={20} color='#202124' />}
+                                                                        </span>
+                                                                        Pin
+                                                                    </div>
+                                                                </MenuItem>
+                                                                <MenuItem key={"delete"} onClick={handleClose}>
+                                                                    <div className='m-2 flex justify-evenly items-center'
+                                                                        onClick={() => {
+                                                                            deleteFile({ fileId: bookMarkData?.fileId, _id: bookMarkData?._id })
+                                                                        }}
+                                                                    >
+                                                                        <span className='mr-2'>
+                                                                            <DeleteIco width={20} height={20} />
+                                                                        </span>
+                                                                        Delete
+                                                                    </div>
+                                                                </MenuItem>
+                                                            </Menu>
+                                                        </div>
                                                     </span>
                                                 </td>
                                             </tr>

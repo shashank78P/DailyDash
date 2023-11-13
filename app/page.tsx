@@ -140,10 +140,10 @@ export default function Home() {
               }
 
               {/* add button */}
-              {/* <div className="w-[100px] h-[100px] pr-2 m-3.5 flex flex-col items-center justify-center cursor-pointer">
+              <div className="w-[100px] h-[100px] pr-2 m-3.5 flex flex-col items-center justify-center cursor-pointer">
                 <div className="w-[50px] h-[50px] grid place-items-center text-3xl text-slate-500 rounded-full bg-slate-100">+</div>
                 <h3 className="text-start mt-2 text-slate-500">Add</h3>
-              </div> */}
+              </div>
             </div>
           </div>
         </div>

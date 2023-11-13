@@ -19,7 +19,7 @@ const PersonalInfo = () => {
     return (
         <div className='border-2 border-slate-400 border-dashed  rounded-xl m-4 p-4'>
             <section className='flex justify-between items-center mb-2'>
-                <h1 className='font-bold text-xl text-purple-700'>Personal Information</h1>
+                <h1 className='font-bold text-xl text-purple-700'>Personal Info</h1>
                 {
                     !isEdit ?
                         <div className='border border-purple-600 p-1 px-2 rounded-lg cursor-pointer'
@@ -43,7 +43,7 @@ const PersonalInfo = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <section className=' p-2 text-lg'>
                     {/* row */}
-                    <div className=' w-full flex justify-start gap-5 items-center mb-4'>
+                    <div className=' w-full grid grid-cols-1 sm:grid-cols-2  gap-4 items-center mb-4'>
                         <div className="w-full " >
                             <label className=' font-light text-slate-500' >First Name</label><br />
                             <input
@@ -83,7 +83,7 @@ const PersonalInfo = () => {
                     </div>
 
                     {/* row */}
-                    <div className=' w-full flex justify-start gap-5 items-center mb-4'>
+                    <div className=' w-full grid grid-cols-1 sm:grid-cols-2  gap-4 items-center mb-4'>
                         <div className="w-full " >
                             <label className=' font-light text-slate-500' >Email</label><br />
                             <input
@@ -105,7 +105,7 @@ const PersonalInfo = () => {
                         <div className="w-full ">
                             <label className=' font-light text-slate-500'>DOB</label><br />
                             <input
-                                type='text'
+                                type='date'
                                 readOnly={!isEdit}
                                 placeholder='mm/dd/yyyy'
                                 className={`w-full  mt-1 p-2 border border-slate-300   rounded-lg ${isEdit ? "" : " cursor-pointer "}`}

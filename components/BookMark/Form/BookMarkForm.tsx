@@ -21,17 +21,21 @@ interface BookMarkFormDto {
     description: string,
     bookMarkImageLink: string,
     imageId: string,
+    pinned: boolean,
+    isCustomAdd: boolean
 }
 const BookMarkForm = ({ defaultValue, refetch }: { defaultValue: BookMarkFormDto, refetch: Function }) => {
-    const { selectedTab, createBookMark, setIsEdit, setCreateBookMark, isEdit, selectedId } = useContext<BookMarkContextDto>(BookMarkContext)
+    const { selectedTab, createBookMark, setIsEdit, setCreateBookMark, isEdit, selectedId, setSelected } = useContext<BookMarkContextDto>(BookMarkContext)
     const { register, handleSubmit, formState: { errors, }, getValues, unregister, setValue } = useForm<BookMarkFormDto>({ defaultValues: defaultValue });
     const [hashTag, setHashTag] = useState<string[]>(defaultValue?.hashTags ?? [])
     const [fileRequiredError, setFileRequiredError] = useState<string | null>()
     const [file, setFile] = useState<Array<File>>([])
     const [bookMarkFormData, setBookMarkFormData] = useState<BookMarkFormDto>()
     const [preView, setPreView] = useState<Array<any>>([])
+    const [isPinned, setIsPinned] = useState<boolean>(defaultValue?.pinned ?? false)
+    const [isAllowedToGenerate, setIsAllowedToGenerate] = useState<boolean>(isEdit ? false : true)
 
-    console.log(defaultValue?.hashTags)
+    console.log(defaultValue)
     console.log(hashTag)
     const { mutate: postCreateBookmark, isLoading } = useMutation((data: any) => {
         return api.post("/book-marks/create-book-mark", data)
@@ -42,6 +46,7 @@ const BookMarkForm = ({ defaultValue, refetch }: { defaultValue: BookMarkFormDto
                 toast.success("BookMark added successfully")
                 handelClose();
                 refetch()
+                setSelected({})
             },
             onError(err: any) {
                 toast.error(err?.response?.data?.message)
@@ -58,6 +63,7 @@ const BookMarkForm = ({ defaultValue, refetch }: { defaultValue: BookMarkFormDto
                 toast.success("BookMark updated successfully")
                 handelClose();
                 refetch()
+                setSelected({})
             },
             onError(err: any) {
                 toast.error(err?.response?.data?.message)
@@ -95,7 +101,7 @@ const BookMarkForm = ({ defaultValue, refetch }: { defaultValue: BookMarkFormDto
                         toast.error("error in file uploaded")
                     }
                 }
-                 else {
+                else {
                     postCreateBookmark(data)
                 }
             },
@@ -105,8 +111,27 @@ const BookMarkForm = ({ defaultValue, refetch }: { defaultValue: BookMarkFormDto
         }
     )
 
+    const { mutate: getWebsiteIconViaLink, isLoading: getWebsiteIconViaLinkIsLoading } = useMutation(async (data: any) => {
+        const result = await api.post("/file-system/get-website-icon-from-link", { link: data?.link })
+        return {fileId: result?.data?.[0]?._id , ...data}
+    },
+        {
+            onSuccess(data) {
+                console.log(data);
+                toast.success("We got a image of provided link")
+                postCreateBookmark(data)
+            },
+            onError(){
+                toast.success("Failed to get image of provided link")
+            }
+        }
+    )
+
+    console.log({isPinned})
+
     const onSubmit = (data: any) => {
         console.log(data)
+        data = { ...data, pinned: isPinned }
         console.log(isEdit)
         setBookMarkFormData(data)
         if (isEdit) {
@@ -120,13 +145,15 @@ const BookMarkForm = ({ defaultValue, refetch }: { defaultValue: BookMarkFormDto
             }
         }
         else {
-            if (file?.length === 0) {
+            if (file?.length === 0 && !isAllowedToGenerate) {
                 setFileRequiredError("File is required")
                 return;
             }
-            // postCreateBookmark(data)
             console.log(file)
-            if (file?.length === 1) {
+            if (isAllowedToGenerate) {
+                getWebsiteIconViaLink(data)
+            }
+            else if (file?.length === 1) {
                 const formData = new FormData()
                 formData.append("file", file?.[0])
                 uploadImage({ file: formData, data })
@@ -144,6 +171,7 @@ const BookMarkForm = ({ defaultValue, refetch }: { defaultValue: BookMarkFormDto
         setHashTag([])
         setFileRequiredError(null)
         setFile([])
+        setSelected({})
     }
 
     return (
@@ -170,6 +198,8 @@ const BookMarkForm = ({ defaultValue, refetch }: { defaultValue: BookMarkFormDto
                 <DialogContent>
                     <form onSubmit={handleSubmit(onSubmit)} className='mb-5 sm:text-xl'>
                         <div className=''>
+
+                            {/* title */}
                             <div
                                 className='flex flex-col mb-3'
                             >
@@ -187,6 +217,49 @@ const BookMarkForm = ({ defaultValue, refetch }: { defaultValue: BookMarkFormDto
                                     </p>
                                 )}
                             </div>
+
+                            {/* link */}
+                            <div
+                                className='flex flex-col mb-4'
+                            >
+                                <label className='text-lg mb-1 '>link</label>
+                                <input
+                                    type='link'
+                                    className='p-2.5 border border-1 min-w-[350px]  border-gray-300 rounded-lg text-base'
+                                    {...register(
+                                        "link",
+                                        { required: "link is required" })}
+                                />
+                                {errors.link && (
+                                    <p className="text-sm mt-2 text-red-500">
+                                        {errors.link.message}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* pinned */}
+                            <div
+                                className='flex my-4 justify-between'
+                            >
+                                <label className='text-lg mb-1 '>Pin to quick access</label>
+                                <div
+                                    onClick={() => {
+                                        setIsPinned(!isPinned)
+                                    }}
+                                    className={`w-[50px] h-[25px] mr-2 border ${isPinned ? " bg-purple-200 " : " bg-slate-200 "} rounded-[15px] shadow-lg cursor-pointer flex justify-start items-center`}
+                                >
+                                    <span
+                                        className={`w-[20px] h-[20px] mx-1 border inline-block rounded-full shadow-lg transition-all ease-in-out ${isPinned ? "translate-x-full bg-purple-700" : " translate-x-0  bg-slate-700"}`}
+                                    ></span>
+                                </div>
+                                {errors.pinned && (
+                                    <p className="text-sm mt-2 text-red-500">
+                                        {errors.pinned.message}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* priority */}
                             <div
                                 className='flex flex-col mb-3'
                             >
@@ -208,6 +281,7 @@ const BookMarkForm = ({ defaultValue, refetch }: { defaultValue: BookMarkFormDto
                                 )}
                             </div>
 
+                            {/* hashtags */}
                             <div
                                 className='flex flex-col mb-4'
                             >
@@ -234,23 +308,8 @@ const BookMarkForm = ({ defaultValue, refetch }: { defaultValue: BookMarkFormDto
 
                                 </p>
                             </div>
-                            <div
-                                className='flex flex-col mb-4'
-                            >
-                                <label className='text-lg mb-1 '>link</label>
-                                <input
-                                    type='link'
-                                    className='p-2.5 border border-1 min-w-[350px]  border-gray-300 rounded-lg text-base'
-                                    {...register(
-                                        "link",
-                                        { required: "link is required" })}
-                                />
-                                {errors.link && (
-                                    <p className="text-sm mt-2 text-red-500">
-                                        {errors.link.message}
-                                    </p>
-                                )}
-                            </div>
+
+                            {/* desctiption */}
                             <div
                                 className='flex flex-col mb-4'
                             >
@@ -262,14 +321,31 @@ const BookMarkForm = ({ defaultValue, refetch }: { defaultValue: BookMarkFormDto
                                         {})}
                                 />
                             </div>
-                            <div>
+
+                            {!isEdit && <div
+                                className='flex my-4 justify-between'
+                            >
+                                <label className='text-lg mb-1 '>Get image by Url</label>
+                                <div
+                                    onClick={() => {
+                                        setIsAllowedToGenerate(!isAllowedToGenerate)
+                                    }}
+                                    className={`w-[50px] h-[25px] mr-2 border ${isAllowedToGenerate ? " bg-purple-200 " : " bg-slate-200 "} rounded-[15px] shadow-lg cursor-pointer flex justify-start items-center`}
+                                >
+                                    <span
+                                        className={`w-[20px] h-[20px] mx-1 border inline-block rounded-full shadow-lg transition-all ease-in-out ${isAllowedToGenerate ? "translate-x-full bg-purple-700" : " translate-x-0  bg-slate-700"}`}
+                                    ></span>
+                                </div>
+                            </div>}
+
+                            {(!isAllowedToGenerate || isEdit) && <div>
                                 <DragAndDropFileInput maxFiles={1} multiple={false} maxSize={200000} minSize={10} setPreView={setPreView} isShowError={true} setFiles={setFile} accept={{ 'image': ['image/*'] }} />
                                 {fileRequiredError && (
                                     <p className="text-sm mt-2 text-red-500">
                                         {fileRequiredError}
                                     </p>
                                 )}
-                            </div>
+                            </div>}
 
                             <div className='my-2'>
                                 {
@@ -302,13 +378,13 @@ const BookMarkForm = ({ defaultValue, refetch }: { defaultValue: BookMarkFormDto
                                     </div>
                                 }
                             </div>
-                            {!(isLoading || isDeleteFileLoading || isUpdateBookmarkLoading || isUploadLoading) && <input
+                            {!(isLoading || isDeleteFileLoading || isUpdateBookmarkLoading || isUploadLoading || getWebsiteIconViaLinkIsLoading ) && <input
                                 className='w-full mt-5 full rounded-md p-2.5 bg-gradient-to-r from-purple-400 from-10% via-purple-700 via-80% to-purple-900 font-semibold cursor-pointer text-white'
                                 type="submit"
                                 value={` ${isEdit ? "Update" : "Create"} BookMark`}
                             />}
                             {
-                                ((isLoading || isDeleteFileLoading || isUpdateBookmarkLoading || isUploadLoading)) && <Oval height={20} width={20} color='#7e22ce' />
+                                ((isLoading || isDeleteFileLoading || isUpdateBookmarkLoading || isUploadLoading || getWebsiteIconViaLinkIsLoading)) && <Oval height={20} width={20} color='#7e22ce' />
                             }
                         </div>
                         <div></div>
