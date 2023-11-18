@@ -23,7 +23,6 @@ type createMeetingFormDto = {
 }
 
 const CreateMeetingForm = ({ defaultValue }: { defaultValue: createMeetingFormDto }) => {
-    console.log(defaultValue)
     const { register, handleSubmit, formState: { errors, }, getValues, unregister, setValue } = useForm<createMeetingFormDto>({ defaultValues: {} });
     const { createMeeting, setShow , handelClearSelectedData , setCreateMeeting, selectedId, selectedTab, setSelected, isEdit, setIsEdit, setSelectedTab, setSelectedId } = useContext<MeetingContext>(MeetContext)
     const [selectedEmail, setSelectedEmail] = useState([])
@@ -74,7 +73,6 @@ const CreateMeetingForm = ({ defaultValue }: { defaultValue: createMeetingFormDt
     },
         {
             onSuccess({ data }) {
-                console.log(data?.[0]?._id)
                 toast.success("Created SucessFully")
                 // router?.push(`/meet/room?id=${data?.[0]?._id}`)
                 handelClose()
@@ -90,7 +88,6 @@ const CreateMeetingForm = ({ defaultValue }: { defaultValue: createMeetingFormDt
     },
         {
             onSuccess({ data }) {
-                console.log(data?.[0]?._id);
                 handelClose()
                 toast.success("Updated SucessFully")
             },
@@ -101,7 +98,6 @@ const CreateMeetingForm = ({ defaultValue }: { defaultValue: createMeetingFormDt
     )
 
     const onSubmit = (data: any) => {
-        console.log(data)
         if (isEdit) {
             postUpdateMeeting(data)
         } else {

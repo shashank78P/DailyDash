@@ -99,6 +99,10 @@ const routeSlice = createSlice({
             console.log({ currentActiveIndex, closingWindowIndex })
             console.log(currentActiveIndex == closingWindowIndex, currentActiveIndex == 0)
 
+            if(state.currentRouter?.length == 1){
+                return;
+            }
+
             if (currentActiveIndex === closingWindowIndex && currentActiveIndex != 0) {
                 state.currentRouter[0].isActive = true;
                 state.currentRouterIndex = 1;

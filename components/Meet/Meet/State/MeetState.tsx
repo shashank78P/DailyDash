@@ -1,4 +1,3 @@
-import QueryObject from "../../QueryObject";
 import { scheduledMeetingDto } from "../../types";
 import MeetContext from "./MeetContext";
 import React, { ReactNode, useState } from 'react'
@@ -22,9 +21,6 @@ const MeetState = ({ children }: Props) => {
         setSelected(null)
     }
 
-    QueryObject(
-        { show, setShow, isEdit, setIsEdit, selectedTab, setSelectedTab, createMeeting, setCreateMeeting, selectedId, setSelectedId, search, setSearch, rows, setRows, page, setPage, status, setStatus }
-    )
     return (
         <MeetContext.Provider value={{
             show, setShow,

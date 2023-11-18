@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation';
 import AuthMe from '../components/Provider/AuthMe';
 import SocketProvider from '@/components/context/SocketProvider';
 import DndProvider from '../components/Provider/DndProvider';
+import RouteStateHandler from '@/components/RouteStateHandler/routeStateHandler';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -42,6 +43,7 @@ export default function RootLayout({
             <DndProvider>
               <ReactQueryProvider>
                 <AuthMe />
+                <RouteStateHandler />
                 <body className={inter.className}>
                   <div className='flex w-[100vw] h-screen max-h-screen justify-center items-center overflow-hidden'>
                     <ToastContainer />

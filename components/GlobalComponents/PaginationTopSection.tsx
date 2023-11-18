@@ -32,7 +32,6 @@ const PaginationTopSection = ({ setStatus, search, setRows, setSearch, rows, sta
                     <input
                         value={rows}
                         onChange={(e: any) => {
-                            console.log(e?.target?.value)
                             if (e?.target?.value > 0) {
                                 setRows(e?.target?.value)
                             } else if (e?.target?.value > 0 === null || e?.target?.value > 0 === undefined || e?.target?.value === "") {

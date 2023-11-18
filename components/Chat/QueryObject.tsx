@@ -1,6 +1,6 @@
 "use client"
 import { useSearchParams } from 'next/navigation'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { routeAction } from '../store/slice/router_slice';
@@ -26,6 +26,8 @@ const QueryObject = ({ selectedTab,
     const router2 = useRouter()
     const { currentRouter, currentRouterIndex } = useSelector((state: any) => state.routeSliceReducer)
     const dispatch = useDispatch();
+    const [isMountFirst, setIsMountFirst] = useState(true)
+
 
     function setAllBooleanValueToFalse() {
         setThreeDotIsOpen(false)
@@ -71,43 +73,7 @@ const QueryObject = ({ selectedTab,
         }
     }
 
-    useEffect(() => {
-        console.log({ currentRouter, currentRouterIndex })
-        if (currentRouterIndex == 0) {
-            return;
-        }
-        let { route, query } = currentRouter?.[currentRouterIndex - 1];
-        console.log({ route, query })
-
-        if (route != "/chat") {
-            return;
-        }
-        console.log("getting data fom redux store")
-        console.log(currentRouterIndex)
-
-        query = query.slice(1);
-        console.log(query)
-        query = query.split("&");
-        console.log(query)
-        setAllBooleanValueToFalse()
-
-        query.map((ele: string, i: number) => {
-            console.log(ele)
-            if (ele != "") {
-                const temp = ele?.split("=");
-                setValue(temp[0], temp[1])
-            }
-        })
-    }, [currentRouter, currentRouterIndex])
-
-    useEffect(() => {
-        router.forEach((value, key) => {
-            console.log({ key, value })
-            setValue(key, value)
-        })
-    }, [])
-
-    useEffect(() => {
+    function constructUrl() {
         console.log("constructing query")
         console.log("fetching data from url")
         let constructQueryString = "";
@@ -150,7 +116,54 @@ const QueryObject = ({ selectedTab,
 
         router2.replace(`/chat?${constructQueryString}`);
         console.log(constructQueryString)
-    }, [selectedChat?.opponentId, selectedChat?.belongsTo,chatLeftSearch, router2, isEmojiOpen , ThreeDotIsOpen, ThreeDotActionResult, isViewProfile, refetchList, selectedTab, isSearch]);
+    }
+
+    useEffect(() => {
+        console.log({ currentRouter, currentRouterIndex })
+        if (currentRouterIndex == 0) {
+            return;
+        }
+        let { route, query } = currentRouter?.[currentRouterIndex - 1];
+        console.log({ route, query })
+
+        if (route != "/chat") {
+            return;
+        }
+        console.log("getting data fom redux store")
+        console.log(currentRouterIndex)
+
+        query = query.slice(1);
+        console.log(query)
+        query = query.split("&");
+        console.log(query)
+        setAllBooleanValueToFalse()
+
+        query.map((ele: string, i: number) => {
+            console.log(ele)
+            if (ele != "") {
+                const temp = ele?.split("=");
+                setValue(temp[0], temp[1])
+            }
+        })
+        setIsMountFirst(false)
+    }, [currentRouter, currentRouterIndex])
+
+    useEffect(() => {
+        router.forEach((value, key) => {
+            console.log({ key, value })
+            setValue(key, value)
+        })
+    }, [])
+
+    useEffect(() => {
+        if (isMountFirst) {
+            return;
+        }
+        else {
+            constructUrl();
+            setIsMountFirst(false)
+        }
+    }, [selectedChat?.opponentId, selectedChat?.belongsTo, chatLeftSearch, router2, isEmojiOpen, ThreeDotIsOpen, ThreeDotActionResult, isViewProfile, refetchList, selectedTab, isSearch]);
 
     // useEffect(() => {
 

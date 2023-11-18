@@ -25,6 +25,7 @@ const Tab = ({ tabData, i }: { tabData: any, i: number }) => {
     }
 
     const returnicons = useCallback((isActive: boolean, endPoint: string) => {
+        console.log(endPoint)
         if (endPoint == "/" || title === "Home") {
             return <HomeIco width={20} height={20} color={isActive ? "white" : ""} />
         }

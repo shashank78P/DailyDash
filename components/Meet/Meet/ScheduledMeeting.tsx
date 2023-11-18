@@ -22,12 +22,9 @@ const ScheduledMeeting = () => {
             keepPreviousData: true,
             enabled: rows != null && page != null && search != null && status != null,
             onSuccess: (data) => {
-                console.log(data)
             }
         }
     )
-
-    console.log(process.env.FRONT_END_URL)
 
     return (
         <>
@@ -78,7 +75,6 @@ const ScheduledMeeting = () => {
                                             onClick={() => {
                                                 setShow(true)
                                                 setSelectedId(ele?._id)
-                                                console.log(setSelected)
                                                 setSelected(ele)
 
                                             }}
@@ -91,8 +87,8 @@ const ScheduledMeeting = () => {
                         }
                     </tbody>
                 </table>
-            </div>
             {!isLoading && <PaginationBottonSection setPage={setPage} totalCount={Math.ceil(data?.data?.total / Number(rows))} defaultPage={Number(page) + 1} />}
+            </div>
         </>
     )
 }

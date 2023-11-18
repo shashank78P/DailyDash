@@ -3,6 +3,7 @@ import React, { useContext, useState } from 'react'
 import CreateMeetingForm from './CreateMeetingForm'
 import MeetContext from './State/MeetContext'
 import { MeetingContext } from '../types'
+import QueryObject from '../QueryObject'
 
 export interface meetingDto {
     createMeeting: boolean,
@@ -11,7 +12,12 @@ export interface meetingDto {
 
 const TopBarAction = () => {
 
-    const { setCreateMeeting, handelClearSelectedData, selectedId, setIsEdit, setSelectedTab, createMeeting, isEdit, selected } = useContext<MeetingContext>(MeetContext)
+    const { page, rows, search, selectedTab, setPage, setRows, setSearch, setSelected, setSelectedId, setShow, setStatus, show, status, setCreateMeeting, handelClearSelectedData, selectedId, setIsEdit, setSelectedTab, createMeeting, isEdit, selected } = useContext<MeetingContext>(MeetContext)
+
+    QueryObject(
+        { show, setShow, isEdit, setIsEdit, selectedTab, setSelectedTab, createMeeting, setCreateMeeting, selectedId, setSelectedId, search, setSearch, rows, setRows, page, setPage, status, setStatus }
+    )
+
     return (
         <>
             {

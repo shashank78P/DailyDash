@@ -23,6 +23,8 @@ const TabSection = () => {
     //     }
     // }, [currentRouter,currentRouterIndex])
 
+    console.log(currentRouter)
+
     return (
         <>
             <div className='flex justify-start items-center w-full h-[50px] bg-transparent overflow-scroll scrollTracker'>

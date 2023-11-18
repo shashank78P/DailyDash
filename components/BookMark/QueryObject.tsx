@@ -1,6 +1,6 @@
 "use client"
 import { useSearchParams } from 'next/navigation'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { routeAction } from '../store/slice/router_slice';
@@ -26,6 +26,7 @@ const QueryObject = ({
     const router2 = useRouter()
     const { currentRouter, currentRouterIndex } = useSelector((state: any) => state.routeSliceReducer)
     const dispatch = useDispatch();
+    const [ isMountFirst , setIsMountFirst] = useState(true)
 
     function setValue(key: string, value: string) {
         console.log({ key, value })
@@ -75,7 +76,7 @@ const QueryObject = ({
                 break;
         }
     }
-    console.log({isCardView , rows , status})
+    console.log({ isCardView, rows, status })
 
     function setAllBooleanValueToFalse() {
         setShowInnerPage(false)
@@ -85,62 +86,69 @@ const QueryObject = ({
         setCreateBookMark(false)
     }
 
-    useEffect(() => {
-        console.log("getting data from url")
-        router.forEach((value, key) => {
-            console.log({ key, value })
-            setValue(key, value)
-        })
-    }, [])
-
-    useEffect(() => {
+    function constructUrl(){
         console.log("state changed")
         console.log("building query")
         let constructQueryString = "";
+        console.log(constructQueryString)
         if (Boolean(showInnerPage)) {
             constructQueryString = constructQueryString + `&showInnerPage=${showInnerPage}`
         }
+        console.log(constructQueryString)
         if (Boolean(isEdit)) {
             constructQueryString = constructQueryString + `&isEdit=${isEdit}`
         }
+        console.log(constructQueryString)
         if (Boolean(isCardView)) {
             console.log("isCardView")
             console.log(isCardView)
             constructQueryString = constructQueryString + `&isCardView=${isCardView}`
         }
+        console.log(constructQueryString)
         if (Boolean(createBookMark)) {
             constructQueryString = constructQueryString + `&createBookMark=${createBookMark}`
         }
+        console.log(constructQueryString)
         if (Boolean(selectedId)) {
             constructQueryString = constructQueryString + `&selectedId=${selectedId}`
         }
+        console.log(constructQueryString)
         if (Boolean(search)) {
             constructQueryString = constructQueryString + `&search=${search}`
         }
+        console.log(constructQueryString)
         if (Boolean(rows)) {
             constructQueryString = constructQueryString + `&rows=${rows}`
         }
+        console.log(constructQueryString)
         if (Boolean(page)) {
             constructQueryString = constructQueryString + `&page=${page}`
         }
+        console.log(constructQueryString)
         if (Boolean(status)) {
             constructQueryString = constructQueryString + `&status=${status}`
         }
+        console.log(constructQueryString)
         if (Boolean(openFilter)) {
             constructQueryString = constructQueryString + `&openFilter=${openFilter}`
         }
+        console.log(constructQueryString)
         if (Boolean(sortBy)) {
             constructQueryString = constructQueryString + `&sortBy=${sortBy}`
         }
+        console.log(constructQueryString)
         if (Boolean(sortOrder)) {
             constructQueryString = constructQueryString + `&sortOrder=${sortOrder}`
         }
+        console.log(constructQueryString)
         if (Boolean(fromDate)) {
             constructQueryString = constructQueryString + `&fromDate=${fromDate}`
         }
+        console.log(constructQueryString)
         if (Boolean(toDate)) {
             constructQueryString = constructQueryString + `&toDate=${toDate}`
         }
+        console.log(constructQueryString)
 
         dispatch(routeAction?.changeCurrentRouter({
             route: "/bookmark",
@@ -149,16 +157,7 @@ const QueryObject = ({
         }))
 
         router2.replace(`/bookmark?${constructQueryString}`);
-        console.log(constructQueryString)
-    }, [showInnerPage, isEdit, isCardView, createBookMark, selectedId, search, rows, page, status, openFilter, sortBy, sortOrder, fromDate, toDate]);
-    // useEffect(() => {
-
-    // }, [
-    //     ThreeDotIsOpen,
-    //     ThreeDotActionResult,
-    //     isViewProfile,
-    //     refetchList
-    // ])
+    }
 
     useEffect(() => {
         console.log({ currentRouter, currentRouterIndex })
@@ -187,7 +186,37 @@ const QueryObject = ({
                 setValue(temp[0], temp[1])
             }
         })
+        setIsMountFirst(false)
     }, [currentRouter, currentRouterIndex])
+
+    // useEffect(() => {
+    //     console.log("getting data from url")
+    //     router.forEach((value, key) => {
+    //         console.log({ key, value })
+    //         setValue(key, value)
+    //     })
+    // }, [])
+
+
+    useEffect(() => {
+
+        if(isMountFirst){
+            return;
+        }
+        else{
+            constructUrl();
+            setIsMountFirst(false)
+        }
+        
+    }, [showInnerPage, isEdit, isCardView, createBookMark, selectedId, search, rows, page, status, openFilter, sortBy, sortOrder, fromDate, toDate]);
+    // useEffect(() => {
+
+    // }, [
+    //     ThreeDotIsOpen,
+    //     ThreeDotActionResult,
+    //     isViewProfile,
+    //     refetchList
+    // ])
     return (
         <>
 
