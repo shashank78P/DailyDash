@@ -4,18 +4,52 @@ import { useForm } from 'react-hook-form';
 import { personalInfoDto } from './types';
 import PencileIco from '../assets/PencileIco';
 import CrossIco from '../assets/CrossIco';
+import { useMutation, useQuery } from 'react-query';
+import api from '../lib/api';
+import { toast } from 'react-toastify';
+import { ExtractDateParamenters } from '../GlobalComponents/FormateDate1';
+import { Oval } from 'react-loader-spinner';
 
 const PersonalInfo = () => {
     const [isEdit, setIsEdit] = useState<boolean>(false);
-    const { register, handleSubmit, formState: { errors }, getValues, reset } = useForm<personalInfoDto>({
-        defaultValues: {
-            firstName: "shashi",
-            lastName: "p"
-        }
-    });
-    const onSubmit = async (data: any) => {
+    const { register, handleSubmit, formState: { errors }, getValues, setValue, reset } = useForm<personalInfoDto>({ defaultValues: {} });
 
+    const { mutate: updateMineDetails  , isLoading : isUpdateLoading} = useMutation((data) => {
+        return api.put("/users/updateMineDetails", data)
+    },
+        {
+            onSuccess({ data }) {
+                toast.success("Updated successfully")
+                refetch()
+                setIsEdit(false)
+            },
+            onError(err: any) {
+                toast.error(err?.response?.data?.message)
+            }
+        }
+    )
+
+    const { refetch , isLoading} = useQuery(["mineDetails"], () => {
+        return api.get("/users/getMineDetails")
+    },
+        {
+            onSuccess({ data }) {
+                setValue("firstName", data?.firstName ?? "")
+                setValue("lastName", data?.lastName ?? "")
+                const { givenDate, givenMonth, givenYear }: any = ExtractDateParamenters(data?.dob)
+                // @ts-ignore
+                setValue("dob", `${givenYear}-${givenMonth}-${givenDate}`)
+                setValue("email", data?.email ?? "")
+                setValue("address", data?.address ?? "")
+            }
+        }
+    )
+
+
+    const onSubmit = async (data: any) => {
+        updateMineDetails(data)
     }
+
     return (
         <div className='border-2 border-slate-400 border-dashed  rounded-xl m-4 p-4'>
             <section className='flex justify-between items-center mb-2'>
@@ -107,16 +141,16 @@ const PersonalInfo = () => {
                             <input
                                 type='date'
                                 readOnly={!isEdit}
-                                placeholder='mm/dd/yyyy'
+                                // placeholder='mm/dd/yyyy'
                                 className={`w-full  mt-1 p-2 border border-slate-300   rounded-lg ${isEdit ? "" : " cursor-pointer "}`}
 
                                 {...register(
-                                    "DOB",
+                                    "dob",
                                 )}
                             />
-                            {errors.DOB && (
+                            {errors.dob && (
                                 <p className="text-sm text-red-500 mt-2">
-                                    {errors.DOB.message}
+                                    {errors.dob.message}
                                 </p>
                             )}
                         </div>
@@ -138,11 +172,14 @@ const PersonalInfo = () => {
                     </div>
 
                     {isEdit && <div className=' w-full flex justify-start gap-5 items-center mb-4'>
-                        <input
-                            className='ml-[auto] border bg-purple-700 p-2 rounded-lg text-white px-4'
-                            type="submit"
-                            value="Save"
-                        />
+                        {
+                            (isUpdateLoading || isLoading) ? <Oval  color='#7e22ce' secondaryColor='#7e22ce' width={20} height={20}/> :
+                            <input
+                                className='ml-[auto] border bg-purple-700 p-2 rounded-lg text-white px-4 cursor-pointer'
+                                type="submit"
+                                value="Save"
+                            />
+                        }
                     </div>}
                 </section>
             </form>

@@ -3,7 +3,7 @@ import { useQuery } from 'react-query'
 import api from '../lib/api'
 
 const UserPic = ({ userId , height ,width}: { userId: string , width :number , height : number}) => {
-    const { data , isLoading } = useQuery(["userProfilePic"] , ()=>{
+    const { data , isLoading } = useQuery(["userProfilePic", userId] , ()=>{
         return api?.get(`/users/get-user-profile-pic?_id=${userId}`)
     },
     {
@@ -14,7 +14,7 @@ const UserPic = ({ userId , height ,width}: { userId: string , width :number , h
     )
     return (
         <>
-            <img src={data?.data?.profilePic } width={width} height={height}  alt="" className={` w-[${width}px] h-[${height}px] rounded-full`}/>
+            <img src={data?.data?.profilePic ?? "images/DefaultUser2.png" } width={width} height={height}  alt="" className={` w-[${width}px] h-[${height}px] rounded-full`}/>
         </>
     )
 }

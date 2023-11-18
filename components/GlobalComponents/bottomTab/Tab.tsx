@@ -12,8 +12,10 @@ import { routeAction } from '@/components/store/slice/router_slice'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/navigation'
+import UserPic from '../UserPic'
 
 const Tab = ({ tabData, i }: { tabData: any, i: number }) => {
+    const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const { currentRouter, currentRouterIndex } = useSelector((state: any) => state.routeSliceReducer)
     const [title, setTitle] = useState<String>("");
     const [icon, setIcon] = useState<any>("");
@@ -38,6 +40,9 @@ const Tab = ({ tabData, i }: { tabData: any, i: number }) => {
         if (endPoint == "/bookmark" || title === "Bookmark") {
             return <BookMark width={20} height={20} color={isActive ? "white" : ""} />
         }
+        if (endPoint == "/profile" || title === "Profile") {
+            return userSelector?.userId && <UserPic userId={userSelector?.userId} width={25} height={25} />
+        }
         // if (title === "Note") {
         //     return <NoteIco width={20} height={20} color={''} />
         // }
@@ -47,7 +52,7 @@ const Tab = ({ tabData, i }: { tabData: any, i: number }) => {
         // if (title === "Dynamic Form") {
         //     return <DynamicForm width={20} height={20} color={''} />
         // }
-    }, [])
+    }, [userSelector?.userId])
 
     // useEffect(() => {
     //     if (tabData?.route == "/") {

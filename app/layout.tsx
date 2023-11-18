@@ -16,7 +16,6 @@ import DndProvider from '../components/Provider/DndProvider';
 import RouteStateHandler from '@/components/RouteStateHandler/routeStateHandler';
 
 const inter = Inter({ subsets: ['latin'] })
-
 // export const metadata = {
 //   title: 'Daily Dash',
 //   description: 'next app',

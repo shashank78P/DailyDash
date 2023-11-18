@@ -104,7 +104,7 @@ const SideBarList = () => {
                             }}
                         >
                             <Link href={'/profile'} className='flex items-center cursor-pointer'>
-                                <UserPic userId={userSelector?.userId} width={25} height={25} />
+                                {userSelector?.userId && <UserPic userId={userSelector?.userId} width={30} height={30} />}
                                 {/* <SettingsIco width={25} height={25} color={pathname === '/profile' ? "white" : "#202124"} /> */}
                             </Link>
                         </li>

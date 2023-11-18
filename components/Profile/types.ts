@@ -1,7 +1,7 @@
 export type personalInfoDto = {
     firstName : string
     lastName : string
-    DOB : Date
+    dob : Date
     email : string
     address : string
 }
