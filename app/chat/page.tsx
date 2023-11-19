@@ -31,6 +31,7 @@ const Page = () => {
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const { socket }: any = useContext(SocketContext);
     const [selectedTab, setSelectedTab] = useState<string>("chat");
+    const [typingMessage, setTypingMessage] = useState<string>("");
     const [isSearch, setIsSearch] = useState<boolean>(false)
     const [chatLeftSearch, setChatLeftSearch] = useState<string>("");
     const [ThreeDotIsOpen, setThreeDotIsOpen] = useState<boolean>(false);
@@ -46,7 +47,7 @@ const Page = () => {
     })
 
     // chat
-    const [selectedChat, setSelectedChat] = useState<selecteChatDto>({ opponentId: "", opponentPic: "", opponentName: "", belongsTo: "", type: "" });
+    const [selectedChat, setSelectedChat] = useState<selecteChatDto>({ opponentId: "", opponentPic: "", opponentName: "", belongsTo: "", type: "", isOnline: false });
     const { data, isLoading, refetch: refetchUnReadMessages } = useQuery(["getUnReadMessagesCount"], () => {
         return api.get(`/chats/getUnReadMessagesCount`)
     },
@@ -64,12 +65,60 @@ const Page = () => {
             refetchOnMount: false,
         }
     )
-    socket?.on(`${userSelector?.userId}ChatNotification`, (msg: any) => {
-        refetchUnReadMessages()
-    });
-    socket?.on('connect', () => {
-        console.log("connected = " + socket.id);
-    })
+
+    useEffect(() => {
+        socket?.on(`${userSelector?.userId}ChatNotification`, (msg: any) => {
+            refetchUnReadMessages()
+        });
+
+        return socket?.off(`${userSelector?.userId}ChatNotification`, (msg: any) => {
+            refetchUnReadMessages()
+        });
+    }, [refetchUnReadMessages, userSelector?.userId])
+
+
+
+    useEffect(() => {
+        socket?.on('connect', () => {
+            console.log("connected = " + socket.id);
+        })
+
+        return () => {
+            socket?.off('connect', () => {
+            })
+        }
+    }, [])
+
+    useEffect(() => {
+        socket?.on(`${userSelector?.userId}typing`, (data: { type: string, status: string }) => {
+            if (data?.status === "STARTED") {
+                setTypingMessage(`typing...`)
+            } else {
+                setTypingMessage("")
+            }
+        })
+
+        socket?.on(`${selectedChat?.belongsTo?.toString()}typing`, (data: { type: string, status: string }) => {
+            console.log("typing group")
+            if(data?.type != "GROUP"){
+                return;
+            }
+            if (data?.status === "STARTED") {
+                setTypingMessage(`Some one typing...`)
+            } else {
+                setTypingMessage("")
+            }
+        })
+        
+        return () => {
+            socket?.off(`${userSelector?.userId}typing`, () => {
+                setTypingMessage("")
+            })
+            socket?.off(`${selectedChat?.belongsTo}typing`, () => {
+                setTypingMessage("")
+            })
+        }
+    }, [selectedChat?.belongsTo, userSelector?.userId])
 
     useEffect(() => {
         refetchUnReadMessages()
@@ -91,7 +140,8 @@ const Page = () => {
             setSelectedChat,
             isSearch, setIsSearch,
             chatLeftSearch, setChatLeftSearch,
-            isEmojiOpen, setIsEmojiOpen
+            isEmojiOpen, setIsEmojiOpen,
+            typingMessage, setTypingMessage
         }
     )
 
@@ -114,7 +164,7 @@ const Page = () => {
                             <ChatLeftTopNav
                                 open={ThreeDotIsOpen}
                                 setOpen={setThreeDotIsOpen}
-                                setChatLeftSearch={setChatLeftSearch} chatLeftSearch={chatLeftSearch}                            />
+                                setChatLeftSearch={setChatLeftSearch} chatLeftSearch={chatLeftSearch} />
                             <ChatOptions
                                 setSelectedTab={setSelectedTab}
                                 selectedTab={selectedTab}
@@ -122,8 +172,8 @@ const Page = () => {
                             />
                         </div>
                         <div className='h-[50%] overflow-y-scroll' style={{ "height": "calc( 100% - 120px )" }}>
-                            {selectedTab == "chat" && <ChatUserList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} isViewProfile={isViewProfile} chatLeftSearch={chatLeftSearch} />}
-                            {selectedTab == "group_chat" && <ChatGroupList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} refetchUnReadMessages={refetchUnReadMessages} isViewProfile={isViewProfile} chatLeftSearch={chatLeftSearch} />}
+                            {selectedTab == "chat" && <ChatUserList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} isViewProfile={isViewProfile} chatLeftSearch={chatLeftSearch} setTypingMessage={setTypingMessage} />}
+                            {selectedTab == "group_chat" && <ChatGroupList selectedChat={selectedChat} setSelectedChat={setSelectedChat} refetchList={refetchList} refetchUnReadMessages={refetchUnReadMessages} isViewProfile={isViewProfile} chatLeftSearch={chatLeftSearch} setTypingMessage={setTypingMessage} />}
                             {/* {selectedTab == "call" && <CallList />} */}
                         </div>
                     </div>
@@ -139,6 +189,8 @@ const Page = () => {
                                     setIsSearch={setIsSearch}
                                     createMeeting={createMeeting}
                                     setCreateMeeting={setCreateMeeting}
+                                    typingMessage={typingMessage}
+                                    setTypingMessage={setTypingMessage}
                                 />
                                 <div className='grow w-full max-h-full overflow-y-scroll'>
                                     <ChatMessage
@@ -154,13 +206,13 @@ const Page = () => {
                                 <ChatActions
                                     selectedChat={selectedChat}
                                     socket={socket}
-                                    isEmojiOpen = {isEmojiOpen}
-                                    setIsEmojiOpen = {setIsEmojiOpen}
+                                    isEmojiOpen={isEmojiOpen}
+                                    setIsEmojiOpen={setIsEmojiOpen}
                                 />
                             </>
                         }
                         {
-                            selectedChat.opponentId !="" && isViewProfile && <>
+                            selectedChat.opponentId != "" && isViewProfile && <>
                                 <Profile
                                     setIsViewProfile={setIsViewProfile}
                                     selectedChat={selectedChat}

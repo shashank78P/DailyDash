@@ -107,6 +107,11 @@ const ChatActions = ({ selectedChat, socket, isEmojiOpen, setIsEmojiOpen }: Chat
                         className='w-full border p-2 text-base rounded-md placeholder:text-base'
                         value={message}
                         onChange={(e) => {
+                            if(e?.target?.value?.length == 0){
+                                socket?.emit("STOPED-TYPING" , { belongsTo : selectedChat?.opponentId , type : selectedChat?.type })
+                            }else{
+                                socket?.emit("STARTED-TYPING" , { belongsTo : selectedChat?.opponentId , type : selectedChat?.type })
+                            }
                             setMessage(e?.target?.value);
                         }}
                     />

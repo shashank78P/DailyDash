@@ -62,7 +62,7 @@ export default function Home() {
             setDefaultValue={setDefaultValue}
           />}
           <div className=" w-full sm:w-[500px] lg:w-[700px] ">
-            <h1 className={` ${philosopher.className} text-center my-2 text-5xl font-bold text-purple-700 mb-4`}>Daily Dash</h1>
+            <h1 className={` ${philosopher?.className} text-center my-2 text-5xl font-bold text-purple-700 mb-4`}>Daily Dash</h1>
             {/* <div className="w-full">
               <form
                 className="w-full flex items-center justify-center"

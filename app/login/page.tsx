@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { Oval } from 'react-loader-spinner';
 import { useMutation, useQuery } from 'react-query';
 import { toast } from 'react-toastify';
+import { philosopher } from '../philosopher';
 
 type LogInType = {
     email: string,
@@ -37,7 +38,7 @@ const Login = () => {
             className='flex justify-center items-center w-full h-[100%] backgroundeImage'
         >
             <div className='w-[90%] sm:w-[500px] border border-slate-500  p-5 text-white rounded-md backdrop-blur-md'>
-                <div className='mb-5 font-semibold text-xl sm:text-2xl text-center text-white'>Log In</div>
+                <div className={`mb-5 font-semibold text-xl sm:text-2xl text-center text-white ${philosopher?.className}`}>Log In</div>
                 <form onSubmit={handleSubmit(onSubmit)} className='mb-5 sm:text-xl'>
                     <div className=''>
                         <div

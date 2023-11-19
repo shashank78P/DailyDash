@@ -13,11 +13,13 @@ type ChatTopNavDto = {
     selectedChat: selecteChatDto,
     setIsViewProfile: any,
     setIsSearch: Function,
-    createMeeting : boolean, 
-    setCreateMeeting : Function,
+    createMeeting: boolean,
+    setCreateMeeting: Function,
+    typingMessage: string,
+    setTypingMessage: Function,
 }
 
-const ChatTopNav = ({ selectedChat, setIsViewProfile, setIsSearch ,createMeeting, setCreateMeeting}: ChatTopNavDto) => {
+const ChatTopNav = ({ selectedChat, setIsViewProfile, setIsSearch, createMeeting, setCreateMeeting, setTypingMessage, typingMessage }: ChatTopNavDto) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -49,7 +51,10 @@ const ChatTopNav = ({ selectedChat, setIsViewProfile, setIsSearch ,createMeeting
                 >
                     <ul>
                         <li className='mb-[2px]'>{selectedChat?.opponentName}</li>
-                        <li className='text-xs text-green-500 font-light'>Online</li>
+                        <li className='flex items-center'>
+                            {selectedChat?.isOnline && <span className='text-xs text-green-500 font-light mr-2 border-r border-transparent border-slate-500'>{"Online"}</span>}
+                            {typingMessage !== "" && <span className='text-xs text-purple-500 font-light mr-2'>{typingMessage}</span>}
+                        </li>
                     </ul>
                 </li>
                 <li>

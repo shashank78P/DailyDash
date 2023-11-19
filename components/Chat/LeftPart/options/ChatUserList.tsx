@@ -11,7 +11,7 @@ import { FormateDate1 } from '@/components/GlobalComponents/FormateDate1'
 import { SocketContext } from '@/components/context/SocketContext'
 
 
-const ChatUserList = ({ selectedChat, setSelectedChat, refetchList, isViewProfile, chatLeftSearch }: ChatUserListDto) => {
+const ChatUserList = ({ selectedChat, setSelectedChat, refetchList, isViewProfile, chatLeftSearch , setTypingMessage}: ChatUserListDto) => {
 
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const { socket }: any = useContext(SocketContext);
@@ -29,6 +29,7 @@ const ChatUserList = ({ selectedChat, setSelectedChat, refetchList, isViewProfil
                                 opponentPic: ele?.opponentPic,
                                 opponentName: ele?.opponentName,
                                 belongsTo: ele?.belongsTo,
+                                isOnline: ele?.isOnline,
                                 type: "INDIVIDUAL"
                             })
                         }
@@ -69,11 +70,13 @@ const ChatUserList = ({ selectedChat, setSelectedChat, refetchList, isViewProfil
                                 <ul
                                     key={i}
                                     onClick={() => {
+                                        setTypingMessage("")
                                         setSelectedChat({
                                             opponentId: ele?.opponentId,
                                             opponentPic: ele?.opponentPic,
                                             opponentName: ele?.opponentName,
                                             belongsTo: ele?.belongsTo,
+                                            isOnline: ele?.isOnline,
                                             type: "INDIVIDUAL"
                                         })
                                     }}

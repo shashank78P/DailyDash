@@ -19,7 +19,8 @@ const QueryObject = ({ selectedTab,
     setSelectedChat,
     isSearch, setIsSearch,
     chatLeftSearch, setChatLeftSearch,
-    isEmojiOpen, setIsEmojiOpen
+    isEmojiOpen, setIsEmojiOpen,
+    typingMessage , setTypingMessage
 }: any) => {
 
     const router = useSearchParams()
@@ -69,6 +70,9 @@ const QueryObject = ({ selectedTab,
                 break;
             case "isEmojiOpen":
                 setIsEmojiOpen(value)
+                break; 
+            case "typingMessage":
+                setTypingMessage(value)
                 break;
         }
     }
@@ -106,6 +110,9 @@ const QueryObject = ({ selectedTab,
         }
         if (Boolean(isEmojiOpen)) {
             constructQueryString = constructQueryString + `&isEmojiOpen=${isEmojiOpen}`
+        }
+        if (Boolean(typingMessage)) {
+            constructQueryString = constructQueryString + `&typingMessage=${typingMessage}`
         }
 
         dispatch(routeAction?.changeCurrentRouter({
@@ -163,7 +170,7 @@ const QueryObject = ({ selectedTab,
             constructUrl();
             setIsMountFirst(false)
         }
-    }, [selectedChat?.opponentId, selectedChat?.belongsTo, chatLeftSearch, router2, isEmojiOpen, ThreeDotIsOpen, ThreeDotActionResult, isViewProfile, refetchList, selectedTab, isSearch]);
+    }, [selectedChat?.opponentId, selectedChat?.belongsTo, chatLeftSearch, router2, isEmojiOpen, ThreeDotIsOpen, ThreeDotActionResult, isViewProfile, refetchList, selectedTab, isSearch , typingMessage]);
 
     // useEffect(() => {
 

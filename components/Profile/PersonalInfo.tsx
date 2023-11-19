@@ -9,6 +9,7 @@ import api from '../lib/api';
 import { toast } from 'react-toastify';
 import { ExtractDateParamenters } from '../GlobalComponents/FormateDate1';
 import { Oval } from 'react-loader-spinner';
+import { philosopher } from '@/app/philosopher';
 
 const PersonalInfo = () => {
     const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -53,7 +54,7 @@ const PersonalInfo = () => {
     return (
         <div className='border-2 border-slate-400 border-dashed  rounded-xl m-4 p-4'>
             <section className='flex justify-between items-center mb-2'>
-                <h1 className='font-bold text-xl text-purple-700'>Personal Info</h1>
+                <h1 className={`font-bold text-xl text-purple-700 ${philosopher?.className} `}>Personal Info</h1>
                 {
                     !isEdit ?
                         <div className='border border-purple-600 p-1 px-2 rounded-lg cursor-pointer'
@@ -79,11 +80,11 @@ const PersonalInfo = () => {
                     {/* row */}
                     <div className=' w-full grid grid-cols-1 sm:grid-cols-2  gap-4 items-center mb-4'>
                         <div className="w-full " >
-                            <label className=' font-light text-slate-500' >First Name</label><br />
+                            <label className='text-lg font-light text-slate-600' >First Name</label><br />
                             <input
                                 type='text'
                                 readOnly={!isEdit}
-                                className={`w-full  mt-1 p-2 border border-slate-300   rounded-lg ${isEdit ? "" : " cursor-pointer "}`}
+                                className={`w-full  mt-1 p-2 border border-slate-300 text-base   rounded-lg ${isEdit ? "" : " cursor-pointer "}`}
                                 {...register(
                                     "firstName",
                                     {
@@ -97,11 +98,11 @@ const PersonalInfo = () => {
                             )}
                         </div>
                         <div className="w-full ">
-                            <label className=' font-light text-slate-500'>Last Name</label><br />
+                            <label className='text-lg font-light text-slate-600'>Last Name</label><br />
                             <input
                                 type='text'
                                 readOnly={!isEdit}
-                                className={`w-full  mt-1 p-2 border border-slate-300   rounded-lg ${isEdit ? "" : " cursor-pointer "} `}
+                                className={`w-full  mt-1 p-2 border border-slate-300 text-base   rounded-lg ${isEdit ? "" : " cursor-pointer "} `}
                                 {...register(
                                     "lastName",
                                     {
@@ -119,11 +120,11 @@ const PersonalInfo = () => {
                     {/* row */}
                     <div className=' w-full grid grid-cols-1 sm:grid-cols-2  gap-4 items-center mb-4'>
                         <div className="w-full " >
-                            <label className=' font-light text-slate-500' >Email</label><br />
+                            <label className='text-lg font-light text-slate-600' >Email</label><br />
                             <input
                                 type='email'
                                 readOnly={!isEdit}
-                                className={`w-full  mt-1 p-2 border border-slate-300   rounded-lg ${isEdit ? "" : " cursor-pointer "}`}
+                                className={`w-full  mt-1 p-2 border border-slate-300 text-base   rounded-lg ${isEdit ? "" : " cursor-pointer "}`}
                                 {...register(
                                     "email",
                                     {
@@ -137,12 +138,12 @@ const PersonalInfo = () => {
                             )}
                         </div>
                         <div className="w-full ">
-                            <label className=' font-light text-slate-500'>DOB</label><br />
+                            <label className='text-lg font-light text-slate-600'>DOB</label><br />
                             <input
                                 type='date'
                                 readOnly={!isEdit}
                                 // placeholder='mm/dd/yyyy'
-                                className={`w-full  mt-1 p-2 border border-slate-300   rounded-lg ${isEdit ? "" : " cursor-pointer "}`}
+                                className={`w-full  mt-1 p-2 border border-slate-300 text-base   rounded-lg ${isEdit ? "" : " cursor-pointer "}`}
 
                                 {...register(
                                     "dob",
@@ -159,10 +160,10 @@ const PersonalInfo = () => {
                     {/* row */}
                     <div className=' w-full flex justify-start gap-5 items-center mb-4'>
                         <div className="w-full " >
-                            <label className=' font-light text-slate-500' >Address</label><br />
+                            <label className='text-lg font-light text-slate-600' >Address</label><br />
                             <textarea
                                 readOnly={!isEdit}
-                                className={`w-full  mt-1 p-2 border border-slate-300   rounded-lg ${isEdit ? "" : " cursor-pointer "}`}
+                                className={`w-full  mt-1 p-2 border border-slate-300 text-base   rounded-lg ${isEdit ? "" : " cursor-pointer "}`}
 
                                 {...register(
                                     "address",

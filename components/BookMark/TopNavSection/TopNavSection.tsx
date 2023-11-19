@@ -7,6 +7,7 @@ import React, { useContext } from 'react'
 import { BookMarkContextDto } from '../types'
 import BookMarkContext from '../state/BookMarkContext'
 import Filter from '@/components/GlobalComponents/Filter'
+import { philosopher } from '@/app/philosopher'
 
 const TopNavSection = () => {
     const { openFilter, setOpenFilter, isCardView, setIsCardView, setRows, rows, search, setSearch, selectedTab, setSelectedTab, setCreateBookMark, setStatus, status, sortBy,
@@ -35,7 +36,7 @@ const TopNavSection = () => {
             <div className='w-full pt-2'>
                 <ul className='flex justify-between items-center'>
                     <li>
-                        <span className=' mr-2 text-lg'>BookMarks</span>
+                        <span className={`${philosopher?.className} mr-2 font-bold text-2xl text-purple-700`}>BookMarks</span>
                         {/* <select className='text-lg bg-transparent'
                             onClick={(e: any) => {
                                 setSelectedTab(e?.target?.value)

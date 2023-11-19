@@ -4,6 +4,7 @@ export type selecteChatDto = {
     opponentName: String,
     belongsTo: string,
     type: string,
+    isOnline: boolean,
 }
 
 export type ChatUserListDto = {
@@ -12,7 +13,8 @@ export type ChatUserListDto = {
     refetchList : any
     refetchUnReadMessages? : any,
     isViewProfile : Boolean,
-    chatLeftSearch:string
+    chatLeftSearch:string,
+    setTypingMessage: Function
 }
 
 export type ChatMessageDto = {

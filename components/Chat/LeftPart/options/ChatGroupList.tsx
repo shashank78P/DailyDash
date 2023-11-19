@@ -11,7 +11,7 @@ import VideoICameraIco from '@/components/assets/VideoICameraIco';
 import VoiceMikeIco from '@/components/assets/VoiceMikeIco';
 import NoteIco from '@/components/assets/NoteIco';
 
-const ChatGroupList = ({ selectedChat, setSelectedChat, refetchList, refetchUnReadMessages, isViewProfile, chatLeftSearch }: ChatUserListDto) => {
+const ChatGroupList = ({ selectedChat, setSelectedChat, refetchList, refetchUnReadMessages, isViewProfile, chatLeftSearch,setTypingMessage }: ChatUserListDto) => {
     const limit = 50;
     const [skip, setSkip] = useState(0)
     const { socket }: any = useContext(SocketContext);
@@ -102,6 +102,7 @@ const ChatGroupList = ({ selectedChat, setSelectedChat, refetchList, refetchUnRe
                                 <ul
                                     key={i}
                                     onClick={() => {
+                                        setTypingMessage("");
                                         setSelectedChat({
                                             opponentId: ele?.belongsTo,
                                             opponentPic: ele?.groupProfilePic,
@@ -123,7 +124,7 @@ const ChatGroupList = ({ selectedChat, setSelectedChat, refetchList, refetchUnRe
                                             </li>
                                             <li className='flex justify-between items-start truncate'>
                                                 <span className='truncate w-48 text-sm font-normal text-slate-600 flex items-center'>{ele?.from == userSelector?.userId && 'you: '}{ele?.message || ele?.eventMessage || getFileTypeMessage(ele?.fileType)}</span>
-                                                {ele?.unReadMessageCount !== 0 && <span className='text-base font-semibold text-purple-500'>{ele?.unReadMessageCount > 100 ? "100+" : ele?.unReadMessageCount}</span>}
+                                                {ele?.unReadMessageCount !== 0 && <span className='text-base font-semibold text-white px-2 rounded-full bg-purple-500'>{ele?.unReadMessageCount > 100 ? "100+" : ele?.unReadMessageCount}</span>}
                                             </li>
                                         </ul>
                                     </li>

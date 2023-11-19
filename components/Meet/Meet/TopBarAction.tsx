@@ -4,6 +4,7 @@ import CreateMeetingForm from './CreateMeetingForm'
 import MeetContext from './State/MeetContext'
 import { MeetingContext } from '../types'
 import QueryObject from '../QueryObject'
+import { philosopher } from '@/app/philosopher'
 
 export interface meetingDto {
     createMeeting: boolean,
@@ -43,7 +44,7 @@ const TopBarAction = () => {
                     <ul className='w-full flex items-center flex-wrap'>
                         <li className={`text-xl font-medium cursor-pointer p-2 select-none ease-in transition-all ml-2 border border-b-2 border-transparent`}
                         >
-                            <span className={`text-slate-700 font-semibold `}>
+                            <span className={`text-purple-700 font-bold text-2xl ${philosopher?.className}`}>
                                 Meeting
                             </span>
                         </li>
