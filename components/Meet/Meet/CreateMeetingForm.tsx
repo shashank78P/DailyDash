@@ -106,7 +106,10 @@ const CreateMeetingForm = ({ defaultValue }: { defaultValue: createMeetingFormDt
     }
 
     const handelClose = () => {
+        console.log("handelClose")
         handelClearSelectedData()
+        setSelected({})
+        setSelectedId(null)
         if (createMeeting) {
             setCreateMeeting(false)
         }
@@ -211,7 +214,7 @@ const CreateMeetingForm = ({ defaultValue }: { defaultValue: createMeetingFormDt
                             )}
                         </div>
                         {whoCanJoin === "MANUALLY_ADDED" && <div
-                            className='flex flex-col mb-4'
+                            className='flex flex-col mb-4 text-sm'
                         >
                             <label className='text-lg mb-1 '>Add users email:</label>
                             <TagsInput

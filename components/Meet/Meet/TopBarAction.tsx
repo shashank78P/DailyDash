@@ -22,7 +22,7 @@ const TopBarAction = () => {
     return (
         <>
             {
-                <CreateMeetingForm defaultValue={isEdit ? {
+                (createMeeting || (isEdit && selectedId != null)) && <CreateMeetingForm defaultValue={isEdit ? {
                     description: selected?.description,
                     meetingDate: selected?.meetingDate,
                     meetingLength: `${selected?.meetingLength} ${selected?.meetingLengthPararmeter}`,

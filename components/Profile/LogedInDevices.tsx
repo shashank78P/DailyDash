@@ -100,7 +100,7 @@ const LogedInDevices = () => {
                         </div>
                       </li>
                       <li>
-                        <Link href={`${process.env.NEXT_PUBLIC_FRONT_END_URL}/block?email=${userSelector.email}&logInId=${ele?.logInId}`}>
+                        <Link href={`/block?email=${userSelector?.email}&logInId=${ele?.logInId}`}>
                           <CrossIco height={30} width={30} color='red' />
                         </Link>
                       </li>

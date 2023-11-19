@@ -5,11 +5,28 @@ interface Props {
     children: ReactNode
 }
 const MeetState = ({ children }: Props) => {
+    const defaultValue = {
+        participantsEmail: [],
+        createdAt: "",
+        createdBy: "",
+        createrName: "",
+        description: "",
+        meetingDate: "",
+        meetingEndingAt: "",
+        meetingId: "",
+        meetingLength: "",
+        meetingLengthPararmeter: "",
+        meetingStatus: "",
+        participantsCount: 0,
+        title: "",
+        whoCanJoin: "",
+        _id: "",
+    }
     const [show, setShow] = useState<boolean>(false)
     const [isEdit, setIsEdit] = useState<boolean>(false)
     const [selectedTab, setSelectedTab] = useState<number>(0);
     const [createMeeting, setCreateMeeting] = useState<boolean>(false);
-    const [selected, setSelected] = useState<scheduledMeetingDto | null>();
+    const [selected, setSelected] = useState<scheduledMeetingDto | null>(defaultValue);
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [search, setSearch] = useState<string | null>("")
     const [rows, setRows] = useState<string | number | null>(10)
@@ -17,8 +34,9 @@ const MeetState = ({ children }: Props) => {
     const [status, setStatus] = useState<string | null>("All")
 
     function handelClearSelectedData() {
-        setSelectedId(null)
-        setSelected(null)
+        console.log("handelClearSelectedData")
+        setSelectedId("")
+        setSelected(defaultValue)
     }
 
     return (
