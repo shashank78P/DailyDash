@@ -71,9 +71,11 @@ const Page = () => {
             refetchUnReadMessages()
         });
 
-        return socket?.off(`${userSelector?.userId}ChatNotification`, (msg: any) => {
-            refetchUnReadMessages()
-        });
+        return  ()=>{
+            socket?.off(`${userSelector?.userId}ChatNotification`, (msg: any) => {
+                refetchUnReadMessages()
+            });
+        }
     }, [refetchUnReadMessages, userSelector?.userId])
 
 
@@ -100,8 +102,8 @@ const Page = () => {
 
         socket?.on(`${selectedChat?.belongsTo?.toString()}typing`, (data: { type: string, status: string }) => {
             console.log("typing group")
-            if(data?.type != "GROUP"){
-                return;
+            if (data?.type != "GROUP") {
+                return ()=>{};
             }
             if (data?.status === "STARTED") {
                 setTypingMessage(`Some one typing...`)
@@ -109,7 +111,7 @@ const Page = () => {
                 setTypingMessage("")
             }
         })
-        
+
         return () => {
             socket?.off(`${userSelector?.userId}typing`, () => {
                 setTypingMessage("")

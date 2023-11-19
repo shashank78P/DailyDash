@@ -9,6 +9,7 @@ import { Oval } from 'react-loader-spinner';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 import { philosopher } from '../philosopher';
+import useRedirectToActiveTab from '@/components/GlobalComponents/useRedirectToActiveTab';
 
 type SignUpType = {
     firstName: string,
@@ -18,6 +19,7 @@ type SignUpType = {
 
 const SignUp = () => {
     const router = useRouter();
+    const [ redirect ] = useRedirectToActiveTab()
     const { mutate: sigup, isLoading } = useMutation(async (data: SignUpType) => await api.post("/log-in-details/signin", data));
     const { register, handleSubmit, formState: { errors }, getValues } = useForm<SignUpType>({});
     const onSubmit = (data: any) => {
@@ -26,7 +28,7 @@ const SignUp = () => {
         sigup(data, {
             onSuccess({ data }) {
                 toast.success(data)
-                router.push("/");
+                router.replace("/login")
             },
             onError(err: any) {
                 toast.error(err?.response?.data?.message)

@@ -6,6 +6,7 @@ import { useQuery } from 'react-query'
 import { MeetingContext, meetingStatusStyle, } from '../types'
 import MeetContext from './State/MeetContext'
 import Slider from '@/components/GlobalComponents/Slider'
+import Link from 'next/link'
 
 const InnerPage = () => {
     const {  setSelected,handelClearSelectedData, isEdit, setIsEdit, show, setShow, createMeeting, setCreateMeeting, selectedId, setSelectedId } = useContext<MeetingContext>(MeetContext)
@@ -102,7 +103,7 @@ const InnerPage = () => {
                     </div>
                     <div className='my-2 items-center flex'>
                         <div className='text-base w-1/3 font-medium mr-2 text-slate-900'>Link: </div>
-                        <div className='text-sm w-full text-slate-700 font-light'>{`${process.env.NEXT_PUBLIC_FRONT_END_URL}/meet/room?id=${selected?.data?.meetingId}`}</div>
+                        <Link href={`meet/room?id=${selected?.data?._id}`} className='text-sm w-full text-slate-700 font-light'>{`${process.env.NEXT_PUBLIC_FRONT_END_URL}/meet/room?id=${selected?.data?._id}`}</Link>
                     </div>
                     <div className='my-2 items-center flex'>
                         <div className='text-base w-1/3 font-medium mr-2 text-slate-900'>Description: </div>

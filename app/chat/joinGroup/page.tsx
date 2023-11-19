@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogActions } from '@mui/material'
 import { Oval } from 'react-loader-spinner';
 import { useSelector } from 'react-redux';
 import { SocketContext } from '@/components/context/SocketContext';
+import useRedirectToActiveTab from '@/components/GlobalComponents/useRedirectToActiveTab';
 
 const Page = () => {
     const userSelector = useSelector((state: any) => state?.userSliceReducer);
@@ -15,6 +16,8 @@ const Page = () => {
     const {socket}: any = useContext(SocketContext);
     const defaultUserPic = "/public/images/DefaultUser2.png"
     const params = useSearchParams();
+    const [ redirect ] = useRedirectToActiveTab()
+
     const { data, isLoading } = useQuery("joinGroup", () => {
         return api.get(`/chats/group-details-from-invite-link?token=${params?.get("token")}`)
     },
@@ -23,7 +26,7 @@ const Page = () => {
             },
             onError(err : any) {
                 toast.error(err?.response?.data?.message)
-                router.replace("/chat")
+                redirect()                
             }
         }
     )
@@ -38,15 +41,16 @@ const Page = () => {
                     const { userName } = data
                     socket.emit("GROUP", { event: { type: "JOIN", message: `${userName.toString()} is join a group via link ` }, messageType: "TEXT", belongsTo: data?._doc?.groupId, to: data?._doc?.groupId, userId: userSelector?.userId });
                     toast.success("Joined successfully")
-                    router.replace("/chat")
+                    redirect() 
                 }
             },
             onError(err : any) {
                 toast.error(err?.response?.data?.message)
-                router.replace("/chat")
+                redirect() 
             }
         }
     )
+
     return (
         <div className='min-w-[800px] w-[100vw - 50px] overflow-x-scroll md:overflow-hidden h-screen backgroundeImage'>
             <Dialog open={true}>

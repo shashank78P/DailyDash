@@ -35,7 +35,7 @@ const NewContact = ({ setThreeDotActionResult, ThreeDotActionResult, setSelected
                         onChange={(e: any) => {
                             setEmail(e?.target?.value);
                         }}
-                        className='w-[300px] border p-2 my-2 mb-2 rounded-lg text-sm'
+                        className=' min:w-[250px] w-[300px] border p-2 my-2 mb-2 rounded-lg text-sm'
                         autoFocus={true}
                     />
                     <p className='text-red-500 text-xs'>{error}</p>

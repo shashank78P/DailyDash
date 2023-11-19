@@ -1,13 +1,14 @@
 "use client"
 import api from "@/components/lib/api";
 import Link from "next/link";
-import { useSearchParams,useRouter } from "next/navigation";
+import { useSearchParams,useRouter, redirect } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Oval } from "react-loader-spinner";
 import { useMutation } from "react-query";
 import { toast } from "react-toastify";
 import { philosopher } from "../philosopher";
+import useRedirectToActiveTab from "@/components/GlobalComponents/useRedirectToActiveTab";
 
 type ResetPasswordType = {
     password: string,
@@ -17,6 +18,8 @@ type ResetPasswordType = {
 const ResetPassword = () => {
     const router = useRouter();
     const params = useSearchParams();
+    const [ redirect ] = useRedirectToActiveTab()
+
 
     const { mutate: passwordReset, isLoading } = useMutation(async (data: any) => await api.put("/log-in-details/reset-password", data));
 
@@ -37,7 +40,7 @@ const ResetPassword = () => {
             onSuccess(data) {
                 console.log(data)
                 toast.success(data?.data)
-                router.replace('/');   
+                router.replace("/login") 
             },
             onError(err : any) {
                 console.log({err})

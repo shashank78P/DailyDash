@@ -20,6 +20,48 @@ import ComputerIco from '../assets/ComputerIco'
 import MobileIco from '../assets/MobileIco'
 import { philosopher } from '@/app/philosopher'
 
+export function returnIco(os: string, browser: string) {
+  os = os?.toUpperCase()
+  browser = browser?.toUpperCase()
+
+  if (os == "WINDOWS" || os == "LINUX" || os == "MACOS") {
+    if (browser == "CHROME") {
+      return <ComputerChromeIco height={50} width={50} color='' />
+    }
+    if (browser == "EDGE") {
+      return <ComputerEdgeIco height={50} width={50} color='' />
+    }
+    if (browser == "FIREFOX") {
+      return <ComputerFireFoxIco height={50} width={50} color='' />
+    }
+    if (browser == "OPERA") {
+      return <ComputerOperaIco height={50} width={50} color='' />
+    }
+    if (browser == "SAFARI") {
+      return <ComputerSafariIco height={50} width={50} color='' />
+    }
+    return <ComputerIco width={50} height={50} />
+  }
+  if (os == "ANDROID" || os == "IOS") {
+    if (browser == "CHROME" || browser == "CHROME MOBILE") {
+      return <MobileChromeIco height={50} width={50} color='' />
+    }
+    if (browser == "EDGE") {
+      return <MobileEdgeIco height={50} width={50} color='' />
+    }
+    if (browser == "FIREFOX") {
+      return <MobileFireFoxIco height={50} width={50} color='' />
+    }
+    if (browser == "OPERA") {
+      return <MobileOperaIco height={50} width={50} color='' />
+    }
+    if (browser == "SAFARI") {
+      return <MobileSafariIco height={50} width={50} color='' />
+    }
+    return <MobileIco width={50} height={50} />
+  }
+}
+
 const LogedInDevices = () => {
   const userSelector = useSelector((state: any) => state?.userSliceReducer);
 
@@ -30,48 +72,6 @@ const LogedInDevices = () => {
       keepPreviousData: true
     }
   )
-
-  function returnIco(os: string, browser: string) {
-    os = os?.toUpperCase()
-    browser = browser?.toUpperCase()
-
-    if (os == "WINDOWS" || os == "LINUX" || os == "MACOS") {
-      if (browser == "CHROME") {
-        return <ComputerChromeIco height={50} width={50} color='' />
-      }
-      if (browser == "EDGE") {
-        return <ComputerEdgeIco height={50} width={50} color='' />
-      }
-      if (browser == "FIREFOX") {
-        return <ComputerFireFoxIco height={50} width={50} color='' />
-      }
-      if (browser == "OPERA") {
-        return <ComputerOperaIco height={50} width={50} color='' />
-      }
-      if (browser == "SAFARI") {
-        return <ComputerSafariIco height={50} width={50} color='' />
-      }
-      return <ComputerIco width={50} height={50} />
-    }
-    if (os == "ANDROID" || os == "IOS") {
-      if (browser == "CHROME" || browser == "CHROME MOBILE") {
-        return <MobileChromeIco height={50} width={50} color='' />
-      }
-      if (browser == "EDGE") {
-        return <MobileEdgeIco height={50} width={50} color='' />
-      }
-      if (browser == "FIREFOX") {
-        return <MobileFireFoxIco height={50} width={50} color='' />
-      }
-      if (browser == "OPERA") {
-        return <MobileOperaIco height={50} width={50} color='' />
-      }
-      if (browser == "SAFARI") {
-        return <MobileSafariIco height={50} width={50} color='' />
-      }
-      return <MobileIco width={50} height={50} />
-    }
-  }
 
   return (
     <>

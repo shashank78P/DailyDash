@@ -88,7 +88,7 @@ const NewGroup = ({ setThreeDotActionResult, ThreeDotActionResult }: ThreeDotAct
                                 setNewGroupName(e?.target?.value)
                             }}
                             placeholder='Enter group name'
-                            className='w-[300px] border p-2 my-2 mb-2 rounded-lg placeholder:text-sm placeholder:text-slate-500'
+                            className='min:w-[250px] w-[300px] border p-2 my-2 mb-2 rounded-lg placeholder:text-sm placeholder:text-slate-500'
                             autoFocus={true} />
                         {/* <br /> */}
                         <p className='text-red-500 text-xs mb-2'>{message}</p>

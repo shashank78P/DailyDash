@@ -91,13 +91,13 @@ const ChatGroupList = ({ selectedChat, setSelectedChat, refetchList, refetchUnRe
                     next={() => {
 
                     }}
-                    hasMore={true}
+                    hasMore={false}
                     loader={<div className='m-2'><Oval height={20} width={20} color='#7e22ce' /></div>}
                     scrollableTarget="id"
                 // inverse={true}
                 >
                     {
-                        Array.isArray(data?.data) && data?.data?.map((ele: any, i: number) => {
+                        Array.isArray(data?.data) && data?.data && (data?.data?.length > 0) ? data?.data?.map((ele: any, i: number) => {
                             return (
                                 <ul
                                     key={i}
@@ -130,8 +130,10 @@ const ChatGroupList = ({ selectedChat, setSelectedChat, refetchList, refetchUnRe
                                     </li>
                                 </ul>
                             )
-                        })
+                        }) : 
+                        <h1 className='p-2 text-center text-slate-500'>No Groups Found</h1>
                     }
+                    
                 </InfiniteScroll>
             </div></>
     )

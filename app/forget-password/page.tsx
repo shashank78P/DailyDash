@@ -1,4 +1,5 @@
 "use client"
+import useRedirectToActiveTab from '@/components/GlobalComponents/useRedirectToActiveTab';
 import api from '@/components/lib/api';
 import { useRouter } from 'next/navigation';
 import { useForm } from "react-hook-form";
@@ -11,13 +12,14 @@ type ForgetPasswordType = {
 }
 const ForgetPassword = () => {
     const router = useRouter();
+    const [ redirect ] = useRedirectToActiveTab()
     const { mutate: forgetPassword, isLoading } = useMutation(async (data: any) => await api.post("/log-in-details/forget-password", data));
     const { register, handleSubmit, formState: { errors }, getValues } = useForm<ForgetPasswordType>({});
     const onSubmit = (data: any) => {
         forgetPassword(data, {
             onSuccess({ data }) {
                 toast.success(data);
-                router.replace("/");
+                router?.replace("/login")
             },
             onError(err: any) {
                 toast.error(err?.response?.data?.message)

@@ -31,7 +31,7 @@ export default function RootLayout({
 
 
   console.log(pathname);
-  const restriction_SideBar__Tab = ["/login", "/reset-password", "/forget-password", "/block", "/signup"];
+  const restriction_SideBar__Tab = ["/login", "/reset-password", "/forget-password", "/block", "/signup", "/chat/joinGroup" , "/meet/room"];
   const restriction__Tab = ["/trial"];
   return (
     <html lang="en">

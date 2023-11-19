@@ -128,13 +128,13 @@ const QueryObject = ({ selectedTab,
     useEffect(() => {
         console.log({ currentRouter, currentRouterIndex })
         if (currentRouterIndex == 0) {
-            return;
+            return ()=>{} ;
         }
         let { route, query } = currentRouter?.[currentRouterIndex - 1];
         console.log({ route, query })
 
         if (route != "/chat") {
-            return;
+            return ()=>{};
         }
         console.log("getting data fom redux store")
         console.log(currentRouterIndex)
@@ -164,7 +164,7 @@ const QueryObject = ({ selectedTab,
 
     useEffect(() => {
         if (isMountFirst) {
-            return;
+            return ()=>{} ;
         }
         else {
             constructUrl();

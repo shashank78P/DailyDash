@@ -10,6 +10,9 @@ import { Oval } from 'react-loader-spinner';
 import { useMutation, useQuery } from 'react-query';
 import { toast } from 'react-toastify';
 import { philosopher } from '../philosopher';
+import useRedirectToActiveTab from '@/components/GlobalComponents/useRedirectToActiveTab';
+import { userAction } from '@/components/store/slice/userSlice';
+import { useDispatch } from 'react-redux';
 
 type LogInType = {
     email: string,
@@ -17,21 +20,28 @@ type LogInType = {
 }
 const Login = () => {
     const router = useRouter();
-    const { mutate: login, isLoading } = useMutation(async (data: any) => await api.post("/log-in-details/login", data));
+    const [ redirect ] = useRedirectToActiveTab()
+    let dispatch = useDispatch();
+
+    const { mutate: login, isLoading } = useMutation(
+        (data: any) => api.post("/log-in-details/login", data) , 
+        {
+            onSuccess({data}){
+                console.log(data);
+                dispatch(userAction?.setuser(data))
+                redirect(true)
+                toast.success("Login Sucessfull")
+            },
+            onError(err : any){
+                toast.error(err?.response?.data?.message)
+            }
+        }
+    );
     const { register, handleSubmit, formState: { errors }, getValues } = useForm<LogInType>({});
     const onSubmit = async (data: any) => {
         console.log(data);
         data = {...data , os : platform?.os?.family, browser :platform.name}
-        login(data, {
-            onSuccess({ data }) {
-                console.log(data);
-                router.replace('/');
-                toast.success("Login Sucessfull")
-            },
-            onError(err: any) {
-                toast.error(err?.response?.data?.message)
-            },
-        });
+        login(data);
     }
     return (
         <div
