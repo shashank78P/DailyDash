@@ -9,6 +9,7 @@ import { routeAction } from '@/components/store/slice/router_slice';
 import PlusIco from '@/components/assets/PlusIco';
 
 const TabSection = () => {
+    const userSelector = useSelector((state: any) => state?.userSliceReducer);
     const { currentRouter, currentRouterIndex } = useSelector((state: any) => state.routeSliceReducer)
     const dispatch = useDispatch();
     const router = useRouter()
@@ -29,7 +30,7 @@ const TabSection = () => {
         <>
             <div className='flex justify-start items-center w-full h-[50px] bg-transparent overflow-scroll scrollTracker'>
                 {
-                    currentRouter?.map((tabData: any, i: number) => {
+                     userSelector?.userId && currentRouter?.map((tabData: any, i: number) => {
                         return (
                             <Tab tabData={tabData} i={i} />
                         )
