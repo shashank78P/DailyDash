@@ -43,18 +43,19 @@ export default function Home() {
     setSelectedId("")
   };
 
-  const { mutate: deleteQuickAccess, isLoading : isLoadingDeleteQuickAccess } = useMutation((id: string) => {
+  const { mutate: deleteQuickAccess, isLoading: isLoadingDeleteQuickAccess } = useMutation((id: string) => {
     return api.delete(`/quick-access/delete?id=${id}`);
-},
+  },
     {
-        onSuccess(data: any) {
-            toast.success("deleted Quick-access")
-        },
-        onError(err: any) {
-            toast.error(err?.response?.data?.message)
-        }
+      onSuccess(data: any) {
+        refetch()
+        toast.success("deleted Quick-access")
+      },
+      onError(err: any) {
+        toast.error(err?.response?.data?.message)
+      }
     }
-)
+  )
 
 
   return (
