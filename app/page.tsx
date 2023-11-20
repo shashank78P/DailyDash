@@ -11,9 +11,10 @@ import HorizontalThrreDot from "@/components/assets/HorizontalThrreDot";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import AddForm, { addToQuickAccessDto } from "@/components/QuickAccess/AddForm";
 import api from "@/components/lib/api";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import PencileIco from "@/components/assets/PencileIco";
 import { philosopher } from "./philosopher";
+import { toast } from "react-toastify";
 export default function Home() {
 
   const [showOptions, setShowOptions] = useState<number>(-1)
@@ -42,8 +43,20 @@ export default function Home() {
     setSelectedId("")
   };
 
+  const { mutate: deleteQuickAccess, isLoading : isLoadingDeleteQuickAccess } = useMutation((id: string) => {
+    return api.delete(`/quick-access/delete?id=${id}`);
+},
+    {
+        onSuccess(data: any) {
+            toast.success("deleted Quick-access")
+        },
+        onError(err: any) {
+            toast.error(err?.response?.data?.message)
+        }
+    }
+)
 
-  let quickAcessData: any = []
+
   return (
     <>
       <div className="w-full h-screen flex overflow-hidden">
@@ -78,7 +91,7 @@ export default function Home() {
                   type="submit" value={"GO"}
                 />
               </form>
-            </div> */}
+            </div>  */}
           </div>
 
           {/* recent bookmarks */}
@@ -154,6 +167,7 @@ export default function Home() {
                             <MenuItem key={"delete"} onClick={handleClose}>
                               <div className='m-2 flex justify-evenly'
                                 onClick={() => {
+                                  deleteQuickAccess(ele?._id)
                                 }}
                               >
                                 <span className='mr-2'>
