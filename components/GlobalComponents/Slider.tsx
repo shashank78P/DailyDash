@@ -18,7 +18,7 @@ const Slider = ({ children, handelEdit, show, handelClose, title, isShowEdit, is
     console.log({ show })
     return (
         <div className='w-full h-screen bg-transparent backdrop-brightness-50 fixed top-0 right-0 z-50 '>
-            <div className={`w-10/12 sm:w-1/2 h-full bg-white ml-auto ${show ? "-translate-x-0" : "translate-x-full"} ease-in-out delay-100 transition-all overflow-y-scroll`}>
+            <div className={`w-11/12 sm:w-1/2 h-full bg-white ml-auto ${show ? "-translate-x-0" : "translate-x-full"} ease-in-out delay-100 transition-all overflow-y-scroll`}>
                 <ul className=''>
                     <li className=' w-full sticky top-0'>
                         <ul className='flex justify-between items-center w-full bg-gradient-to-r from-purple-400 from-10% via-purple-700 via-80% to-purple-900 py-2'>

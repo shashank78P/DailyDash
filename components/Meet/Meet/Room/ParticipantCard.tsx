@@ -37,7 +37,7 @@ const ParticipantCard = ({ participant, key, isParticpantsScreenShare, isMycard 
         if(container && stream){
             let videoTag = document.createElement("video")
             videoTag.setAttribute("autoPlay", "true")
-            videoTag.setAttribute("class", "w-full h-full aspect-video object-cover select-none pointer-events-none ")
+            videoTag.setAttribute("class", "w-auto h-full aspect-w-16 aspect-h-9 aspect-video object-cover select-none pointer-events-none ")
             container.classList.add("w-full", "h-full");
             container.classList.remove("w-[150px]", "h-[150px]");
             container.innerHTML = "";

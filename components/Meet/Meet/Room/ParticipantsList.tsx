@@ -31,22 +31,25 @@ const ParticipantsList = ({ participants, isPresentDetails }: { participants: Ar
     }, [userSelector])
 
     function isVideoAudioOnOrOff(participantId: string) {
-        if (!opponentNonMediaStreamStream?.includes(participantId) || !isPresentDetails) {
+        console.log({opponentNonMediaStreamStream , isPresentDetails})
+        if (opponentNonMediaStreamStream?.includes(participantId) || !isPresentDetails) {
             return { isVideo: false, isAudio: false }
         }
         const stream: MediaStream = opponentStream?.[participantId]
+        console.log({opponentStream , participantId})
         if (!stream) {
             return;
         }
         const track = stream?.getTracks()
+        console.log({ length : track?.length , type : track?.[0]?.type , track})
         if (track?.length == 2) {
             return { isVideo: true, isAudio: true }
         }
-        if (track?.length == 1 && track?.[0]?.type == "audio") {
-            return { isVideo: true, isAudio: false }
-        }
-        if (track?.length == 1 && track?.[0]?.type == "video") {
+        if (track?.length == 1 && track?.[0]?.kind == "audio") {
             return { isVideo: false, isAudio: true }
+        }
+        if (track?.length == 1 && track?.[0]?.kind == "video") {
+            return { isVideo: true, isAudio: false }
         } else {
             return { isVideo: false, isAudio: false }
         }
@@ -155,12 +158,13 @@ const ParticipantsList = ({ participants, isPresentDetails }: { participants: Ar
                                 return;
                             }
                             const { isVideo, isAudio } = isVideoAudioOnOrOff(id)
+                            console.log({isVideo , isAudio})
                             const participant = participantsDetails?.[id]
                             return (
                                 participantRow(participant, isVideo, isAudio)
-                            )
-                        })
-                    }
+                                )
+                            })
+                        }
                     {
                         participants && Array.isArray(participants) && participants?.map((participant: any, i: number) => {
                             if (HandRaisedUser.length >= 1 && HandRaisedUser?.includes(participant?.participantId)) {
@@ -168,6 +172,7 @@ const ParticipantsList = ({ participants, isPresentDetails }: { participants: Ar
                             } else {
                                 console.log(participant)
                                 const { isVideo, isAudio } = isVideoAudioOnOrOff(participant?.participantId)
+                                console.log({isVideo , isAudio})
                                 return (
                                     participantRow(participant, isVideo, isAudio)
                                 )

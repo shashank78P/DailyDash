@@ -120,18 +120,18 @@ const InnerPage = () => {
                                 }
                                 {
                                     participantsDetails?.data?.addParticipants?.map((participant: any, i: number) => {
-                                        return (<ul className='w-full border p-2 my-2 flex rounded-lg shadow-sm' key={i}>
+                                        return (<ul className='w-full border p-2 my-2 flex flex-col sm:flex-row rounded-lg shadow-sm' key={i}>
                                             <li>
                                                 <img src={participant?.userPic} width={50} height={50} alt="" className={` w-[${50}px] h-[${50}px] rounded-full`} />
                                             </li>
-                                            <li>
-                                                <ul className='flex items-center ml-2'>
+                                            <li className='mt-2'>
+                                                <ul className='flex flex-col sm:flex-row sm:items-center ml-2'>
                                                     <li className='flex text-base'>
                                                         {
                                                             participant?.userName
                                                         }
                                                     </li>
-                                                    <li className='text-sm text-slate-500 ml-2'>
+                                                    <li className='text-slate-500 text-xs ml-2'>
                                                         ({
                                                             participant?.emial
                                                         })
