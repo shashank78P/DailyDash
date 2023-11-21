@@ -363,6 +363,8 @@ const Room = () => {
                 }
                 break;
             case "participants-left-meeting":
+                console.log("participants-left-meeting")
+                console.log(isJoinMeetPage)
                 if (!isJoinMeetPage) {
                     refetchAllActivePArticipants()
                     refetchAllDisActiveParticipants()
@@ -400,10 +402,10 @@ const Room = () => {
                 console.log(data)
                 console.log(isJoinMeetPage)
                 if (!isJoinMeetPage) {
-                    if (data?.isRaiseMyHand === true) {
+                    if (data?.isRaiseMyHand == true) {
                         console.log("setting userId")
                         setHandRaisedUser((prev: any) => [data?.userId, ...prev])
-                    } else if (data?.isRaiseMyHand === false) {
+                    } else if (data?.isRaiseMyHand == false) {
                         console.log("removing userId")
                         setHandRaisedUser((prev: any) => prev.filter((id: string) => id !== data?.userId))
                     }

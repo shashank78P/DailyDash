@@ -91,7 +91,7 @@ const ChatGroupList = ({ selectedChat, setSelectedChat, refetchList, refetchUnRe
                     next={() => {
 
                     }}
-                    hasMore={false}
+                    hasMore={isLoading}
                     loader={<div className='m-2'><Oval height={20} width={20} color='#7e22ce' /></div>}
                     scrollableTarget="id"
                 // inverse={true}

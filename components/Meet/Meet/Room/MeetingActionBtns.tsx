@@ -25,7 +25,7 @@ const MeetingActionBtns = () => {
     const handelLeaveMeeting = async () => {
         if (meetingId) {
             socket?.emit("leaveMeet", { meetingId })
-            setIsJoinMeetPage(true)
+            setIsJoinMeetPage(true);
         }
     }
 

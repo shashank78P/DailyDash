@@ -135,6 +135,7 @@ const ChatActions = ({ selectedChat, socket, isEmojiOpen, setIsEmojiOpen }: Chat
                     className='m-2 cursor-pointer bg-purple-500 p-2 rounded-lg grid place-content-center'
                     onClick={(e) => {
                         sendMessage()
+                        socket?.emit("STOPED-TYPING" , { belongsTo : selectedChat?.opponentId , type : selectedChat?.type })
                     }}
                 >
                     <Send width={25} height={25} color='white' />

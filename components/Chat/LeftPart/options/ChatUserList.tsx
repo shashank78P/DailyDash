@@ -58,7 +58,7 @@ const ChatUserList = ({ selectedChat, setSelectedChat, refetchList, isViewProfil
                     next={() => {
                         // fun()
                     }}
-                    hasMore={false}
+                    hasMore={isLoading}
                     loader={<div className='m-2'><Oval height={20} width={20} color='#7e22ce' /></div>}
                     scrollableTarget="id"
                 // inverse={true}
@@ -100,7 +100,7 @@ const ChatUserList = ({ selectedChat, setSelectedChat, refetchList, isViewProfil
                                 </ul>
                             )
                         }) :
-                        <h1 className='p-2 text-center text-slate-500'>No Users Found</h1>
+                        isLoading ?? <h1 className='p-2 text-center text-slate-500'>No Users Found</h1>
                     }
                 </InfiniteScroll>
             </div></>

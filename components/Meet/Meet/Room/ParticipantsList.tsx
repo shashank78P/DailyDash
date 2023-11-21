@@ -132,7 +132,7 @@ const ParticipantsList = ({ participants, isPresentDetails }: { participants: Ar
                     <ul className='w-full flex justify-between items-center border border-transparent border-b-purple-200 border-b-1 pb-2'>
                         <li className=' flex '>
                             <span>{(isPresentDetails) ? "Participants" : "Absentice"}</span>
-                            <div className='ml-2 p-1 px-1.5 bg-purple-200 text-purple-700 text-sm rounded-lg'>{participants?.length ?? 0}</div>
+                            <div className='ml-2 p-1 px-1.5 bg-purple-200 text-purple-700 text-sm rounded-lg'>{participants?.length + 1 ?? 1}</div>
                         </li>
                         <li className='cursor-pointer mr-1.5'
                             onClick={() => {
@@ -150,7 +150,8 @@ const ParticipantsList = ({ participants, isPresentDetails }: { participants: Ar
                     {
                         HandRaisedUser && HandRaisedUser?.length >= 1 && HandRaisedUser?.map((id: string) => {
                             console.log("printing handraised user")
-                            if (HandRaisedUser?.includes(id)) {
+                            console.log({id , HandRaisedUser})
+                            if (userSelector?.userId == id) {
                                 return;
                             }
                             const { isVideo, isAudio } = isVideoAudioOnOrOff(id)
