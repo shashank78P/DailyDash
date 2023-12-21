@@ -69,11 +69,13 @@ const Page = () => {
     useEffect(() => {
         socket?.on(`${userSelector?.userId}ChatNotification`, (msg: any) => {
             refetchUnReadMessages()
+            setRefetchList( prev => !prev)
         });
-
+        
         return  ()=>{
             socket?.off(`${userSelector?.userId}ChatNotification`, (msg: any) => {
                 refetchUnReadMessages()
+                setRefetchList( prev => !prev)
             });
         }
     }, [refetchUnReadMessages, userSelector?.userId])
@@ -154,11 +156,13 @@ const Page = () => {
                     {ThreeDotActionResult == "CreateGroup" && <NewGroup
                         setThreeDotActionResult={setThreeDotActionResult}
                         ThreeDotActionResult={ThreeDotActionResult}
-                    />}
+                        setRefetchList = {setRefetchList}
+                        />}
                     {ThreeDotActionResult == "AddUser" && <NewContact
                         setThreeDotActionResult={setThreeDotActionResult}
                         ThreeDotActionResult={ThreeDotActionResult}
                         setSelectedChat={setSelectedChat}
+                        setRefetchList = {setRefetchList}
                     />}
                     {ThreeDotIsOpen && <ThreeDotAction open={ThreeDotIsOpen} setOpen={setThreeDotIsOpen} setThreeDotActionResult={setThreeDotActionResult} />}
                     <div className='h-full w-[300px] md:w-[400px] '>

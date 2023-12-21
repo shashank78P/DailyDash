@@ -1,18 +1,41 @@
+import { SocketContext } from '@/components/context/SocketContext';
 import api from '@/components/lib/api';
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useMutation } from 'react-query';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 type ThreeDotActionResultDto = {
     setThreeDotActionResult: any,
     ThreeDotActionResult: any,
     setSelectedChat: any,
+    setRefetchList : Function
 }
 
-const NewContact = ({ setThreeDotActionResult, ThreeDotActionResult, setSelectedChat }: ThreeDotActionResultDto) => {
+const NewContact = ({ setThreeDotActionResult, ThreeDotActionResult, setSelectedChat , setRefetchList }: ThreeDotActionResultDto) => {
     const [email, setEmail] = useState();
     const [error, setError] = useState("");
-    const { mutate: getUser, isLoading } = useMutation(async (data: any) => await api.post("/chats/findUserToInitialChat", data));
+    const userSelector = useSelector((state: any) => state?.userSliceReducer);
+    const { socket } : any= useContext(SocketContext);
+    const { mutate: getUser, isLoading } = useMutation(
+        async (data: any) => await api.post("/chats/findUserToInitialChat", data),
+        {
+            onSuccess({data}){
+                setRefetchList( (prev : boolean) => !prev)
+                socket.emit("INDIVIDUAL", 
+                { 
+                    event: { type: "CHAT_INITIATED", message: `Chat initiated by ${userSelector?.firstName ?? ""} ${userSelector?.lastName ?? ""}` } ,
+                    ...data,
+                    messageType : "TEXT"
+            });
+                toast.success("Chat initiated successfully")
+            },
+            onError(err : any){
+                toast.error(err?.response?.data?.message)
+            }
+        }
+        );
 
     return (
         <>

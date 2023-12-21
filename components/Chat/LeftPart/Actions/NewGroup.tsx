@@ -1,28 +1,38 @@
+import { SocketContext } from '@/components/context/SocketContext';
 import api from '@/components/lib/api';
 import { Avatar, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Oval } from 'react-loader-spinner';
 import { useMutation, useQuery } from 'react-query';
+import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 type ThreeDotActionResultDto = {
     setThreeDotActionResult: any,
     ThreeDotActionResult: any,
+    setRefetchList : Function
 }
 
-const NewGroup = ({ setThreeDotActionResult, ThreeDotActionResult }: ThreeDotActionResultDto) => {
+const NewGroup = ({ setThreeDotActionResult, ThreeDotActionResult , setRefetchList}: ThreeDotActionResultDto) => {
     const limit = 500
     const defaultUserPic = "images/DefaultUser2.png"
     const [skip, setSkip] = useState<number>(0)
     const [search, setSearch] = useState<string>("")
     const [message, setErrorMessage] = useState<string>("")
     const [newGroupName, setNewGroupName] = useState<string>("")
+    const userSelector = useSelector((state: any) => state?.userSliceReducer);
+    const { socket } : any= useContext(SocketContext);
+
 
     const { data, isLoading, refetch } = useQuery(["getUserOfMyContact", search], () => {
         return api.get(`/chats/getUserOfMyContact?limit=${limit}&skip=${skip}&search=${search}`)
     }, {
         onSuccess({ data }) {
+            setRefetchList( (prev : boolean) => !prev)
+        },
+        onError(err : any){
+            toast.error(err?.response?.data?.message)
         }
     })
     
@@ -31,8 +41,13 @@ const NewGroup = ({ setThreeDotActionResult, ThreeDotActionResult }: ThreeDotAct
     },
     {
         onSuccess({data} : any){
-            toast.success("Created successfull")
             setThreeDotActionResult("")
+            setRefetchList( (prev : boolean) => !prev)
+            socket.emit("NOTIFY-USER-ABOUT-NEW-GROUP", 
+                {
+                    ...data
+            })
+            toast.success("Created new group")
         },
         onError(err :any){
             toast.error(err?.response?.data?.message)
@@ -148,6 +163,7 @@ const NewGroup = ({ setThreeDotActionResult, ThreeDotActionResult }: ThreeDotAct
                                 setErrorMessage("Group name is required")
                             }else{
                                 setErrorMessage("")
+                                console.log({groupName : newGroupName , users : checked})
                                 createGroup({groupName : newGroupName , users : checked})
                             }
                         }}
