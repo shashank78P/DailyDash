@@ -1,5 +1,5 @@
 "use client"
-import { FormateDate1, isGivenDateTimeIsInLimit, timeDiffWithCurrentDate } from '@/components/GlobalComponents/FormateDate1'
+import { FormateDate1, getTimeWithAMorPMForMeet, isGivenDateTimeIsInLimit, timeDiffWithCurrentDate } from '@/components/GlobalComponents/FormateDate1'
 import VideoStreamer from '@/components/Meet/Meet/JoinMeet/VideoStream'
 import { SocketContext } from '@/components/context/SocketContext'
 import api from '@/components/lib/api'
@@ -73,7 +73,7 @@ const JoinMeetingRequest = ({ handleJoinMeet }: any) => {
             <li className=''>
               <p className='text-gray-500 my-2 text-base'>
                 <span className='text-slate-700'>{data?.data?.[0]?.meetingStatus === "Completed" || data?.data?.[0]?.meetingStatus === "Not Started" ? "Meeting started at : " : "Meeting timings : "}</span>
-                {data?.data?.[0]?.meetingDate ? `${timeDiffWithCurrentDate(data?.data?.[0]?.meetingDate)} by ${data?.data?.[0]?.createrName}` : ""}
+                {data?.data?.[0]?.meetingDate ? `${getTimeWithAMorPMForMeet(data?.data?.[0]?.meetingDate)} by ${data?.data?.[0]?.createrName}` : ""}
               </p>
               <p className='text-gray-500 my-2 text-base'><span className='text-slate-700'>Meeting Length :</span> {(data?.data?.[0]?.meetingLength && data?.data?.[0]?.meetingLengthPararmeter) ? (data?.data?.[0]?.meetingLength + " " + data?.data?.[0]?.meetingLengthPararmeter) : ""}</p>
               <p className='text-gray-500 my-2 text-base'><span className='text-slate-700'>Total participants :</span> {data?.data?.[0]?.participantsCount}</p>

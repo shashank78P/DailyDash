@@ -38,7 +38,7 @@ const ParticipantsList = ({ participants, isPresentDetails }: { participants: Ar
         const stream: MediaStream = opponentStream?.[participantId]
         console.log({opponentStream , participantId})
         if (!stream) {
-            return;
+            return { isVideo: false, isAudio: false }
         }
         const track = stream?.getTracks()
         console.log({ length : track?.length , type : track?.[0]?.type , track})

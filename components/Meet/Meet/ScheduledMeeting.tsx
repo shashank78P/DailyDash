@@ -9,7 +9,7 @@ import MeetContext from './State/MeetContext'
 import CreateMeetingForm from './CreateMeetingForm'
 import { useQuery } from 'react-query'
 import api from '@/components/lib/api'
-import { FormateDate1, getTimeWithAMorPM, timeDiffWithCurrentDate } from '@/components/GlobalComponents/FormateDate1'
+import { FormateDate1, getTimeWithAMorPM, getTimeWithAMorPMForMeet, timeDiffWithCurrentDate } from '@/components/GlobalComponents/FormateDate1'
 import UserPic from '@/components/GlobalComponents/UserPic'
 import InnerPage from './InnerPage'
 
@@ -67,7 +67,7 @@ const ScheduledMeeting = () => {
                                         <span className={` ${meetingStatusStyle?.[ele?.meetingStatus]} `}>{ele?.meetingStatus}</span>
                                     </td>
                                     <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500'>{ele?.meetingDate?.slice(0, 10)}</td>
-                                    <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500'>{getTimeWithAMorPM(ele?.meetingDate)}</td>
+                                    <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500'>{getTimeWithAMorPMForMeet(ele?.meetingDate)}</td>
                                     <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500'>{ele?.whoCanJoin?.replaceAll("_", " ")}</td>
                                     {/* <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500'>{`${process.env.FRONT_END_URL}/meet/room?id=${ele?._id}`}</td> */}
                                     <td className='text-sm text-center truncate p-2 w-auto min-w-min max-w-[100px] border border-x-0 border-t-0 border-b-1 text-slate-500'>{ele?.meetingLength} {ele?.meetingLengthPararmeter}</td>

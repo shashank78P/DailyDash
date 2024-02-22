@@ -1,4 +1,4 @@
-import { getTimeWithAMorPM, timeDiffWithCurrentDate } from '@/components/GlobalComponents/FormateDate1'
+import { getTimeWithAMorPM, getTimeWithAMorPMForMeet, timeDiffWithCurrentDate } from '@/components/GlobalComponents/FormateDate1'
 import UserPic from '@/components/GlobalComponents/UserPic'
 import api from '@/components/lib/api'
 import React, { useContext } from 'react'
@@ -87,7 +87,7 @@ const InnerPage = () => {
                     </div>
                     <div className='my-2 items-center flex'>
                         <div className='text-base w-1/3 font-medium mr-2 text-slate-900'>Meeting Time: </div>
-                        <div className='text-sm w-full text-slate-700 font-light'>{getTimeWithAMorPM(selected?.data?.meetingDate)}</div>
+                        <div className='text-sm w-full text-slate-700 font-light'>{getTimeWithAMorPMForMeet(selected?.data?.meetingDate)}</div>
                     </div>
                     <div className='my-2 items-center flex'>
                         <div className='text-base w-1/3 font-medium mr-2 text-slate-900'>Meeting Length: </div>

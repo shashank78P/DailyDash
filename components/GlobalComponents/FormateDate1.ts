@@ -21,8 +21,30 @@ type getHumanReadableDateDiffDto = {
     minutes: number,
     seconds: number,
 }
+export function getTimeWithAMorPMForMeet(date: string): string {
+    // const givenDate = new Date(date)
+    console.log("givenDate")
+    console.log(date)
+
+    // console.log(givenDate)
+    // let second = givenDate?.getSeconds()
+    
+    date = date?.split("T")[1]
+    let hour = Number(date?.split(":")[0])
+    let minute = Number(date?.split(":")[1])
+    let AM_PM = "AM"
+    if (hour >= 12 && hour < 24) {
+        AM_PM = "PM"
+    }
+    return `${String(hour % 12).padStart(2, '0')}:${String(minute).padStart(2, '0')} ${String(AM_PM).padStart(2, '0')}`
+}
+
 export function getTimeWithAMorPM(date: string): string {
     const givenDate = new Date(date)
+    console.log("givenDate")
+    console.log(date)
+    
+    console.log(givenDate)
     let hour = givenDate?.getHours()
     let second = givenDate?.getSeconds()
     let minute = givenDate?.getMinutes()
