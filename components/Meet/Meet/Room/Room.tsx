@@ -418,7 +418,7 @@ const Room = () => {
                 }
                 break;
         }
-    }, [isJoinMeetPage, userSelector])
+    }, [isJoinMeetPage, userSelector,participantsDetails])
 
     useEffect(() => {
         if (socket && myPeer?._id && userSelector.userId && meetingId) {
