@@ -396,7 +396,7 @@ const Room = () => {
                 if (!isJoinMeetPage) {
                     console.log(participantsDetails, data?.userId)
                     console.log(participantsDetails?.[data?.userId]?.userName)
-                    toast.success(`${participantsDetails?.[data?.userId]?.userName} reacted ${data?.emoji}`)
+                    toast.success(`${participantsDetails?.[data?.userId]?.userName ?? ""} reacted ${data?.emoji}`)
                 }
                 break;
             case "is-raise-my-hand":
